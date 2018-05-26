@@ -6,7 +6,6 @@ In Android Devices, it makes programmer uncomfortable while writing codes.
 
 # Who thought to write a code with Android Devices? It seems a bad idea.
 We spend lots of times outside.
-I am a student who gets on buses and trains a lot.
 Writing codes while these places is a nuisance.
 That is the reason why I started to make 'Phone Code-PC'.
 
