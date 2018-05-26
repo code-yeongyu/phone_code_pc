@@ -4,7 +4,7 @@ We have seen a lot of Programming Applications that based on Text Editor which d
 You have to use lots of symbols when you write your code. It is an effective way on your Computer with your keyboard.
 In Android Devices, it makes programmer uncomfortable while writing codes.
 
-# Who thought to write a code with Android Devices?
+# Who thought to write a code with Android Devices? It seems a bad idea.
 We spend lots of times outside.
 I am a student who gets on buses and trains a lot.
 Writing codes while these places is a nuisance.
