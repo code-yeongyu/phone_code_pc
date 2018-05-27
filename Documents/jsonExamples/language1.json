@@ -75,24 +75,22 @@
             "set":"set()"
         }
     },
-    "constants":{
-        "False" : "False",
-        "True" : "True",
-        "None" : "None"
-    },
-    "boolean_operations":{
+    "symbols":{
+        "<":"<",
+        "=":"=",
+        ">":">",
+        "!":"!",
+        "is":"is",
+        "not":"not",
         "or":"or",
         "and":"and",
-        "not":"not"
+        "+":"+",
+        "-":"-",
+        "*":"*",
+        "/":"/"
     },
-    "comparisons":{
-        "<":"<",
-        "<=":"<=",
-        ">":">",
-        ">=":">=",
-        "==":"==",
-        "!=":"!=",
-        "is":"is",
-        "not":"not"
+    "phrases":{
+        "class":"class",
+        "def":"def"
     }
 }
