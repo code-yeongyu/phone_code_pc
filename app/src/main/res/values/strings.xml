@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">PhoneCode-PC</string>
+    <string name="title_activity_edit">EditActivity</string>
 </resources>
