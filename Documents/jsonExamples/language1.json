@@ -88,11 +88,13 @@
         "-":"-",
         "*":"*",
         "/":"/",
-        ":":":"
+        ":":":",
+        ".":"."
     },
     "phrases":{
         "class":"class",
         "def":"def",
-        "import":"import"
+        "import":"import",
+        "self":"self"
     }
 }
