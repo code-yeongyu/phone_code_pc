@@ -1,4 +1,4 @@
-**Before you begin: My English is bad. I highly recommend you to check [here](https://github.com/kim-yeon-gyu-exlock/Phone-Code-PC/Documents/jsonExamples) to see examples. I'm waiting for your awesome introductions.**
+**Before you begin: My English is bad. I highly recommend you to check [here](https://github.com/kim-yeon-gyu-exlock/Phone-Code-PC/blob/master/Documents/jsonExamples/language1.json) to see examples. I'm waiting for your awesome introductions.**
 
 If you want to write your own code with "PhoneCode-PC", you have to prepare your own settings json file.
 
