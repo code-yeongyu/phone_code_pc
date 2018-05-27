@@ -92,6 +92,7 @@
     },
     "phrases":{
         "class":"class",
-        "def":"def"
+        "def":"def",
+        "import":"import"
     }
 }
