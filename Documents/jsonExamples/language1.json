@@ -101,6 +101,9 @@
         "class":"class",
         "def":"def",
         "import":"import",
-        "self":"self"
+        "self":"self",
+	"if":"if",
+	"else":"else",
+	"elif":"elif"
     }
 }
