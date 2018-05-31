@@ -19,7 +19,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".EditActivity"></activity>
+        <activity android:name=".EditActivity" />
+        <activity android:name=".LinearLayout" />
+        <activity android:name=".FileSelectActivity"></activity>
     </application>
 
 </manifest>

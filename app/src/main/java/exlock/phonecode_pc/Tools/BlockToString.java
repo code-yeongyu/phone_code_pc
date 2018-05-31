@@ -1,8 +1,6 @@
 package exlock.phonecode_pc.Tools;
 
-import android.util.Log;
-
-public class BlockToCode {
+public class BlockToString {
     String code;
     public void setCode(String code){
         this.code = code;
