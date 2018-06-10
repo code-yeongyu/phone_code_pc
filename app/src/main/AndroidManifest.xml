@@ -20,8 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".EditActivity" />
-        <activity android:name=".LinearLayout" />
-        <activity android:name=".FileSelectActivity"></activity>
+        <activity android:name=".FileSelectActivity" />
     </application>
 
 </manifest>

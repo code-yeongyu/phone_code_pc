@@ -13,8 +13,8 @@ public class LanguageProfile {
     private ArrayList<String> categories, symbols, phrases;
 
     public LanguageProfile(String json){
-        String informsJson = JsonManager.getJsonOBJByKey(json, "lang_informs");
         this.json = json;
+        String informsJson = JsonManager.getJsonOBJByKey(this.json, "lang_informs");
         this.name = JsonManager.getJsonStrByKey(informsJson, "name");
         this.version = JsonManager.getJsonStrByKey(informsJson, "version");
         this.categories = JsonManager.getJsonAllkeys
@@ -22,7 +22,7 @@ public class LanguageProfile {
         this.symbols = JsonManager.getJsonAllkeys
                 (JsonManager.getJsonOBJByKey(json, "symbols"));
         this.phrases = JsonManager.getJsonAllkeys
-                (JsonManager.getJsonOBJByKey(json, "phrase"));
+                (JsonManager.getJsonOBJByKey(json, "phrases"));
     }
     public String getLanguageName(){
         return this.name;
