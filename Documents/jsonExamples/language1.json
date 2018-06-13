@@ -97,7 +97,7 @@
         "{":"{",
         "}":"}"
     },
-    "phrases":{
+    "reserved":{
         "class":"class",
         "def":"def",
         "import":"import",
