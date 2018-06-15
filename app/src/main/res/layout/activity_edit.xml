@@ -2,8 +2,48 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/EditLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="exlock.phonecode_pc.EditActivity">
 
+    <Button
+        android:id="@+id/closeButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="16dp"
+        android:text="X"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/scrollFunctionsLayout"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <ScrollView
+        android:id="@+id/scrollFunctionsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <LinearLayout
+            android:id="@+id/functionsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/categoriesLayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+    </LinearLayout>
 </android.support.constraint.ConstraintLayout>

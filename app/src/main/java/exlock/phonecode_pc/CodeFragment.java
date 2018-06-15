@@ -1,5 +1,6 @@
 package exlock.phonecode_pc;
 
+import android.content.SharedPreferences;
 import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -19,6 +20,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class CodeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -28,49 +31,36 @@ public class CodeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_code, null);
-
         return view;
     }
     @Override
     public void onStart(){
         super.onStart();
-        if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {//if accessing to storage is available
-            StringBuffer buffer = new StringBuffer();
-            String data;
-            try {
-                String path = Environment.getExternalStorageDirectory() + "/PhoneCode/language1.json";
-                BufferedReader reader = new BufferedReader(new FileReader(path));
-                data = reader.readLine();
-                while (data != null) {
-                    buffer.append(data);
-                    data = reader.readLine();
-                }
 
-                LinearLayout linearCategories = getView().findViewById(R.id.LinearCategories);
-                final LanguageProfile lp = new LanguageProfile(buffer.toString());
-                final ArrayList<String> categories = lp.getCategories();
-                for(int i = 0; i<categories.size();i++){
-                    final Button category = new Button(getContext());
-                    final int forAssign = i;
-                    category.setOnClickListener(
-                            new Button.OnClickListener() {
-                                public void onClick(View v) {
-                                    addButton(lp.getFunctions(categories.get(forAssign)));
-                                }
-                            }
-                    );
-                    category.setText(categories.get(i));
-                    linearCategories.addView(category);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }//get file
+        SharedPreferences pref = getContext().getSharedPreferences("pref", MODE_PRIVATE);
+
+        final LanguageProfile lp = new LanguageProfile(pref.getString("profileJson", ""));
+        final ArrayList<String> categories = lp.getCategories();
+        for(int i = 0; i<categories.size();i++){
+            final Button category = new Button(getContext());
+            final int forAssign = i;
+            category.setOnClickListener(
+                    new Button.OnClickListener() {
+                        public void onClick(View v) {
+                            addButton(lp.getFunctions(categories.get(forAssign)));
+                        }
+                    }
+            );
+            category.setText(categories.get(i));
+            LinearLayout linearCategories = getView().findViewById(R.id.LinearCategories);
+            linearCategories.addView(category);
         }
     }
     Handler handler = new Handler();
     int j = 0;
     private void addButton(final ArrayList<String> functions){
         final LinearLayout linearFunctions = getView().findViewById(R.id.LinearFunctions);
+
 
         final Runnable r = new Runnable() {
             public void run() {

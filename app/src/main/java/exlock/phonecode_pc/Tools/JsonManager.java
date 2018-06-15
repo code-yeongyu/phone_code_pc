@@ -41,20 +41,18 @@ public class JsonManager {
         return jsonStringResult;
     }
     static public ArrayList<String> getJsonAllkeys(String jsonString){
-        ArrayList<String> keys_array = new ArrayList<String>();
-        ArrayList<String> values_array = new ArrayList<String>();
+        ArrayList<String> keys_array = new ArrayList<>();
         try {
             JSONArray jarray = new JSONArray("[" + jsonString + "]");
             JSONObject json_array = jarray.optJSONObject(0);
             Iterator<?> keys = json_array.keys();
-
             while (keys.hasNext()) {
                 String key = (String) keys.next();
                 keys_array.add(key);
-                values_array.add(json_array.get(key).toString());
             }
         }catch (JSONException e){
             e.printStackTrace();
+            return keys_array;
         }
         return keys_array;
     }
