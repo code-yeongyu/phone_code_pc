@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
                     buffer.append(data);
                     data = reader.readLine();
                 }//get json string from file
+                reader.close();
                 SharedPreferences sp = getSharedPreferences("json", MODE_PRIVATE);
                 SharedPreferences.Editor editor = sp.edit();
                 editor.putString("profileJson", buffer.toString());
@@ -55,17 +56,6 @@ public class MainActivity extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }//get file
-        }
-    }
-    private void createTestFile(){
-        String path = Environment.getExternalStorageDirectory() + "/PhoneCode/helloworld.py";//set path
-        File saveFile = new File(path);
-        try{
-            FileOutputStream fos = new FileOutputStream(saveFile);
-            fos.write("".getBytes());
-            fos.close();
-        }catch(IOException e){
-            e.printStackTrace();
         }
     }
 }
