@@ -2,8 +2,10 @@ package exlock.phonecode_pc;
 
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
@@ -12,6 +14,8 @@ import android.widget.ScrollView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+
+import exlock.phonecode_pc.Tools.ManageCode;
 
 public class EditActivity extends AppCompatActivity {
 
@@ -27,6 +31,17 @@ public class EditActivity extends AppCompatActivity {
 
         final LanguageProfile lp = new LanguageProfile(
                 getSharedPreferences("json", MODE_PRIVATE).getString("profileJson", ""));
+        String testPath = Environment.getExternalStorageDirectory() + "/PhoneCode/hello_world.py";
+        final ManageCode mc = new ManageCode(testPath);//only for testing. Directory will be able to change in the future
+        Log.d("Test", "Before: "+mc.getContent());
+        mc.setContent("print(\"Hello\")");
+        mc.saveContent();
+        Log.d("Test", "After: "+mc.getContent());
+        /*UI stuff*/
+        final LinearLayout displayCodeLayout = findViewById(R.id.displayCodeLayout);
+        /*Todo:
+        * display code blocks per a line in displayCodeLayout
+        */
 
         final LinearLayout categoriesLayout = findViewById(R.id.categoriesLayout);//A layout that contains categories
         final LinearLayout functionLayout = findViewById(R.id.functionsLayout);//A layout that contains functions
@@ -45,26 +60,31 @@ public class EditActivity extends AppCompatActivity {
             }
         });
 
-        /*functionsListLayout ui set*/
+        /*functionsListLayout UI set*/
         functionsListLayout.setColumnCount(4);
         functionsListLayout.setBackgroundColor(Color.parseColor("#c4ffed"));
         /*functionsListLayout ui set*/
+        /*UI stuff*/
         
         for(int i = 0;i<categories.size();i++){
-            final String strCategory = categories.get(i).toString();
+            final String strCategory = categories.get(i).toString();//A string variable that contains a category's name
             View.OnClickListener categoryOnClickListner = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     controlMenu(closeButton, categoriesLayout,true);
-                    ArrayList functions = lp.getFunctions(strCategory);
+                    ArrayList functions = lp.getFunctions(strCategory);//An ArrayList that contains the list of functions
                     for(int j = 0;j<functions.size();j++) {
-                        final String strFunctions = functions.get(j).toString();
+                        final String strFunctions = functions.get(j).toString();//An variable that contains a function
                         Button function = new Button(getApplicationContext());
                         function.setText(strFunctions);
                         function.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                //add here block to string code
+                                /*Todo:
+                                 * add block(add Content)
+                                 * update displayCodeLayout
+                                */
+
                                 Toast.makeText(getApplicationContext(), strFunctions, Toast.LENGTH_SHORT).show();
                             }
                         });
