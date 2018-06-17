@@ -44,10 +44,21 @@ public class LanguageProfile {
         return this.categories;
     }//A function that returns all the categories
     public ArrayList<String> getFunctions(String category){
-        //입력받은 카테고리를 찾아서 그 부분만 뚝 띄어서 리턴시켜야함
-        String jsonFunctions = JsonManager.getJsonOBJByKey(this.json, "functions");
+        String jsonFunctions = JsonManager.getJsonOBJByKey(this.json, "functions");//json->function
         String jsonCategory = JsonManager.getJsonOBJByKey(
-                jsonFunctions, category);
+                jsonFunctions, category);//function->category
         return JsonManager.getJsonAllkeys(jsonCategory);
+    }
+    public String getFunctionValue(String category, String function){//needs bug fix
+        String jsonFunctions = JsonManager.getJsonOBJByKey(this.json, "functions");//json->function
+        String jsonCategory = JsonManager.getJsonOBJByKey(
+                jsonFunctions, category);//function->category
+        String functionValue = JsonManager.getJsonOBJByKey(jsonCategory, function);//category->function value
+        //monitor the function value
+        try {
+            return JsonManager.getJsonAllkeys(functionValue).get(0);
+        }catch (Exception e){
+            return "";
+        }
     }
 }

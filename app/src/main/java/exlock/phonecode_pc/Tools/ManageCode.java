@@ -46,6 +46,9 @@ public class ManageCode {
             while (data != null) {
                 buffer.append(data);
                 data = reader.readLine();
+                if(data!=null){
+                    buffer.append("\n");
+                }
             }
             reader.close();
             this.content = buffer.toString();

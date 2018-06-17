@@ -7,6 +7,24 @@
     android:layout_height="match_parent"
     tools:context="exlock.phonecode_pc.EditActivity">
 
+    <ScrollView
+        android:id="@+id/scrollBlocksView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="50dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:id="@+id/displayCodeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
+
     <Button
         android:id="@+id/closeButton"
         android:layout_width="50dp"
@@ -15,11 +33,11 @@
         android:layout_marginRight="16dp"
         android:text="X"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/scrollFunctionsLayout"
+        app:layout_constraintBottom_toTopOf="@+id/scrollFunctionsView"
         app:layout_constraintRight_toRightOf="parent" />
 
     <ScrollView
-        android:id="@+id/scrollFunctionsLayout"
+        android:id="@+id/scrollFunctionsView"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:visibility="gone"
@@ -46,15 +64,4 @@
         app:layout_constraintRight_toRightOf="parent">
 
     </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/displayCodeLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"></LinearLayout>
 </android.support.constraint.ConstraintLayout>
