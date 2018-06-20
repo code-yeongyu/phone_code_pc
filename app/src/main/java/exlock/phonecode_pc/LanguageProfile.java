@@ -49,14 +49,14 @@ public class LanguageProfile {
                 jsonFunctions, category);//function->category
         return JsonManager.getJsonAllkeys(jsonCategory);
     }
-    public String getFunctionValue(String category, String function){//needs bug fix
+    String getFunctionValue(String category, String function){//needs bug fix
         String jsonFunctions = JsonManager.getJsonOBJByKey(this.json, "functions");//json->function
         String jsonCategory = JsonManager.getJsonOBJByKey(
                 jsonFunctions, category);//function->category
-        String functionValue = JsonManager.getJsonOBJByKey(jsonCategory, function);//category->function value
+        String functionValue = JsonManager.getJsonStrByKey(jsonCategory, function);//category->function value
         //monitor the function value
         try {
-            return JsonManager.getJsonAllkeys(functionValue).get(0);
+            return functionValue;
         }catch (Exception e){
             return "";
         }

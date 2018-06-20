@@ -5,6 +5,7 @@ import android.os.Environment;
 import android.os.Bundle;
 import android.graphics.Color;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -73,7 +74,8 @@ public class EditActivity extends AppCompatActivity {
             */
             tempBlockLayout.setOrientation(LinearLayout.HORIZONTAL);
             TextView tv = new TextView(getApplication());
-            tv.setText(lines[itemsInDisplayCodeLayout]);
+            final String functionString = lines[itemsInDisplayCodeLayout];
+            tv.setText(functionString);
             EditText et = new EditText(getApplication());
             /*Todo:
             * add EditText's value next to function inside bracket
@@ -131,7 +133,7 @@ public class EditActivity extends AppCompatActivity {
             final Button category = new Button(getApplication());
             final int forAssign = i+5000;
             category.setId(forAssign);
-            View.OnClickListener categoryOnClickListner = new View.OnClickListener() {
+            View.OnClickListener categoryOnClickListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     controlMenu(closeButton, categoriesLayout,true);
@@ -141,6 +143,8 @@ public class EditActivity extends AppCompatActivity {
                             functionLayout.removeAllViews();
                         }
                         recentlyClickedButton=forAssign;
+                        isMenuOpenedOnce = true;
+
                         ArrayList functions = lp.getFunctions(strCategory);//An ArrayList that contains the list of functions
                         for (int j = 0; j < functions.size(); j++) {
                             final String strFunctions = functions.get(j).toString();//An variable that contains a function
@@ -152,9 +156,9 @@ public class EditActivity extends AppCompatActivity {
                                 /*Todo:
                                 * if cursor is inside of EditText, add value there
                                 */
-                                    content = content + "\n" + strFunctions;
-                                    //lp.getFunctionValue(strCategory, strFunctions);
+                                    content = content + "\n" + lp.getFunctionValue(strCategory, strFunctions);
                                     mc.setContent(content);
+                                    Log.d("well", lp.getFunctionValue(strCategory, strFunctions));
                                     addItemsInDisplayCodeLayout();
                                 }
                             });
@@ -162,15 +166,15 @@ public class EditActivity extends AppCompatActivity {
                         }
                         functionLayout.addView(functionsListLayout);
                     }
-                    isMenuOpenedOnce = true;
                 }
             };
             category.setText(strCategory);
-            category.setOnClickListener(categoryOnClickListner);//on Button Clicked, load functions
+            category.setOnClickListener(categoryOnClickListener);//on Button Clicked, load functions
             tempCategoriesLayout.addView(category);
         }
         categoriesLayout.addView(tempCategoriesLayout);
     }
+
     public void controlMenu(Button closeButton, LinearLayout categoriesLayout, Boolean isRequestClose){
         if(isRequestClose) {
             categoriesLayout.setVisibility(View.GONE);

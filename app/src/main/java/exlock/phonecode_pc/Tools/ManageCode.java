@@ -21,9 +21,12 @@ public class ManageCode {
     private File file;
 
     public ManageCode(String path) {
+        setPath(path);
+        loadContent();
+    }
+    public void loadContent() {
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            this.path = path;
-            file = new File(path);
+            file = new File(this.path);
             if (file.exists()) {
                 setContentFromFile();//if file already exists, get content
             } else {//if file doesn't exist, create a new file
