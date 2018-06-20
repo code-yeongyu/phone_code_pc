@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Environment;
 import android.os.Bundle;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,8 +20,10 @@ import exlock.phonecode_pc.Tools.ManageCode;
 
 /*Todo:
 * change order for all blocks
+* change block
 * save button
 * block finding feature
+* category finding feature
 * function finding feature
 * ui improves for category and menus
 *
@@ -28,6 +31,7 @@ import exlock.phonecode_pc.Tools.ManageCode;
 * change block
 * remove block
 * add string
+* add block below/above
 *
 * add EditText's value next to function inside bracket
 *
@@ -41,6 +45,7 @@ public class EditActivity extends AppCompatActivity {
     ScrollView scrollBlocksView, scrollCategoriesView;
 
     int recentlyClickedButton, itemsInDisplayCodeLayout = 0;
+    Boolean isMenuOpenedOnce = false;
     String content;
 
     /*Todo:
@@ -130,29 +135,34 @@ public class EditActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     controlMenu(closeButton, categoriesLayout,true);
-                    ArrayList functions = lp.getFunctions(strCategory);//An ArrayList that contains the list of functions
-
-                    for(int j = 0;j<functions.size();j++) {
-                        final String strFunctions = functions.get(j).toString();//An variable that contains a function
-                        Button function = new Button(getApplication());
-                        function.setText(strFunctions);
-                        function.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {//when function clicked
+                    if(recentlyClickedButton != forAssign) {
+                        if(isMenuOpenedOnce){
+                            functionsListLayout.removeAllViews();
+                            functionLayout.removeAllViews();
+                        }
+                        recentlyClickedButton=forAssign;
+                        ArrayList functions = lp.getFunctions(strCategory);//An ArrayList that contains the list of functions
+                        for (int j = 0; j < functions.size(); j++) {
+                            final String strFunctions = functions.get(j).toString();//An variable that contains a function
+                            Button function = new Button(getApplication());
+                            function.setText(strFunctions);
+                            function.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {//when function clicked
                                 /*Todo:
                                 * if cursor is inside of EditText, add value there
                                 */
-                                content = content+"\n"+strFunctions;//lp.getFunctionValue(strCategory, strFunctions);
-                                mc.setContent(content);
-                                addItemsInDisplayCodeLayout();
-                            }
-                        });
-                        functionsListLayout.addView(function);
-                    }
-                    if(forAssign!=category.getId()) {
-                        recentlyClickedButton=forAssign;
+                                    content = content + "\n" + strFunctions;
+                                    //lp.getFunctionValue(strCategory, strFunctions);
+                                    mc.setContent(content);
+                                    addItemsInDisplayCodeLayout();
+                                }
+                            });
+                            functionsListLayout.addView(function);
+                        }
                         functionLayout.addView(functionsListLayout);
                     }
+                    isMenuOpenedOnce = true;
                 }
             };
             category.setText(strCategory);
