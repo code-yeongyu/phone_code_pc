@@ -23,17 +23,16 @@ import java.util.Comparator;
 import exlock.phonecode_pc.Tools.ManageCode;
 
 public class EditActivity extends AppCompatActivity {
-    LinearLayout displayCodeLayout;
-    ScrollView scrollBlocksView, scrollCategoriesView;
 
     int recentlyClickedButton, itemsInDisplayCodeLayout = 0, numOfEditTexts = 0;
     Boolean isMenuOpenedOnce = false;
     String content;
     ManageCode mc;
-
+    final int editTextInBlockID = 100;
+    final int categoryButtonID = 200;
     /*Todo: overall
     * change order for all blocks(change from linearlayout to recyclerview)
-    * block finding feature
+    * block finding feature in action bar menu
     * material floating button
     * -> add functions -> onClicked -> categories menu with searching -> functions menu with searching
     */
@@ -66,7 +65,7 @@ public class EditActivity extends AppCompatActivity {
         mc.setContent(temp.toString());
         mc.saveContent();
     }
-    public void addItemsInDisplayCodeLayout(){
+    public void addItemsInDisplayCodeLayout(LinearLayout displayCodeLayout){
         String[] lines = content.split("\n");
 
         for(;itemsInDisplayCodeLayout<lines.length;itemsInDisplayCodeLayout++){
@@ -74,9 +73,9 @@ public class EditActivity extends AppCompatActivity {
             displayCodeLayout.addView(this.block(functionString));
         }
     }
-    public void refreshDisplayCodeLayout(){
+    public void refreshDisplayCodeLayout(LinearLayout displayCodeLayout){
         itemsInDisplayCodeLayout = 0;
-        addItemsInDisplayCodeLayout();
+        addItemsInDisplayCodeLayout(displayCodeLayout);
     }
     private ArrayList<Integer> findStringPositions(String source, String target){
         int position;
@@ -115,7 +114,7 @@ public class EditActivity extends AppCompatActivity {
     }
 
 
-    private LinearLayout block(String function){//return type is going to change
+    private LinearLayout block(String function){
         LinearLayout temp = new LinearLayout(getApplication());
         temp.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -145,7 +144,7 @@ public class EditActivity extends AppCompatActivity {
                 int aValue = a.get(0) + 1;
                 int functionLength = function.length();
                 EditText et = new EditText(getApplication());
-                et.setId(500+numOfEditTexts);
+                et.setId(editTextInBlockID+numOfEditTexts);
                 numOfEditTexts+=1;
                 tv2.setTextSize(20);
                 tv1.setText(function.substring(0, aValue));
@@ -171,11 +170,11 @@ public class EditActivity extends AppCompatActivity {
         final LanguageProfile lp = new LanguageProfile(
                 getSharedPreferences("json", MODE_PRIVATE).getString("profileJson", ""));
         String testPath = Environment.getExternalStorageDirectory() + "/PhoneCode/hello_world.py";
-        this.displayCodeLayout = findViewById(R.id.displayCodeLayout);
+        final LinearLayout displayCodeLayout = findViewById(R.id.displayCodeLayout);
         mc = new ManageCode(testPath);//only for testing. Directory will be able to change in the future
         this.content = mc.getContent();
 
-        refreshDisplayCodeLayout();
+        refreshDisplayCodeLayout(displayCodeLayout);
 
         /*UI stuff*/
 
@@ -188,12 +187,12 @@ public class EditActivity extends AppCompatActivity {
         final GridLayout functionsListLayout = new GridLayout(getApplication());
         //A layout that contains functions button
         final ArrayList categories = lp.getCategories();
-        scrollBlocksView = findViewById(R.id.scrollBlocksView);
-        scrollCategoriesView = findViewById(R.id.scrollFunctionsView);
+
+        final ScrollView scrollCategoriesView = findViewById(R.id.scrollFunctionsView);
         closeButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                controlMenu(closeButton, categoriesLayout,false);
+                controlMenu(scrollCategoriesView, closeButton, categoriesLayout,false);
             }
         });
 
@@ -210,7 +209,7 @@ public class EditActivity extends AppCompatActivity {
             View.OnClickListener categoryOnClickListner = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    controlMenu(closeButton, categoriesLayout,true);
+                    controlMenu(scrollCategoriesView, closeButton, categoriesLayout,true);
                     if(recentlyClickedButton != forAssign) {
                         if(isMenuOpenedOnce){
                             functionsListLayout.removeAllViews();
@@ -230,7 +229,7 @@ public class EditActivity extends AppCompatActivity {
                                 //Todo: if cursor is inside of EditText, add value there
                                     content = content + "\n" + lp.getFunctionValue(strCategory, strFunctions);
                                     mc.setContent(content);
-                                    addItemsInDisplayCodeLayout();
+                                    addItemsInDisplayCodeLayout(displayCodeLayout);
                                 }
                             });
                             functionsListLayout.addView(function);
@@ -239,7 +238,7 @@ public class EditActivity extends AppCompatActivity {
                     }
                 }
             };
-            category.setId(forAssign);
+            category.setId(categoryButtonID+forAssign);
             category.setText(strCategory);
             category.setOnClickListener(categoryOnClickListner);//on Button Clicked, load functions
             tempCategoriesLayout.addView(category);
@@ -263,7 +262,7 @@ public class EditActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }//not done yet
-    public void controlMenu(Button closeButton, LinearLayout categoriesLayout, Boolean isRequestClose){
+    public void controlMenu(ScrollView scrollCategoriesView,Button closeButton, LinearLayout categoriesLayout, Boolean isRequestClose){
         if(isRequestClose) {
             categoriesLayout.setVisibility(View.GONE);
             closeButton.setVisibility(View.VISIBLE);
