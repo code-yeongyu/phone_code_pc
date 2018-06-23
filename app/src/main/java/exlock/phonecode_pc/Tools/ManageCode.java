@@ -2,6 +2,7 @@ package exlock.phonecode_pc.Tools;
 
 import android.content.SharedPreferences;
 import android.os.Environment;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -67,10 +68,12 @@ public class ManageCode {
     }
     public void saveContent(){
         try {
-            FileOutputStream fos = new FileOutputStream(this.path);
-            fos.write(this.content.getBytes());//create file
-            fos.flush();
-            fos.close();
+            if(file.canWrite()) {
+                FileOutputStream fos = new FileOutputStream(this.path);
+                fos.write(this.content.getBytes());//create file
+                fos.close();
+                fos.flush();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

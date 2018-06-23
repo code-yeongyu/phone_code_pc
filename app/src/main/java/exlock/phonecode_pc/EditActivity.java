@@ -1,10 +1,13 @@
 package exlock.phonecode_pc;
 
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Environment;
 import android.os.Bundle;
 import android.graphics.Color;
-import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,77 +22,64 @@ import java.util.Comparator;
 
 import exlock.phonecode_pc.Tools.ManageCode;
 
-
-/*Todo:
-* change order for all blocks
-* change block
-* save button
-* block finding feature
-* category finding feature
-* function finding feature
-* ui improves for category and menus
-*
-* shows menu if tempBlockLayout was clicked for a long time :
-* change block
-* remove block
-* add string
-* add block below/above
-*
-* EditText should be located between two related brackets,
-* so split between "(" and closest ")" and locate EditText which has the content inside of them there.
-*
-* if cursor is inside of EditText, add function's value there
-*
-* change scrollBlocksView's size to 50 if isRequestClose, or 200
-*/
-
 public class EditActivity extends AppCompatActivity {
     LinearLayout displayCodeLayout;
     ScrollView scrollBlocksView, scrollCategoriesView;
 
-    int recentlyClickedButton, itemsInDisplayCodeLayout = 0;
+    int recentlyClickedButton, itemsInDisplayCodeLayout = 0, numOfEditTexts = 0;
     Boolean isMenuOpenedOnce = false;
     String content;
+    ManageCode mc;
 
-    /*Todo:
-    * change order for all blocks
-    * save button
+    /*Todo: overall
+    * change order for all blocks(change from linearlayout to recyclerview)
     * block finding feature
-    * function finding feature
-    * ui improves for category and menus
+    * material floating button
+    * -> add functions -> onClicked -> categories menu with searching -> functions menu with searching
     */
 
-    public void refreshDisplayCodeLayout(){
-        itemsInDisplayCodeLayout = 0;
-        addItemsInDisplayCodeLayout();
+    public void save(){
+        String[] lines = content.split("\n");
+        StringBuilder temp = new StringBuilder();
+        int addedEditTexts = 0;
+        for(int i = 0;i<lines.length;i++){
+            ArrayList<Integer> leftBracketsPositions = findStringPositions(lines[i], "(");
+            ArrayList<Integer> rightBracketsPositions = findStringPositions(lines[i], ")");
+            ArrayList<Integer> a = getBracketPairs(rightBracketsPositions, leftBracketsPositions);
+            if(a!=null) {
+                if(!a.isEmpty()) {
+                    EditText et = findViewById(500+addedEditTexts);
+                    Collections.reverse(a);
+                    int aValue = a.get(0) + 1;
+                    int functionLength = lines[i].length();
+                    temp.append(
+                            lines[i].substring(0, aValue))
+                            .append(et.getText())
+                            .append(lines[i].substring(a.get(1), functionLength));
+                    addedEditTexts++;
+                }else{
+                    temp.append(lines[i]);
+                }
+                temp.append("\n");
+            }
+        }
+        mc.setContent(temp.toString());
+        mc.saveContent();
     }
     public void addItemsInDisplayCodeLayout(){
         String[] lines = content.split("\n");
 
         for(;itemsInDisplayCodeLayout<lines.length;itemsInDisplayCodeLayout++){
             final String functionString = lines[itemsInDisplayCodeLayout];
-            LinearLayout tempBlockLayout = new LinearLayout(getApplication());
-            /*Todo:
-            * shows menu if tempBlockLayout was clicked for a long time :
-            * change block
-            * remove block
-            * add string
-            */
-            tempBlockLayout.setOrientation(LinearLayout.HORIZONTAL);
-            TextView tv = new TextView(getApplication());
-
-            tv.setText(functionString);
-            EditText et = new EditText(getApplication());
-            /*Todo:
-            * add EditText's value next to function inside bracket
-            */
-            tempBlockLayout.addView(tv);
-            tempBlockLayout.addView(et);
-            displayCodeLayout.addView(tempBlockLayout);
+            displayCodeLayout.addView(this.block(functionString));
         }
     }
+    public void refreshDisplayCodeLayout(){
+        itemsInDisplayCodeLayout = 0;
+        addItemsInDisplayCodeLayout();
+    }
     private ArrayList<Integer> findStringPositions(String source, String target){
-        int position = -300;
+        int position;
         int length = source.length();
         final ArrayList<Integer> positions = new ArrayList<>();
 
@@ -103,14 +93,13 @@ public class EditActivity extends AppCompatActivity {
         }
         return positions;
     }
+    @Nullable
     private ArrayList<Integer> getBracketPairs(ArrayList<Integer> left, ArrayList<Integer> right){
         ArrayList<Integer> pairs = new ArrayList<>();
         left.addAll(right);
 
         if(left.size()%2==0) {//if it's able to get pairs
-            Log.d("getPairs", "passed if");
-            Collections.sort(left, new Ascending());
-            Log.d("getPairs", "worked fine, results: " + left);
+            Collections.sort(left, new Descending());
             int leftSize = left.size();
             while(leftSize!=0){
                 int temp = (leftSize / 2)-1;
@@ -120,25 +109,58 @@ public class EditActivity extends AppCompatActivity {
                 left.remove(temp);
                 leftSize-=2;
             }
-            Log.d("getPairs", "worked fine, results: " + pairs);
             return pairs;
         }
         return null;
     }
-    private void block(String function){//return type is going to change
+
+
+    private LinearLayout block(String function){//return type is going to change
+        LinearLayout temp = new LinearLayout(getApplication());
+        temp.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                /*Todo: add code about popup
+                *[]---------------[]
+                * remove block -> clicked -> a function that removes block
+                * add block -> clicked -> category popup menu
+                * add string front -> clicked -> an EditText popup
+                * add string behind -> clicked -> an EditText popup
+                * change block -> clicked -> category popup menu
+                *[]---------------[]
+                */
+                return true;
+            }
+        });
+        temp.setOrientation(LinearLayout.HORIZONTAL);
         ArrayList<Integer> leftBracketsPositions = findStringPositions(function, "(");
         ArrayList<Integer> rightBracketsPositions = findStringPositions(function, ")");
         ArrayList<Integer> a = getBracketPairs(rightBracketsPositions, leftBracketsPositions);
 
-        TextView functionName = new TextView(getApplication());
-        EditText bracket = new EditText(getApplication());
-        //split string 'function' with a's values.
-        //and display a textView with it.
-        //and between a's odd and even, locate 'bracket'
-    }
-
-
-
+        if(a!=null) {
+            TextView tv1 = new TextView(getApplication()), tv2 = new TextView(getApplication());
+            tv1.setTextSize(20);
+            if(!a.isEmpty()) {
+                Collections.reverse(a);
+                int aValue = a.get(0) + 1;
+                int functionLength = function.length();
+                EditText et = new EditText(getApplication());
+                et.setId(500+numOfEditTexts);
+                numOfEditTexts+=1;
+                tv2.setTextSize(20);
+                tv1.setText(function.substring(0, aValue));
+                et.setText(function.substring(aValue, functionLength - 1));
+                tv2.setText(function.substring(a.get(1), functionLength));
+                temp.addView(tv1);
+                temp.addView(et);
+                temp.addView(tv2);
+            }else{
+                tv1.setText(function);
+                temp.addView(tv1);
+            }
+        }
+        return temp;
+    }//not done yet
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,8 +172,7 @@ public class EditActivity extends AppCompatActivity {
                 getSharedPreferences("json", MODE_PRIVATE).getString("profileJson", ""));
         String testPath = Environment.getExternalStorageDirectory() + "/PhoneCode/hello_world.py";
         this.displayCodeLayout = findViewById(R.id.displayCodeLayout);
-        final ManageCode mc = new ManageCode(testPath);//only for testing. Directory will be able to change in the future
-
+        mc = new ManageCode(testPath);//only for testing. Directory will be able to change in the future
         this.content = mc.getContent();
 
         refreshDisplayCodeLayout();
@@ -206,9 +227,7 @@ public class EditActivity extends AppCompatActivity {
                             function.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {//when function clicked
-                                /*Todo:
-                                * if cursor is inside of EditText, add value there
-                                */
+                                //Todo: if cursor is inside of EditText, add value there
                                     content = content + "\n" + lp.getFunctionValue(strCategory, strFunctions);
                                     mc.setContent(content);
                                     addItemsInDisplayCodeLayout();
@@ -227,6 +246,23 @@ public class EditActivity extends AppCompatActivity {
         }
         categoriesLayout.addView(tempCategoriesLayout);
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.edit_activity_menu, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch(item.getItemId()){
+            case R.id.action_save:
+                //mc.saveContent();
+                this.save();
+                return true;
+            default :
+                return super.onOptionsItemSelected(item);
+        }
+    }//not done yet
     public void controlMenu(Button closeButton, LinearLayout categoriesLayout, Boolean isRequestClose){
         if(isRequestClose) {
             categoriesLayout.setVisibility(View.GONE);
@@ -237,17 +273,12 @@ public class EditActivity extends AppCompatActivity {
             closeButton.setVisibility(View.GONE);
             scrollCategoriesView.setVisibility(View.GONE);
         }
-        /*Todo:
-        * change scrollBlocksView's size to 50 if isRequestClose, or 200
-        */
     }
 }
 
-class Ascending implements Comparator<Integer> {
-
+class Descending implements Comparator<Integer> {
     @Override
     public int compare(Integer o1, Integer o2) {
-        return o1.compareTo(o2);
+        return o2.compareTo(o1);
     }
-
 }
