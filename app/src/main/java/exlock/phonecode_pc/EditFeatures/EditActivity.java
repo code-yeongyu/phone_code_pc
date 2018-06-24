@@ -5,16 +5,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Environment;
 import android.os.Bundle;
 import android.graphics.Color;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
+
+import com.getbase.floatingactionbutton.AddFloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,7 +48,7 @@ public class EditActivity extends AppCompatActivity {
             ArrayList<Integer> a = getBracketPairs(rightBracketsPositions, leftBracketsPositions);
             if(a!=null) {
                 if(!a.isEmpty()) {
-                    EditText et = findViewById(500+addedEditTexts);
+                    EditText et = findViewById(editTextInBlockID+addedEditTexts);
                     Collections.reverse(a);
                     int aValue = a.get(0) + 1;
                     int functionLength = lines[i].length();
@@ -164,8 +165,9 @@ public class EditActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_edit);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         final LanguageProfile lp = new LanguageProfile(
                 getSharedPreferences("json", MODE_PRIVATE).getString("profileJson", ""));
@@ -178,9 +180,6 @@ public class EditActivity extends AppCompatActivity {
 
         /*UI stuff*/
 
-        final LinearLayout categoriesLayout = findViewById(R.id.categoriesLayout);//A layout that contains categories
-        final LinearLayout functionLayout = findViewById(R.id.functionsLayout);//A layout that contains functions
-        final Button closeButton = findViewById(R.id.closeButton);//A button for closing functions menu
 
         LinearLayout tempCategoriesLayout = new LinearLayout(getApplication());
         //A layout that contains categories button
@@ -188,20 +187,29 @@ public class EditActivity extends AppCompatActivity {
         //A layout that contains functions button
         final ArrayList categories = lp.getCategories();
 
-        final ScrollView scrollCategoriesView = findViewById(R.id.scrollFunctionsView);
-        closeButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                controlMenu(scrollCategoriesView, closeButton, categoriesLayout,false);
-            }
-        });
+        AddFloatingActionButton addBlockButton = findViewById(R.id.addBlockButton);
+        AddFloatingActionButton addCustomBlockButton = findViewById(R.id.addCustomBlockButton);
 
         /*functionsListLayout UI set*/
         functionsListLayout.setColumnCount(4);
         functionsListLayout.setBackgroundColor(Color.parseColor("#c4ffed"));
         /*functionsListLayout ui set*/
         /*UI stuff*/
-        
+        addBlockButton.setOnClickListener(new View.OnClickListener() {
+                                              @Override
+                                              public void onClick(View v) {
+                                                  //popup activity
+                                              }
+                                          }
+            );
+        addCustomBlockButton.setOnClickListener(new View.OnClickListener() {
+                                              @Override
+                                              public void onClick(View v) {
+                                                  //popup activity
+                                              }
+                                          }
+        );
+        /*
         for(int i = 0;i<categories.size();i++){
             final String strCategory = categories.get(i).toString();//A string variable that contains a category's name
             final Button category = new Button(getApplication());
@@ -209,7 +217,6 @@ public class EditActivity extends AppCompatActivity {
             View.OnClickListener categoryOnClickListner = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    controlMenu(scrollCategoriesView, closeButton, categoriesLayout,true);
                     if(recentlyClickedButton != forAssign) {
                         if(isMenuOpenedOnce){
                             functionsListLayout.removeAllViews();
@@ -244,6 +251,7 @@ public class EditActivity extends AppCompatActivity {
             tempCategoriesLayout.addView(category);
         }
         categoriesLayout.addView(tempCategoriesLayout);
+        */
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
@@ -262,17 +270,6 @@ public class EditActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }//not done yet
-    public void controlMenu(ScrollView scrollCategoriesView,Button closeButton, LinearLayout categoriesLayout, Boolean isRequestClose){
-        if(isRequestClose) {
-            categoriesLayout.setVisibility(View.GONE);
-            closeButton.setVisibility(View.VISIBLE);
-            scrollCategoriesView.setVisibility(View.VISIBLE);
-        }else{
-            categoriesLayout.setVisibility(View.VISIBLE);
-            closeButton.setVisibility(View.GONE);
-            scrollCategoriesView.setVisibility(View.GONE);
-        }
-    }
 }
 
 class Descending implements Comparator<Integer> {
