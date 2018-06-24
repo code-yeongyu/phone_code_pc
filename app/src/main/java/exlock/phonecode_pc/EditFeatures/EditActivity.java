@@ -1,15 +1,22 @@
-package exlock.phonecode_pc;
+package exlock.phonecode_pc.EditFeatures;
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Environment;
 import android.os.Bundle;
 import android.graphics.Color;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
@@ -21,6 +28,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import exlock.phonecode_pc.LanguageProfile;
+import exlock.phonecode_pc.R;
 import exlock.phonecode_pc.Tools.ManageCode;
 
 public class EditActivity extends AppCompatActivity {
@@ -31,6 +40,7 @@ public class EditActivity extends AppCompatActivity {
     ManageCode mc;
     final int editTextInBlockID = 100;
     final int categoryButtonID = 200;
+
     /*Todo: overall
     * change order for all blocks(change from linearlayout to recyclerview)
     * block finding feature in action bar menu
@@ -114,7 +124,30 @@ public class EditActivity extends AppCompatActivity {
         return null;
     }
 
+    public LinearLayout makeBlock(String function, ArrayList<Integer> brackets){
+        int aValue = brackets.get(0) + 1;
+        int bValue = brackets.get(1);
 
+        LinearLayout temp = new LinearLayout(getApplication());
+
+        TextView tv1 = new TextView(getApplication()), tv2 = new TextView(getApplication());
+        EditText et = new EditText(getApplication());
+
+
+        tv1.setTextSize(20);
+        tv1.setText(function.substring(0, aValue));
+        tv2.setTextSize(20);
+        tv2.setText(function.substring(bValue, function.length()));
+        et.setLines(1);
+        et.setSingleLine();
+        et.setId(editTextInBlockID+numOfEditTexts);
+        numOfEditTexts+=1;
+        et.setText(function.substring(aValue, bValue));
+        temp.addView(tv1);
+        temp.addView(et);
+        temp.addView(tv2);
+        return temp;
+    }
     private LinearLayout block(String function){
         LinearLayout temp = new LinearLayout(getApplication());
         temp.setOnLongClickListener(new View.OnLongClickListener() {
@@ -133,34 +166,33 @@ public class EditActivity extends AppCompatActivity {
             }
         });
         temp.setOrientation(LinearLayout.HORIZONTAL);
-        ArrayList<Integer> leftBracketsPositions = findStringPositions(function, "(");
-        ArrayList<Integer> rightBracketsPositions = findStringPositions(function, ")");
-        ArrayList<Integer> a = getBracketPairs(rightBracketsPositions, leftBracketsPositions);
+        ArrayList<Integer> leftCurlyBracketsPositions = findStringPositions(function, "(");
+        ArrayList<Integer> rightCurlyBracketsPositions = findStringPositions(function, ")");
+        ArrayList<Integer> curlyBrackets = getBracketPairs(rightCurlyBracketsPositions, leftCurlyBracketsPositions);
 
-        if(a!=null) {
-            TextView tv1 = new TextView(getApplication()), tv2 = new TextView(getApplication());
-            tv1.setTextSize(20);
-            if(!a.isEmpty()) {
-                Collections.reverse(a);
-                int aValue = a.get(0) + 1;
-                int functionLength = function.length();
-                EditText et = new EditText(getApplication());
-                et.setId(editTextInBlockID+numOfEditTexts);
-                numOfEditTexts+=1;
-                tv2.setTextSize(20);
-                tv1.setText(function.substring(0, aValue));
-                et.setText(function.substring(aValue, functionLength - 1));
-                tv2.setText(function.substring(a.get(1), functionLength));
-                temp.addView(tv1);
-                temp.addView(et);
-                temp.addView(tv2);
+        ArrayList<Integer> leftSquareBracketsPositions = findStringPositions(function, "[");
+        ArrayList<Integer> rightSquareBracketsPositions = findStringPositions(function, "]");
+        ArrayList<Integer> sqaureBrackets = getBracketPairs(rightSquareBracketsPositions, leftSquareBracketsPositions);
+
+
+        if(curlyBrackets!=null) {
+            if(!curlyBrackets.isEmpty()) {
+                Collections.reverse(curlyBrackets);
+                return makeBlock(function, curlyBrackets);
+            }else if(sqaureBrackets!=null&&!sqaureBrackets.isEmpty()) {
+                Collections.reverse(sqaureBrackets);
+                return makeBlock(function, sqaureBrackets);
             }else{
+                TextView tv1 = new TextView(getApplication());
                 tv1.setText(function);
+                tv1.setTextSize(20);
                 temp.addView(tv1);
+                return temp;
             }
         }
         return temp;
     }//not done yet
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,7 +221,6 @@ public class EditActivity extends AppCompatActivity {
 
         AddFloatingActionButton addBlockButton = findViewById(R.id.addBlockButton);
         AddFloatingActionButton addCustomBlockButton = findViewById(R.id.addCustomBlockButton);
-
         /*functionsListLayout UI set*/
         functionsListLayout.setColumnCount(4);
         functionsListLayout.setBackgroundColor(Color.parseColor("#c4ffed"));
@@ -205,7 +236,27 @@ public class EditActivity extends AppCompatActivity {
         addCustomBlockButton.setOnClickListener(new View.OnClickListener() {
                                               @Override
                                               public void onClick(View v) {
-                                                  //popup activity
+                                                  final EditText et = new EditText(EditActivity.this);
+                                                  et.setLines(1);
+                                                  et.setSingleLine();
+                                                  AlertDialog dialog = new AlertDialog.Builder(EditActivity.this)
+                                                          .setTitle("Add a custom Block")
+                                                          .setMessage("What do you want to add?")
+                                                          .setView(et)
+                                                          .setPositiveButton("add", new DialogInterface.OnClickListener() {
+                                                              @Override
+                                                              public void onClick(DialogInterface dialogInterface, int i) {
+                                                                  InputMethodManager mInputMethodManager = (InputMethodManager) getApplication().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                                  mInputMethodManager.hideSoftInputFromWindow(et.getWindowToken(), 0);
+
+                                                                  content = content + "\n" + et.getText();
+                                                                  mc.setContent(content);
+                                                                  addItemsInDisplayCodeLayout(displayCodeLayout);
+                                                              }
+                                                          })
+                                                          .setNegativeButton("cancel", null)
+                                                          .create();
+                                                  dialog.show();
                                               }
                                           }
         );

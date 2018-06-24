@@ -40,7 +40,7 @@ public class LanguageProfile {
     public ArrayList<String> getSymbols() {
         return this.symbols;
     }
-    ArrayList<String> getCategories(){
+    public ArrayList<String> getCategories(){
         return this.categories;
     }//A function that returns all the categories
     public ArrayList<String> getFunctions(String category){
