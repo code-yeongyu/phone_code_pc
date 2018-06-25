@@ -4,6 +4,10 @@
 
     <item
         android:id="@+id/action_save"
-        android:title="저장"
-        app:showAsAction="never"/>
+        android:title="@string/action_save"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_search"
+        android:title="@string/action_search"
+        app:showAsAction="never" />
 </menu>

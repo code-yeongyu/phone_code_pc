@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Environment;
 import android.os.Bundle;
 import android.graphics.Color;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -17,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
@@ -41,11 +43,11 @@ public class EditActivity extends AppCompatActivity {
     final int editTextInBlockID = 100;
     final int categoryButtonID = 200;
 
-    /*Todo: overall
+    /*todo: overall
     * change order for all blocks(change from linearlayout to recyclerview)
-    * block finding feature in action bar menu
     * material floating button
     * -> add functions -> onClicked -> categories menu with searching -> functions menu with searching
+    * select continuous lines from line x to line y and edit them together
     */
 
     public void save(){
@@ -83,11 +85,11 @@ public class EditActivity extends AppCompatActivity {
             final String functionString = lines[itemsInDisplayCodeLayout];
             displayCodeLayout.addView(this.block(functionString));
         }
-    }
+    }//todo: update for recyclerview
     public void refreshDisplayCodeLayout(LinearLayout displayCodeLayout){
         itemsInDisplayCodeLayout = 0;
         addItemsInDisplayCodeLayout(displayCodeLayout);
-    }
+    }//todo: update for recyclerview
     private ArrayList<Integer> findStringPositions(String source, String target){
         int position;
         int length = source.length();
@@ -123,12 +125,12 @@ public class EditActivity extends AppCompatActivity {
         }
         return null;
     }
-
     public LinearLayout makeBlock(String function, ArrayList<Integer> brackets){
         int aValue = brackets.get(0) + 1;
         int bValue = brackets.get(1);
 
         LinearLayout temp = new LinearLayout(getApplication());
+        temp.setOrientation(LinearLayout.HORIZONTAL);
 
         TextView tv1 = new TextView(getApplication()), tv2 = new TextView(getApplication());
         EditText et = new EditText(getApplication());
@@ -147,25 +149,18 @@ public class EditActivity extends AppCompatActivity {
         temp.addView(et);
         temp.addView(tv2);
         return temp;
-    }
-    private LinearLayout block(String function){
+    }//todo: update for recyclerview
+    public LinearLayout makeBlock(String function){
         LinearLayout temp = new LinearLayout(getApplication());
-        temp.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                /*Todo: add code about popup
-                *[]---------------[]
-                * remove block -> clicked -> a function that removes block
-                * add block -> clicked -> category popup menu
-                * add string front -> clicked -> an EditText popup
-                * add string behind -> clicked -> an EditText popup
-                * change block -> clicked -> category popup menu
-                *[]---------------[]
-                */
-                return true;
-            }
-        });
         temp.setOrientation(LinearLayout.HORIZONTAL);
+        TextView tv1 = new TextView(getApplication());
+        tv1.setTextSize(20);
+        tv1.setText(function);
+        temp.addView(tv1);
+        return temp;
+    }//todo: update for recyclerview
+    private LinearLayout block(String function){
+        //todo: ables user to select what symbols will be replaced with EditTexts
         ArrayList<Integer> leftCurlyBracketsPositions = findStringPositions(function, "(");
         ArrayList<Integer> rightCurlyBracketsPositions = findStringPositions(function, ")");
         ArrayList<Integer> curlyBrackets = getBracketPairs(rightCurlyBracketsPositions, leftCurlyBracketsPositions);
@@ -182,17 +177,10 @@ public class EditActivity extends AppCompatActivity {
             }else if(sqaureBrackets!=null&&!sqaureBrackets.isEmpty()) {
                 Collections.reverse(sqaureBrackets);
                 return makeBlock(function, sqaureBrackets);
-            }else{
-                TextView tv1 = new TextView(getApplication());
-                tv1.setText(function);
-                tv1.setTextSize(20);
-                temp.addView(tv1);
-                return temp;
             }
         }
-        return temp;
-    }//not done yet
-
+        return makeBlock(function);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,36 +188,26 @@ public class EditActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        final LinearLayout displayCodeLayout = findViewById(R.id.displayCodeLayout);
+        AddFloatingActionButton addBlockButton = findViewById(R.id.addBlockButton);
+        AddFloatingActionButton addCustomBlockButton = findViewById(R.id.addCustomBlockButton);
 
         final LanguageProfile lp = new LanguageProfile(
                 getSharedPreferences("json", MODE_PRIVATE).getString("profileJson", ""));
         String testPath = Environment.getExternalStorageDirectory() + "/PhoneCode/hello_world.py";
-        final LinearLayout displayCodeLayout = findViewById(R.id.displayCodeLayout);
         mc = new ManageCode(testPath);//only for testing. Directory will be able to change in the future
         this.content = mc.getContent();
 
         refreshDisplayCodeLayout(displayCodeLayout);
 
-        /*UI stuff*/
-
-
-        LinearLayout tempCategoriesLayout = new LinearLayout(getApplication());
-        //A layout that contains categories button
-        final GridLayout functionsListLayout = new GridLayout(getApplication());
         //A layout that contains functions button
         final ArrayList categories = lp.getCategories();
 
-        AddFloatingActionButton addBlockButton = findViewById(R.id.addBlockButton);
-        AddFloatingActionButton addCustomBlockButton = findViewById(R.id.addCustomBlockButton);
-        /*functionsListLayout UI set*/
-        functionsListLayout.setColumnCount(4);
-        functionsListLayout.setBackgroundColor(Color.parseColor("#c4ffed"));
-        /*functionsListLayout ui set*/
-        /*UI stuff*/
+
         addBlockButton.setOnClickListener(new View.OnClickListener() {
                                               @Override
                                               public void onClick(View v) {
-                                                  //popup activity
+                                                  //todo: custom dialog activity
                                               }
                                           }
             );
@@ -247,7 +225,8 @@ public class EditActivity extends AppCompatActivity {
                                                               @Override
                                                               public void onClick(DialogInterface dialogInterface, int i) {
                                                                   InputMethodManager mInputMethodManager = (InputMethodManager) getApplication().getSystemService(Context.INPUT_METHOD_SERVICE);
-                                                                  mInputMethodManager.hideSoftInputFromWindow(et.getWindowToken(), 0);
+                                                                  if(mInputMethodManager != null)
+                                                                      mInputMethodManager.hideSoftInputFromWindow(et.getWindowToken(), 0);
 
                                                                   content = content + "\n" + et.getText();
                                                                   mc.setContent(content);
@@ -260,7 +239,7 @@ public class EditActivity extends AppCompatActivity {
                                               }
                                           }
         );
-        /*
+        /*todo: refactor for dialog activity
         for(int i = 0;i<categories.size();i++){
             final String strCategory = categories.get(i).toString();//A string variable that contains a category's name
             final Button category = new Button(getApplication());
@@ -284,7 +263,7 @@ public class EditActivity extends AppCompatActivity {
                             function.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {//when function clicked
-                                //Todo: if cursor is inside of EditText, add value there
+                                //todo: if cursor is inside of EditText, add value there
                                     content = content + "\n" + lp.getFunctionValue(strCategory, strFunctions);
                                     mc.setContent(content);
                                     addItemsInDisplayCodeLayout(displayCodeLayout);
@@ -314,13 +293,15 @@ public class EditActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item){
         switch(item.getItemId()){
             case R.id.action_save:
-                //mc.saveContent();
                 this.save();
+                return true;
+            case R.id.action_search:
+                //todo: search feature with regex
                 return true;
             default :
                 return super.onOptionsItemSelected(item);
         }
-    }//not done yet
+    }
 }
 
 class Descending implements Comparator<Integer> {
