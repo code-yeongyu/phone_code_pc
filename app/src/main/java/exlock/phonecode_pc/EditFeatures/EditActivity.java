@@ -105,7 +105,7 @@ public class EditActivity extends AppCompatActivity {
         }
         makeBlock(function, "", "");
     }
-
+    //Todo: enable save, improve performances for recycler view
     public void updateUI(){
         mAdapter.blocks.clear();
         String[] lines = content.split("\n");
