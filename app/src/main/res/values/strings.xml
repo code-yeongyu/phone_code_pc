@@ -6,7 +6,9 @@
     <string name="add_custom_block">Add a custom block</string>
 
     <string name="sample_function">built-in</string>
-
+    <string name="sample_block1">print(</string>
+    <string name="sample_arg">\"hi\"</string>
+    <string name="sample_block2">)</string>
     <string name="action_save">Save</string>
     <string name="action_search">Search blocks</string>
 </resources>
