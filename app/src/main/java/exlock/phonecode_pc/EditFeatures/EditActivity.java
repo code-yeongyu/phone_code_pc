@@ -35,6 +35,7 @@ public class EditActivity extends AppCompatActivity {
     String content;
     ManageCode mc;
     BlockAdapter mAdapter;
+    RecyclerView mRecyclerView;
     private ArrayList<Integer> findStringPositions(String source, String target){
         int position;
         int length = source.length();
@@ -76,6 +77,7 @@ public class EditActivity extends AppCompatActivity {
         makeBlock(func.substring(0, aValue),func.substring(aValue, bValue),func.substring(bValue, func.length()));
     }
     public void makeBlock(String func1, String arg, String func2){
+        Log.d("fun", func1+arg+func2);
         this.mAdapter.blocks.add(this.mAdapter.getItemCount(),
                 new BlockLists().newInstance(
                         func1,arg,func2
@@ -85,27 +87,31 @@ public class EditActivity extends AppCompatActivity {
     }
     private void addBlock(String function){
         //todo: ables user to select what symbols will be replaced with EditTexts
+
+        ArrayList<Integer> dam = findStringPositions(function, ").");
         ArrayList<Integer> leftCurlyBracketsPositions = findStringPositions(function, "(");
         ArrayList<Integer> rightCurlyBracketsPositions = findStringPositions(function, ")");
         ArrayList<Integer> curlyBrackets = getBracketPairs(rightCurlyBracketsPositions, leftCurlyBracketsPositions);
 
-        ArrayList<Integer> leftSquareBracketsPositions = findStringPositions(function, "[");
-        ArrayList<Integer> rightSquareBracketsPositions = findStringPositions(function, "]");
-        ArrayList<Integer> sqaureBrackets = getBracketPairs(rightSquareBracketsPositions, leftSquareBracketsPositions);
-
-        if(curlyBrackets!=null) {
-            if(!curlyBrackets.isEmpty()) {
-                Collections.reverse(curlyBrackets);
-                makeBlock(function, curlyBrackets);
-            }else if(sqaureBrackets!=null&&!sqaureBrackets.isEmpty()) {
-                Collections.reverse(sqaureBrackets);
-                makeBlock(function, curlyBrackets);
+        //ArrayList<Integer> leftSquareBracketsPositions = findStringPositions(function, "[");
+        //ArrayList<Integer> rightSquareBracketsPositions = findStringPositions(function, "]");
+        //ArrayList<Integer> sqaureBrackets = getBracketPairs(rightSquareBracketsPositions, leftSquareBracketsPositions);
+        if(dam==null||dam.isEmpty()) {
+            if (curlyBrackets != null) {
+                if (!curlyBrackets.isEmpty()) {
+                    Collections.reverse(curlyBrackets);
+                    makeBlock(function, curlyBrackets);
+                    return;
+                    //}else if(sqaureBrackets!=null&&!sqaureBrackets.isEmpty()) {
+                    //    Collections.reverse(sqaureBrackets);
+                    //    makeBlock(function, curlyBrackets);
+                }
             }
-            return;
         }
         makeBlock(function, "", "");
     }
     //Todo: enable save, improve performances for recycler view
+
     public void updateUI(){
         mAdapter.blocks.clear();
         String[] lines = content.split("\n");
@@ -113,25 +119,22 @@ public class EditActivity extends AppCompatActivity {
             this.addBlock(line);
         }
     }
-/*    public void save(){
+    public void save(){
         String[] lines = content.split("\n");
         StringBuilder temp = new StringBuilder();
-        int addedEditTexts = 0;
         for(int i = 0;i<lines.length;i++){
             ArrayList<Integer> leftBracketsPositions = findStringPositions(lines[i], "(");
             ArrayList<Integer> rightBracketsPositions = findStringPositions(lines[i], ")");
             ArrayList<Integer> a = getBracketPairs(rightBracketsPositions, leftBracketsPositions);
             if(a!=null) {
                 if(!a.isEmpty()) {
-                    EditText et = findViewById(editTextInBlockID+addedEditTexts);
                     Collections.reverse(a);
                     int aValue = a.get(0) + 1;
                     int functionLength = lines[i].length();
                     temp.append(
                             lines[i].substring(0, aValue))
-                            .append(et.getText())
+                            .append(mAdapter.blocks.get(i).arg)
                             .append(lines[i].substring(a.get(1), functionLength));
-                    addedEditTexts++;
                 }else{
                     temp.append(lines[i]);
                 }
@@ -141,13 +144,12 @@ public class EditActivity extends AppCompatActivity {
         mc.setContent(temp.toString());
         mc.saveContent();
     }//todo: needs update for recyclerview
-*/
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
         mAdapter = new BlockAdapter();
-        RecyclerView mRecyclerView;
         mRecyclerView = findViewById(R.id.blocksView);
         mRecyclerView.setNestedScrollingEnabled(false);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplication()));
@@ -211,7 +213,7 @@ public class EditActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item){
         switch(item.getItemId()){
             case R.id.action_save:
-                //this.save();
+                this.save();
                 return true;
             case R.id.action_search:
                 //todo: search feature with regex

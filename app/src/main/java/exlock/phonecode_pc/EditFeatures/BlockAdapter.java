@@ -33,10 +33,11 @@ class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> {
         TextView getFunc2() {
             return func2;
         }
-        TextView getArg() {
+        EditText getArg() {
             return arg;
         }
     }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType){
         View v = LayoutInflater.from(viewGroup.getContext())
@@ -50,8 +51,8 @@ class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> {
         String funcString2 = blocks.get(position).func2;
         holder.getFunc1().setText(funcString1);
         if(funcString2==null||funcString2.equals("")){
-            holder.getArg().setVisibility(View.INVISIBLE);
-            holder.getFunc2().setVisibility(View.INVISIBLE);
+            holder.getArg().setVisibility(View.GONE);
+            holder.getFunc2().setVisibility(View.GONE);
             return;
         }
         holder.getArg().setText(arg);
