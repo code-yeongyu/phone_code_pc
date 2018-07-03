@@ -1,21 +1,20 @@
 package exlock.phonecode_pc.Tools;
 
-import android.content.SharedPreferences;
 import android.os.Environment;
-import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-
-import static android.content.Context.MODE_PRIVATE;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class ManageCode {
     private String path;
     private String content = "";
     private File file;
+    private ArrayList<String> bracketLists = new ArrayList<>();
 
     public ManageCode(String path) {
         setPath(path);
@@ -73,6 +72,41 @@ public class ManageCode {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    public void addBracket(String left, String right){
+        this.bracketLists.add(left);
+        this.bracketLists.add(right);
+    }
+    public ArrayList<String> getBrackets(){
+        return bracketLists;
+    }
+    public ArrayList<Integer> getPairsLine(int line){
+        String[] function = this.content.split("\n");
+        ArrayList<ArrayList<Integer>> bracketPositions = new ArrayList<>();
+        ArrayList<Integer> pairs = new ArrayList<>();
+
+        for(int i = 0;i<bracketLists.size();i++){
+            bracketPositions.add(StringTools.findStringPositions(function[line], bracketLists.get(i)));
+        }//create positions per every brackets
+        for(int i = 0;i<bracketLists.size();i+=2){
+            ArrayList<Integer> left = bracketPositions.get(i);
+            left.addAll(bracketPositions.get(i+1));//merge left and right
+            if(left.size()%2==0) {//if it's able to get pairs
+                Collections.sort(left, new Descending());
+                int leftSize = left.size();
+                while(leftSize!=0) {
+                    int temp = (leftSize / 2) - 1;
+                    pairs.add(left.get(temp));
+                    pairs.add(left.get(temp + 1));//make pairs start from center
+                    left.remove(temp);
+                    left.remove(temp);
+                    //remove the center values
+                    leftSize -= 2;
+                }
+            }
+        }
+        Collections.reverse(pairs);
+        return pairs;
     }
     public boolean removeFile(){
         if(file!=null&&file.exists()){

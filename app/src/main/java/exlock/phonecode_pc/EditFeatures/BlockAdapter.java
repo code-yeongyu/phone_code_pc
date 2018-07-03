@@ -1,6 +1,7 @@
 package exlock.phonecode_pc.EditFeatures;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,13 +51,11 @@ class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> {
         String arg = blocks.get(position).arg;
         String funcString2 = blocks.get(position).func2;
         holder.getFunc1().setText(funcString1);
-        if(funcString2==null||funcString2.equals("")){
-            holder.getArg().setVisibility(View.GONE);
-            holder.getFunc2().setVisibility(View.GONE);
-            return;
-        }
         holder.getArg().setText(arg);
         holder.getFunc2().setText(funcString2);
+        boolean isFunc2Empty = funcString2.equals("");
+        holder.getArg().setVisibility(isFunc2Empty ? View.GONE : View.VISIBLE);
+        holder.getFunc2().setVisibility(isFunc2Empty ? View.GONE : View.VISIBLE);
     }
     @Override
     public int getItemCount() {

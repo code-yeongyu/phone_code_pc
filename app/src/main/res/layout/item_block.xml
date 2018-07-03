@@ -30,7 +30,8 @@
                 android:layout_height="wrap_content"
                 android:text="@string/sample_arg"
                 android:textColor="@android:color/holo_green_dark"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:visibility="visible" />
 
             <TextView
                 android:id="@+id/func2"
@@ -38,7 +39,8 @@
                 android:layout_height="wrap_content"
                 android:text="@string/sample_block2"
                 android:textColor="@android:color/background_dark"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:visibility="visible" />
 
         </LinearLayout>
 
