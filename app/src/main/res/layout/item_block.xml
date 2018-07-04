@@ -45,7 +45,7 @@
         </LinearLayout>
 
         <View
-            android:id="@+id/view"
+            android:id="@+id/separator"
             android:background="#bbbbbb"
             android:layout_width="match_parent"
             android:layout_height="1dp" />

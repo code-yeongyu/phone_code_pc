@@ -21,12 +21,14 @@ class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> {
         private final TextView func1;
         private final TextView func2;
         private final EditText arg;
+        private final View separator;
 
         ViewHolder(final View v){
             super(v);
             func1 = v.findViewById(R.id.func1);
             func2 = v.findViewById(R.id.func2);
             arg = v.findViewById(R.id.argEditText);
+            separator = v.findViewById(R.id.separator);
         }
         TextView getFunc1() {
             return func1;
@@ -37,6 +39,7 @@ class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> {
         EditText getArg() {
             return arg;
         }
+        View getSeparator(){return separator;}
     }
 
     @Override
@@ -50,12 +53,21 @@ class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> {
         String funcString1 = blocks.get(position).func1;
         String arg = blocks.get(position).arg;
         String funcString2 = blocks.get(position).func2;
-        holder.getFunc1().setText(funcString1);
-        holder.getArg().setText(arg);
-        holder.getFunc2().setText(funcString2);
+        boolean isFunc1Empty = funcString1.equals("");
         boolean isFunc2Empty = funcString2.equals("");
+        holder.getFunc1().setVisibility(isFunc1Empty ? View.GONE : View.VISIBLE);
+        holder.getSeparator().setVisibility(isFunc1Empty ? View.GONE : View.VISIBLE);
         holder.getArg().setVisibility(isFunc2Empty ? View.GONE : View.VISIBLE);
         holder.getFunc2().setVisibility(isFunc2Empty ? View.GONE : View.VISIBLE);
+        if(isFunc1Empty){
+            return;
+        }
+        holder.getFunc1().setText(funcString1);
+        if(isFunc2Empty){
+            return;
+        }
+        holder.getArg().setText(arg);
+        holder.getFunc2().setText(funcString2);
     }
     @Override
     public int getItemCount() {
