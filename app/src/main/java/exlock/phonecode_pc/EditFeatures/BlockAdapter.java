@@ -1,11 +1,11 @@
 package exlock.phonecode_pc.EditFeatures;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -22,6 +22,7 @@ class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> {
         private final TextView func2;
         private final EditText arg;
         private final View separator;
+        private final RelativeLayout itemBlock;
 
         ViewHolder(final View v){
             super(v);
@@ -29,6 +30,7 @@ class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> {
             func2 = v.findViewById(R.id.func2);
             arg = v.findViewById(R.id.argEditText);
             separator = v.findViewById(R.id.separator);
+            itemBlock = v.findViewById(R.id.itemBlock);
         }
         TextView getFunc1() {
             return func1;
@@ -40,6 +42,10 @@ class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> {
             return arg;
         }
         View getSeparator(){return separator;}
+
+        RelativeLayout getItemBlock() {
+            return itemBlock;
+        }
     }
 
     @Override
@@ -54,20 +60,26 @@ class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> {
         String arg = blocks.get(position).arg;
         String funcString2 = blocks.get(position).func2;
         boolean isFunc1Empty = funcString1.equals("");
-        boolean isFunc2Empty = funcString2.equals("");
-        holder.getFunc1().setVisibility(isFunc1Empty ? View.GONE : View.VISIBLE);
-        holder.getSeparator().setVisibility(isFunc1Empty ? View.GONE : View.VISIBLE);
-        holder.getArg().setVisibility(isFunc2Empty ? View.GONE : View.VISIBLE);
-        holder.getFunc2().setVisibility(isFunc2Empty ? View.GONE : View.VISIBLE);
+        holder.getItemBlock().setVisibility(isFunc1Empty ? View.GONE : View.VISIBLE);
         if(isFunc1Empty){
             return;
         }
+        boolean isFunc2Empty = funcString2.equals("");
+        holder.getArg().setVisibility(isFunc2Empty ? View.GONE : View.VISIBLE);
+        holder.getFunc2().setVisibility(isFunc2Empty ? View.GONE : View.VISIBLE);
         holder.getFunc1().setText(funcString1);
         if(isFunc2Empty){
             return;
         }
         holder.getArg().setText(arg);
-        holder.getFunc2().setText(funcString2);
+        holder.getItemBlock().setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                return true;
+            }
+        });
+
     }
     @Override
     public int getItemCount() {

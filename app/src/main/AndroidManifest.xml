@@ -22,9 +22,12 @@
         <activity
             android:name=".EditFeatures.EditActivity"
             android:label="@string/title_activity_edit"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
         <activity android:name=".EditFeatures.AddCustomBlockDialog">
-            ></activity>
+            >
+        </activity>
+        <activity android:name=".EditFeatures.CategoriesDialogActivity" />
+        <activity android:name=".EditFeatures.FunctionsDialogActivity"></activity>
     </application>
 
 </manifest>
