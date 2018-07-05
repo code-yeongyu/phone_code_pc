@@ -45,7 +45,7 @@ public class LanguageProfile {
                 jsonFunctions, category);//function->category
         return JsonManager.getJsonAllkeys(jsonCategory);
     }
-    String getFunctionValue(String category, String function){//needs bug fix
+    public String getFunctionValue(String category, String function){
         String jsonFunctions = JsonManager.getJsonOBJByKey(this.json, "functions");//json->function
         String jsonCategory = JsonManager.getJsonOBJByKey(
                 jsonFunctions, category);//function->category
