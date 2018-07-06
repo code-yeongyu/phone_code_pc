@@ -37,7 +37,7 @@ class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.ViewHolder> {
     }
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        String functionString = functions.get(position).function;
+        String functionString = functionsget(position).function;
         holder.getFunc1().setText(functionString);
     }
     @Override
