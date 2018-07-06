@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
                 reader.close();
                 SharedPreferences sp = getSharedPreferences("json", MODE_PRIVATE);
                 SharedPreferences.Editor editor = sp.edit();
-                editor.putString("languageProfile", buffer.toString());
+                editor.putString("profileJson", buffer.toString());
                 editor.apply();
             } catch (IOException e) {
                 e.printStackTrace();

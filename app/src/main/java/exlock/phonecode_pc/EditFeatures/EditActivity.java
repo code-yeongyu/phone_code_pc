@@ -9,12 +9,14 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.AddFloatingActionButton;
 
@@ -59,7 +61,7 @@ public class EditActivity extends AppCompatActivity {
         }
         makeBlock(function, "", "");
     }
-    //Todo: enable save, improve performances for recycler view
+    //Todo: horizontal scroll or new line for long codes in a line
 
     public void updateUI(){
         mAdapter.blocks.clear();
@@ -106,8 +108,7 @@ public class EditActivity extends AppCompatActivity {
         AddFloatingActionButton addCustomBlockButton = findViewById(R.id.addCustomBlockButton);
 
         final LanguageProfile lp = new LanguageProfile(
-                getSharedPreferences("json", MODE_PRIVATE)
-                        .getString("languageProfile", ""));
+                getSharedPreferences("json", MODE_PRIVATE).getString("profileJson", ""));
         String testPath = Environment.getExternalStorageDirectory() + "/PhoneCode/hello_world.py";
         mc = new ManageCode(testPath);//only for testing. Directory will be able to change in the future
         mc.addBracket("(", ")");
@@ -116,12 +117,30 @@ public class EditActivity extends AppCompatActivity {
         addBlockButton.setOnClickListener(new View.OnClickListener() {
                                               @Override
                                               public void onClick(View v) {
-                                                  final EditText searchBar = new EditText(EditActivity.this);
+                                                  final EditText searchBar = new EditText(EditActivity.this);//Todo: add a searching feature
                                                   AlertDialog.Builder builder = new AlertDialog.Builder(EditActivity.this);
                                                   builder.setTitle("")
                                                           .setView(searchBar)
                                                           .setItems(categories, new DialogInterface.OnClickListener() {
-                                                              public void onClick(DialogInterface dialog, int which) {
+                                                              public void onClick(DialogInterface dialog, final int whichCategory) {
+                                                                  final EditText searchBar = new EditText(EditActivity.this);//Todo: add a searching feature
+                                                                  final String[] functions = lp.getFunctions(categories[whichCategory]).toArray(new String[0]);
+                                                                  AlertDialog.Builder builder = new AlertDialog.Builder(EditActivity.this);
+                                                                  builder.setTitle("")
+                                                                          .setView(searchBar)
+                                                                          .setItems(functions, new DialogInterface.OnClickListener() {
+                                                                              public void onClick(DialogInterface dialog, int whichFunction) {
+                                                                                  InputMethodManager mInputMethodManager = (InputMethodManager) getApplication().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                                                  if(mInputMethodManager != null)
+                                                                                      mInputMethodManager.hideSoftInputFromWindow(searchBar.getWindowToken(), 0);
+                                                                                  String content = mc.getContent();
+                                                                                  String function = lp.getFunctionValue(categories[whichCategory], functions[whichFunction]);
+                                                                                  mc.setContent(content+"\n"+function);
+                                                                                  addBlock(function, StringTools.findStringPositions(content, "\n").size()+1);
+                                                                                  updateUI();
+                                                                              }
+                                                                          });
+                                                                  builder.show();
                                                                   // The 'which' argument contains the index position
                                                                   // of the selected item
                                                               }
