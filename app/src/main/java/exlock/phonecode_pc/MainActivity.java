@@ -5,13 +5,11 @@ import android.content.SharedPreferences;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.EditText;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-import exlock.phonecode_pc.EditFeatures.CategoriesDialogActivity;
 import exlock.phonecode_pc.EditFeatures.EditActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -46,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
                 reader.close();
                 SharedPreferences sp = getSharedPreferences("json", MODE_PRIVATE);
                 SharedPreferences.Editor editor = sp.edit();
-                editor.putString("profileJson", buffer.toString());
+                editor.putString("languageProfile", buffer.toString());
                 editor.apply();
             } catch (IOException e) {
                 e.printStackTrace();

@@ -106,16 +106,27 @@ public class EditActivity extends AppCompatActivity {
         AddFloatingActionButton addCustomBlockButton = findViewById(R.id.addCustomBlockButton);
 
         final LanguageProfile lp = new LanguageProfile(
-                getSharedPreferences("json", MODE_PRIVATE).getString("profileJson", ""));
+                getSharedPreferences("json", MODE_PRIVATE)
+                        .getString("languageProfile", ""));
         String testPath = Environment.getExternalStorageDirectory() + "/PhoneCode/hello_world.py";
         mc = new ManageCode(testPath);//only for testing. Directory will be able to change in the future
         mc.addBracket("(", ")");
         updateUI();
-
+        final String[] categories = lp.getCategories().toArray(new String[0]);
         addBlockButton.setOnClickListener(new View.OnClickListener() {
                                               @Override
                                               public void onClick(View v) {
-                                                  //todo: custom dialog activity
+                                                  final EditText searchBar = new EditText(EditActivity.this);
+                                                  AlertDialog.Builder builder = new AlertDialog.Builder(EditActivity.this);
+                                                  builder.setTitle("")
+                                                          .setView(searchBar)
+                                                          .setItems(categories, new DialogInterface.OnClickListener() {
+                                                              public void onClick(DialogInterface dialog, int which) {
+                                                                  // The 'which' argument contains the index position
+                                                                  // of the selected item
+                                                              }
+                                                          });
+                                                  builder.show();
                                               }
                                           }
         );
@@ -147,7 +158,7 @@ public class EditActivity extends AppCompatActivity {
                                                         dialog.show();
                                                     }
                                                 }
-        );
+        );//Todo: seperate dialogs to another class
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu){

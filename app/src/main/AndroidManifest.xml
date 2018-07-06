@@ -23,10 +23,6 @@
             android:name=".EditFeatures.EditActivity"
             android:label="@string/title_activity_edit"
             android:theme="@style/AppTheme" />
-        <activity android:name=".EditFeatures.CategoriesDialogActivity"
-            android:theme="@android:style/Theme.Dialog"/>
-        <activity android:name=".EditFeatures.FunctionsDialogActivity"
-            android:theme="@android:style/Theme.Dialog"/>
     </application>
 
 </manifest>
