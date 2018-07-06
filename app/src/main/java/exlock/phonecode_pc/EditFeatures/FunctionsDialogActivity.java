@@ -3,6 +3,7 @@ package exlock.phonecode_pc.EditFeatures;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -17,13 +18,16 @@ import exlock.phonecode_pc.R;
 
 public class FunctionsDialogActivity extends AppCompatActivity {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_categories_dialog);
+        FunctionAdapter mAdapter = new FunctionAdapter();
+        RecyclerView mRecyclerView = findViewById(R.id.blocksView);
+        mRecyclerView.setAdapter(mAdapter);
         Intent intent = getIntent();
         final String category = intent.getStringExtra("strCategory");
-        final LinearLayout functionsView= findViewById(R.id.functionsView);
         final LanguageProfile lp = new LanguageProfile(
                 getSharedPreferences("json", MODE_PRIVATE).getString("profileJson", ""));
         final ArrayList functions =
@@ -43,7 +47,12 @@ public class FunctionsDialogActivity extends AppCompatActivity {
                     finish();
                 }
             });
-            functionsView.addView(tv);
+            mAdapter.functions.add(i,
+                    new FunctionLists().newInstance(
+                            strFunction
+                    )
+            );
         }
+        mAdapter.notifyDataSetChanged();
     }
 }

@@ -20,7 +20,7 @@ public class CategoriesDialogActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_categories_dialog);
+        /*setContentView(R.layout.activity_categories_dialog);
         final LinearLayout functionsView = findViewById(R.id.functionsView);
         final LanguageProfile lp = new LanguageProfile(
                 getSharedPreferences("json", MODE_PRIVATE).getString("profileJson", ""));
@@ -41,7 +41,7 @@ public class CategoriesDialogActivity extends Activity {
                 }
             });
             functionsView.addView(tv);
-        }
+        }*/
     }
 
     @Override

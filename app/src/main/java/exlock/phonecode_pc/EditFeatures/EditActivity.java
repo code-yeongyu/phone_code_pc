@@ -44,7 +44,6 @@ public class EditActivity extends AppCompatActivity {
                         func1,arg,func2
                 )
         );
-        this.mAdapter.notifyDataSetChanged();
     }
     private void addBlock(String function, int line)  {
         //todo: ables user to select what symbols will be replaced with EditTexts
@@ -54,6 +53,7 @@ public class EditActivity extends AppCompatActivity {
         if(dam==null||dam.isEmpty()) {
             if (!brackets.isEmpty()) {
                 makeBlock(function, brackets);
+                this.mAdapter.notifyDataSetChanged();
                 return;
             }
         }
