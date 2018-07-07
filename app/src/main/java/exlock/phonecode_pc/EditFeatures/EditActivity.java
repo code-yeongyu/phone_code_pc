@@ -55,7 +55,6 @@ public class EditActivity extends AppCompatActivity {
         if(dam==null||dam.isEmpty()) {
             if (!brackets.isEmpty()) {
                 makeBlock(function, brackets);
-                this.mAdapter.notifyDataSetChanged();
                 return;
             }
         }
@@ -69,6 +68,7 @@ public class EditActivity extends AppCompatActivity {
         for(int i = 0;i<lines.length;i++){
             this.addBlock(lines[i], i);
         }
+        this.mAdapter.notifyDataSetChanged();
     }
     public void save(){
         String[] lines = mc.getContent().split("\n");
@@ -90,6 +90,39 @@ public class EditActivity extends AppCompatActivity {
         }
         mc.setContent(temp.toString());
         mc.saveContent();
+    }
+
+    protected void creategoriesDialog(final String[] items, final LanguageProfile lp){
+        final EditText searchBar = new EditText(EditActivity.this);//Todo: add a searching feature
+        AlertDialog.Builder builder = new AlertDialog.Builder(EditActivity.this);
+        builder.setTitle("")
+                .setView(searchBar)
+                .setItems(items, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, final int whichCategory) {
+                        final String[] functions = lp.getFunctions(items[whichCategory]).toArray(new String[0]);
+                        functionsDialog(functions, items[whichCategory], lp);
+                    }
+                });
+        builder.show();
+    }
+    protected void functionsDialog(final String[] items, final String category, final LanguageProfile lp){
+        final EditText searchBar = new EditText(EditActivity.this);//Todo: add a searching feature
+        AlertDialog.Builder builder = new AlertDialog.Builder(EditActivity.this);
+        builder.setTitle("")
+                .setView(searchBar)
+                .setItems(items, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichFunction) {
+                        //InputMethodManager mInputMethodManager = (InputMethodManager) getApplication().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        //if(mInputMethodManager != null)
+                        //    mInputMethodManager.hideSoftInputFromWindow(searchBar.getWindowToken(), 0);
+                        String content = mc.getContent();
+                        String function = lp.getFunctionValue(category, items[whichFunction]);
+                        mc.setContent(content+"\n"+function);
+                        addBlock(function, StringTools.findStringPositions(content, "\n").size()+1);
+                        mAdapter.notifyDataSetChanged();
+                    }
+                });
+        builder.show();
     }
 
     @Override
@@ -117,35 +150,7 @@ public class EditActivity extends AppCompatActivity {
         addBlockButton.setOnClickListener(new View.OnClickListener() {
                                               @Override
                                               public void onClick(View v) {
-                                                  final EditText searchBar = new EditText(EditActivity.this);//Todo: add a searching feature
-                                                  AlertDialog.Builder builder = new AlertDialog.Builder(EditActivity.this);
-                                                  builder.setTitle("")
-                                                          .setView(searchBar)
-                                                          .setItems(categories, new DialogInterface.OnClickListener() {
-                                                              public void onClick(DialogInterface dialog, final int whichCategory) {
-                                                                  final EditText searchBar = new EditText(EditActivity.this);//Todo: add a searching feature
-                                                                  final String[] functions = lp.getFunctions(categories[whichCategory]).toArray(new String[0]);
-                                                                  AlertDialog.Builder builder = new AlertDialog.Builder(EditActivity.this);
-                                                                  builder.setTitle("")
-                                                                          .setView(searchBar)
-                                                                          .setItems(functions, new DialogInterface.OnClickListener() {
-                                                                              public void onClick(DialogInterface dialog, int whichFunction) {
-                                                                                  InputMethodManager mInputMethodManager = (InputMethodManager) getApplication().getSystemService(Context.INPUT_METHOD_SERVICE);
-                                                                                  if(mInputMethodManager != null)
-                                                                                      mInputMethodManager.hideSoftInputFromWindow(searchBar.getWindowToken(), 0);
-                                                                                  String content = mc.getContent();
-                                                                                  String function = lp.getFunctionValue(categories[whichCategory], functions[whichFunction]);
-                                                                                  mc.setContent(content+"\n"+function);
-                                                                                  addBlock(function, StringTools.findStringPositions(content, "\n").size()+1);
-                                                                                  updateUI();
-                                                                              }
-                                                                          });
-                                                                  builder.show();
-                                                                  // The 'which' argument contains the index position
-                                                                  // of the selected item
-                                                              }
-                                                          });
-                                                  builder.show();
+                                                  creategoriesDialog(categories, lp);
                                               }
                                           }
         );
@@ -169,7 +174,7 @@ public class EditActivity extends AppCompatActivity {
                                                                         String content = mc.getContent();
                                                                         mc.setContent(content+"\n"+etText);
                                                                         addBlock(etText, StringTools.findStringPositions(content, "\n").size()+1);
-                                                                        updateUI();
+                                                                        mAdapter.notifyDataSetChanged();
                                                                     }
                                                                 })
                                                                 .setNegativeButton("cancel", null)
