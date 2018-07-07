@@ -15,7 +15,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.AddFloatingActionButton;
@@ -92,11 +94,16 @@ public class EditActivity extends AppCompatActivity {
         mc.saveContent();
     }
 
-    protected void creategoriesDialog(final String[] items, final LanguageProfile lp){
+    public void creategoriesDialog(final String[] items, final LanguageProfile lp){
+        LinearLayout ll = new LinearLayout(EditActivity.this);
         final EditText searchBar = new EditText(EditActivity.this);//Todo: add a searching feature
+        final Button b = new Button(EditActivity.this);
+        b.setText("Search");
+        ll.addView(searchBar);
+        ll.addView(b);
         AlertDialog.Builder builder = new AlertDialog.Builder(EditActivity.this);
+        builder.setView(ll);
         builder.setTitle("")
-                .setView(searchBar)
                 .setItems(items, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, final int whichCategory) {
                         final String[] functions = lp.getFunctions(items[whichCategory]).toArray(new String[0]);
@@ -105,11 +112,16 @@ public class EditActivity extends AppCompatActivity {
                 });
         builder.show();
     }
-    protected void functionsDialog(final String[] items, final String category, final LanguageProfile lp){
+    public void functionsDialog(final String[] items, final String category, final LanguageProfile lp){
+        LinearLayout ll = new LinearLayout(EditActivity.this);
+        final Button b = new Button(EditActivity.this);
         final EditText searchBar = new EditText(EditActivity.this);//Todo: add a searching feature
         AlertDialog.Builder builder = new AlertDialog.Builder(EditActivity.this);
-        builder.setTitle("")
-                .setView(searchBar)
+        b.setText("Search");
+        ll.addView(searchBar);
+        ll.addView(b);
+        builder.setView(ll);
+        builder.setTitle(category)
                 .setItems(items, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichFunction) {
                         //InputMethodManager mInputMethodManager = (InputMethodManager) getApplication().getSystemService(Context.INPUT_METHOD_SERVICE);
