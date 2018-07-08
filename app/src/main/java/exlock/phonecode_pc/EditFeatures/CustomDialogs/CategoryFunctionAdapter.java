@@ -13,7 +13,7 @@ import exlock.phonecode_pc.R;
 
 class CategoryFunctionAdapter extends RecyclerView.Adapter<CategoryFunctionAdapter.ViewHolder> {
 
-    List<CategoryFunctionLists> lists = new ArrayList<>();
+    public List<CategoryFunctionLists> lists = new ArrayList<>();
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView name;
