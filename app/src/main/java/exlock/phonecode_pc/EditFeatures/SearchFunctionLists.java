@@ -1,14 +1,12 @@
 package exlock.phonecode_pc.EditFeatures;
 
-public class BlockLists {
-    String func1;
-    String func2;
-    String arg;
+public class SearchFunctionLists {
+    String category;
+    String function;
 
-    public BlockLists newInstance(String func1, String arg, String func2) {
-        this.func1 = func1;
-        this.func2 = func2;
-        this.arg = arg;
-        return BlockLists.this;
+    public SearchFunctionLists newInstance(String category, String function) {
+        this.category = category;
+        this.function = function;
+        return SearchFunctionLists.this;
     }
 }
