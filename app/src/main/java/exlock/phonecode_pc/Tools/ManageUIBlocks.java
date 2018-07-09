@@ -1,22 +1,17 @@
-package exlock.phonecode_pc.EditFeatures;
+package exlock.phonecode_pc.Tools;
 
 import java.util.ArrayList;
 
+import exlock.phonecode_pc.EditFeatures.BlockAdapter;
+import exlock.phonecode_pc.EditFeatures.BlockLists;
 import exlock.phonecode_pc.LanguageProfile;
-import exlock.phonecode_pc.Tools.ManageCode;
-import exlock.phonecode_pc.Tools.StringTools;
 
 import static exlock.phonecode_pc.Tools.StringTools.findStringPositions;
-
-/**
- * Created by experse on 18. 7. 9.
- */
 
 public class ManageUIBlocks {
     private BlockAdapter mAdapter;
     private ManageCode mc;
     private LanguageProfile lp;
-    private String category;
     public ManageUIBlocks(BlockAdapter mAdapter, ManageCode mc, LanguageProfile lp){
         this.mAdapter = mAdapter;
         this.mc = mc;

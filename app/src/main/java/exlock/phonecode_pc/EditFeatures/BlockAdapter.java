@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -28,7 +29,7 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
         private final TextView func1;
         private final TextView func2;
         private final EditText arg;
-        private final RelativeLayout itemBlock;
+        private final HorizontalScrollView itemBlock;
 
         ViewHolder(final View v){
             super(v);
@@ -46,7 +47,7 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
         EditText getArg() {
             return arg;
         }
-        RelativeLayout getItemBlock() {
+        HorizontalScrollView getItemBlock() {
             return itemBlock;
         }
     }
@@ -72,7 +73,7 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
         });
 
         boolean isFunc1Empty = funcString1.equals("");
-        holder.getItemBlock().setVisibility(isFunc1Empty ? View.GONE : View.VISIBLE);
+        holder.getItemBlock().setVisibility(isFunc1Empty ? View.VISIBLE : View.VISIBLE);
         if(isFunc1Empty){
             return;
         }

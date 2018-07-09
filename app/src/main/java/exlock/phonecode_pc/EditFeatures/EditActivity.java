@@ -3,7 +3,6 @@ package exlock.phonecode_pc.EditFeatures;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Environment;
@@ -11,29 +10,20 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.AddFloatingActionButton;
-
-import java.util.ArrayList;
-import java.util.Collections;
 
 import exlock.phonecode_pc.EditFeatures.CustomDialogs.CategoryDialogActivity;
 import exlock.phonecode_pc.LanguageProfile;
 import exlock.phonecode_pc.R;
 import exlock.phonecode_pc.Tools.ManageCode;
-import exlock.phonecode_pc.Tools.StringTools;
-
-import static exlock.phonecode_pc.Tools.StringTools.findStringPositions;
+import exlock.phonecode_pc.Tools.ManageUIBlocks;
 
 public class EditActivity extends AppCompatActivity {
 
@@ -66,9 +56,9 @@ public class EditActivity extends AppCompatActivity {
 
         final LanguageProfile lp = new LanguageProfile(
                 getSharedPreferences("json", MODE_PRIVATE).getString("profileJson", ""));
-        final ManageUIBlocks mub = new ManageUIBlocks(this.mAdapter, this.mc, lp);
+        this.mub = new ManageUIBlocks(this.mAdapter, this.mc, lp);
 
-        mub.updateUI();
+        this.mub.updateUI();
 
         addBlockButton.setOnClickListener(new View.OnClickListener() {
                                               @Override

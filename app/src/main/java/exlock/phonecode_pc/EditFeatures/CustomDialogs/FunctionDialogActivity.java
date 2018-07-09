@@ -2,7 +2,6 @@ package exlock.phonecode_pc.EditFeatures.CustomDialogs;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,13 +9,9 @@ import android.view.Window;
 
 import java.util.ArrayList;
 
-import exlock.phonecode_pc.EditFeatures.BlockAdapter;
-import exlock.phonecode_pc.EditFeatures.ManageUIBlocks;
+import exlock.phonecode_pc.Tools.ManageUIBlocks;
 import exlock.phonecode_pc.LanguageProfile;
 import exlock.phonecode_pc.R;
-import exlock.phonecode_pc.Tools.ManageCode;
-
-import static android.content.Context.MODE_PRIVATE;
 
 public class FunctionDialogActivity extends Dialog {
     private FunctionAdapter mAdapter;

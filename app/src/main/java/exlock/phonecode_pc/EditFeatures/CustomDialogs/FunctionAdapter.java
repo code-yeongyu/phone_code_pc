@@ -1,26 +1,16 @@
 package exlock.phonecode_pc.EditFeatures.CustomDialogs;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import exlock.phonecode_pc.EditFeatures.BlockAdapter;
-import exlock.phonecode_pc.EditFeatures.BlockLists;
-import exlock.phonecode_pc.EditFeatures.ManageUIBlocks;
-import exlock.phonecode_pc.LanguageProfile;
+import exlock.phonecode_pc.Tools.ManageUIBlocks;
 import exlock.phonecode_pc.R;
-import exlock.phonecode_pc.Tools.ManageCode;
-import exlock.phonecode_pc.Tools.StringTools;
-
-import static android.content.Context.MODE_PRIVATE;
-import static exlock.phonecode_pc.Tools.StringTools.findStringPositions;
 
 class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.ViewHolder> {
 

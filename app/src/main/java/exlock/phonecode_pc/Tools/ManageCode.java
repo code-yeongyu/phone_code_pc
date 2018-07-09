@@ -87,15 +87,18 @@ public class ManageCode {
         this.setContent(temp.toString());
         this.saveContent();
     }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
     public void addBracket(String left, String right){
         this.bracketLists.add(left);
         this.bracketLists.add(right);
     }
 
+    public ArrayList<String> getBrackets(){
+        return bracketLists;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
     public String getPath() {
         return this.path;
     }
@@ -107,9 +110,6 @@ public class ManageCode {
         return this.content;
     }
 
-    public ArrayList<String> getBrackets(){
-        return bracketLists;
-    }
     public ArrayList<Integer> getPairsLine(int line){
         String[] function = this.content.split("\n");
         ArrayList<ArrayList<Integer>> bracketPositions = new ArrayList<>();
