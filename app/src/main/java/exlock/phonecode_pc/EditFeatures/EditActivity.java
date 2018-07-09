@@ -1,5 +1,6 @@
 package exlock.phonecode_pc.EditFeatures;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -37,6 +38,7 @@ import static exlock.phonecode_pc.Tools.StringTools.findStringPositions;
 public class EditActivity extends AppCompatActivity {
 
     final String testPath = Environment.getExternalStorageDirectory() + "/PhoneCode/hello_world.py";//Todo: remove this if file manager is developed
+    ManageUIBlocks mub;
     ManageCode mc;
     BlockAdapter mAdapter;
     RecyclerView mRecyclerView;
@@ -49,6 +51,7 @@ public class EditActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         mAdapter = new BlockAdapter();
         mRecyclerView = findViewById(R.id.blocksView);
         mRecyclerView.setNestedScrollingEnabled(false);
@@ -58,15 +61,15 @@ public class EditActivity extends AppCompatActivity {
         AddFloatingActionButton addBlockButton = findViewById(R.id.addBlockButton);
         AddFloatingActionButton addCustomBlockButton = findViewById(R.id.addCustomBlockButton);
 
-        final LanguageProfile lp = new LanguageProfile(
-                getSharedPreferences("json", MODE_PRIVATE).getString("profileJson", ""));
-
         this.mc = new ManageCode(this.testPath);//only for testing. Directory will be able to change in the future
         this.mc.addBracket("(", ")");
 
+        final LanguageProfile lp = new LanguageProfile(
+                getSharedPreferences("json", MODE_PRIVATE).getString("profileJson", ""));
         final ManageUIBlocks mub = new ManageUIBlocks(this.mAdapter, this.mc, lp);
 
         mub.updateUI();
+
         addBlockButton.setOnClickListener(new View.OnClickListener() {
                                               @Override
                                               public void onClick(View v) {
@@ -79,31 +82,11 @@ public class EditActivity extends AppCompatActivity {
         addCustomBlockButton.setOnClickListener(new View.OnClickListener() {
                                                     @Override
                                                     public void onClick(View v) {
-                                                        final EditText et = new EditText(EditActivity.this);
-                                                        et.setLines(1);
-                                                        et.setSingleLine();
-                                                        AlertDialog dialog = new AlertDialog.Builder(EditActivity.this)
-                                                                .setTitle("Add a custom Block")
-                                                                .setMessage("What do you want to add?")
-                                                                .setView(et)
-                                                                .setPositiveButton("add", new DialogInterface.OnClickListener() {
-                                                                    @Override
-                                                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                                                        InputMethodManager mInputMethodManager = (InputMethodManager) getApplication().getSystemService(Context.INPUT_METHOD_SERVICE);
-                                                                        if(mInputMethodManager != null)
-                                                                            mInputMethodManager.hideSoftInputFromWindow(et.getWindowToken(), 0);
-                                                                        String etText = et.getText().toString();
-                                                                        mub.addBlock(etText);
-                                                                    }
-                                                                })
-                                                                .setNegativeButton("cancel", null)
-                                                                .create();
-                                                        dialog.show();
+                                                        customBlockDialog().show();
                                                     }
                                                 }
-        );//Todo: seperate dialogs to another class
+        );
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         MenuInflater inflater = getMenuInflater();
@@ -122,5 +105,26 @@ public class EditActivity extends AppCompatActivity {
             default :
                 return super.onOptionsItemSelected(item);
         }
+    }
+    private Dialog customBlockDialog(){
+        final EditText et = new EditText(EditActivity.this);
+        et.setLines(1);
+        et.setSingleLine();
+        AlertDialog dialog = new AlertDialog.Builder(EditActivity.this)
+                .setTitle("Add a custom Block")
+                .setMessage("What do you want to add?")
+                .setView(et)
+                .setPositiveButton("add", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        InputMethodManager mInputMethodManager = (InputMethodManager) getApplication().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        if(mInputMethodManager != null)
+                            mInputMethodManager.hideSoftInputFromWindow(et.getWindowToken(), 0);
+                        mub.addBlock(et.getText().toString());
+                    }
+                })
+                .setNegativeButton("cancel", null)
+                .create();
+        return dialog;
     }
 }
