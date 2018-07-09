@@ -12,6 +12,7 @@ import java.util.List;
 
 import exlock.phonecode_pc.EditFeatures.BlockAdapter;
 import exlock.phonecode_pc.EditFeatures.EditActivity;
+import exlock.phonecode_pc.EditFeatures.ManageUIBlocks;
 import exlock.phonecode_pc.LanguageProfile;
 import exlock.phonecode_pc.R;
 import exlock.phonecode_pc.Tools.ManageCode;
@@ -21,8 +22,7 @@ import static android.content.Context.MODE_PRIVATE;
 class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
 
     List<CategoryFunctionLists> lists = new ArrayList<>();
-    private ManageCode mc;
-    private BlockAdapter ba;
+    private ManageUIBlocks mub;
     private CategoryDialogActivity cda;
     static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView name;
@@ -57,16 +57,14 @@ class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
                 fda.init(holder.getView().getContext().getSharedPreferences("json", MODE_PRIVATE)
                         .getString("profileJson", ""),
                         categoryName,
-                        mc,
-                        ba);
+                        mub);
                 fda.show();
                 cda.dismiss();
             }
         });
     }
-    void init(ManageCode mc, BlockAdapter ba, CategoryDialogActivity cda){
-        this.mc = mc;
-        this.ba = ba;
+    void init(ManageUIBlocks mub, CategoryDialogActivity cda){
+        this.mub = mub;
         this.cda = cda;
     }
     @Override

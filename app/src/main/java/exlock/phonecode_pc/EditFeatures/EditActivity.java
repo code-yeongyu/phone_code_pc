@@ -36,97 +36,42 @@ import static exlock.phonecode_pc.Tools.StringTools.findStringPositions;
 
 public class EditActivity extends AppCompatActivity {
 
+    final String testPath = Environment.getExternalStorageDirectory() + "/PhoneCode/hello_world.py";//Todo: remove this if file manager is developed
     ManageCode mc;
     BlockAdapter mAdapter;
     RecyclerView mRecyclerView;
-    private void makeBlock(String func, ArrayList<Integer> brackets){
-        int aValue = brackets.get(0) + 1;
-        int bValue = brackets.get(1);
-        makeBlock(func.substring(0, aValue),func.substring(aValue, bValue),func.substring(bValue, func.length()));
-    }
-    private void makeBlock(String func1, String arg, String func2){
-        this.mAdapter.blocks.add(this.mAdapter.getItemCount(),
-                new BlockLists().newInstance(
-                        func1,arg,func2
-                )
-        );
-    }
-    private void addBlock(String function, int line)  {
-        //todo: ables user to select what symbols will be replaced with EditTexts
-
-        ArrayList<Integer> dam = findStringPositions(function, ").");
-        ArrayList<Integer> brackets = mc.getPairsLine(line);
-        if(dam==null||dam.isEmpty()) {
-            if (!brackets.isEmpty()) {
-                makeBlock(function, brackets);
-                return;
-            }
-        }
-        makeBlock(function, "", "");
-    }
     //Todo: horizontal scroll or new line for long codes in a line
-
-    private void updateUI(){
-        mAdapter.blocks.clear();
-        String[] lines = mc.getContent().split("\n");
-        for(int i = 0;i<lines.length;i++){
-            this.addBlock(lines[i], i);
-        }
-        this.mAdapter.notifyDataSetChanged();
-    }
-    private void save(){
-        String[] lines = mc.getContent().split("\n");
-        StringBuilder temp = new StringBuilder();
-        for(int i = 0;i<lines.length;i++){
-            ArrayList<Integer> a = mc.getPairsLine(i);
-            if(!a.isEmpty()) {
-                Collections.reverse(a);
-                int aValue = a.get(0) + 1;
-                int functionLength = lines[i].length();
-                temp.append(
-                        lines[i].substring(0, aValue))
-                        .append(mAdapter.blocks.get(i).arg)
-                        .append(lines[i].substring(a.get(1), functionLength));
-            }else{
-                temp.append(lines[i]);
-            }
-            temp.append("\n");
-        }
-        mc.setContent(temp.toString());
-        mc.saveContent();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         mAdapter = new BlockAdapter();
         mRecyclerView = findViewById(R.id.blocksView);
         mRecyclerView.setNestedScrollingEnabled(false);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplication()));
         mRecyclerView.setAdapter(mAdapter);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         AddFloatingActionButton addBlockButton = findViewById(R.id.addBlockButton);
         AddFloatingActionButton addCustomBlockButton = findViewById(R.id.addCustomBlockButton);
 
         final LanguageProfile lp = new LanguageProfile(
                 getSharedPreferences("json", MODE_PRIVATE).getString("profileJson", ""));
-        String testPath = Environment.getExternalStorageDirectory() + "/PhoneCode/hello_world.py";
-        mc = new ManageCode(testPath);//only for testing. Directory will be able to change in the future
-        mc.addBracket("(", ")");
-        updateUI();
-        final String[] categories = lp.getCategories().toArray(new String[0]);
+
+        this.mc = new ManageCode(this.testPath);//only for testing. Directory will be able to change in the future
+        this.mc.addBracket("(", ")");
+
+        final ManageUIBlocks mub = new ManageUIBlocks(this.mAdapter, this.mc, lp);
+
+        mub.updateUI();
         addBlockButton.setOnClickListener(new View.OnClickListener() {
                                               @Override
                                               public void onClick(View v) {
                                                   CategoryDialogActivity cda = new CategoryDialogActivity(EditActivity.this);
-                                                  cda.init(
-                                                          getSharedPreferences("json", MODE_PRIVATE)
-                                                          .getString("profileJson", ""),
-                                                          mc,
-                                                          mAdapter);
+                                                  cda.init(mub);
                                                   cda.show();
                                               }
                                           }
@@ -148,7 +93,7 @@ public class EditActivity extends AppCompatActivity {
                                                                         if(mInputMethodManager != null)
                                                                             mInputMethodManager.hideSoftInputFromWindow(et.getWindowToken(), 0);
                                                                         String etText = et.getText().toString();
-                                                                        addAnewBlock(etText, mc);
+                                                                        mub.addBlock(etText);
                                                                     }
                                                                 })
                                                                 .setNegativeButton("cancel", null)
@@ -157,12 +102,6 @@ public class EditActivity extends AppCompatActivity {
                                                     }
                                                 }
         );//Todo: seperate dialogs to another class
-    }
-    private void addAnewBlock(String code, ManageCode mc){
-        String content = mc.getContent();
-        mc.setContent(content+"\n"+code);
-        addBlock(code, StringTools.findStringPositions(content, "\n").size()+1);
-        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -175,11 +114,10 @@ public class EditActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item){
         switch(item.getItemId()){
             case R.id.action_save:
-                this.save();
+                mc.save(this.mAdapter.blocks);
                 return true;
             case R.id.action_search:
                 //todo: search feature with regex
-                this.updateUI();
                 return true;
             default :
                 return super.onOptionsItemSelected(item);

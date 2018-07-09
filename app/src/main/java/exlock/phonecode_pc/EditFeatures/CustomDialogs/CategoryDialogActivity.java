@@ -5,25 +5,23 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.view.Window;
 
-import exlock.phonecode_pc.EditFeatures.BlockAdapter;
+import java.util.ArrayList;
+
+import exlock.phonecode_pc.EditFeatures.ManageUIBlocks;
 import exlock.phonecode_pc.LanguageProfile;
 import exlock.phonecode_pc.R;
-import exlock.phonecode_pc.Tools.ManageCode;
 
 public class CategoryDialogActivity extends Dialog {
     private CategoryAdapter mAdapter;
-    private LanguageProfile lp;
+    private ManageUIBlocks mub;
 
     public CategoryDialogActivity(Context context) { super(context); }
-    public void init(String profileJson, ManageCode mc, BlockAdapter ba){
+    public void init(ManageUIBlocks mub){
         this.mAdapter = new CategoryAdapter();
-        this.lp = new LanguageProfile(
-                profileJson
-        );
-        this.mAdapter.init(mc, ba, this);
+        this.mAdapter.init(mub, this);
+        this.mub = mub;
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +37,11 @@ public class CategoryDialogActivity extends Dialog {
     }
     private void updateUI(){
         this.mAdapter.lists.clear();
-
-        for(int i = 0;i<lp.getCategories().size();i++){
+        ArrayList<String> categories = this.mub.getLanguageProfile().getCategories();
+        for(int i = 0;i<categories.size();i++){
             this.mAdapter.lists.add(this.mAdapter.getItemCount(),
                     new CategoryFunctionLists().newInstance(
-                            this.lp.getCategories().get(i)
+                            categories.get(i)
                     )
             );
         }

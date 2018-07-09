@@ -9,6 +9,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+
+import exlock.phonecode_pc.EditFeatures.BlockLists;
 
 public class ManageCode {
     private String path;
@@ -16,27 +19,7 @@ public class ManageCode {
     private File file;
     private ArrayList<String> bracketLists = new ArrayList<>();
 
-    public ManageCode(String path) {
-        setPath(path);
-        loadContent();
-    }
-    public void loadContent() {
-        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            file = new File(this.path);
-            if (file.exists()) {
-                setContentFromFile();//if file already exists, get content
-            } else {//if file doesn't exist, create a new file
-                saveContent();
-            }
-        }
-    }
-    public void setPath(String path) {
-        this.path = path;
-    }
-    public String getPath() {
-        return this.path;
-    }
-    public void setContentFromFile() {
+    private void setContentFromFile() {
         try {
             String data;
             StringBuffer buffer = new StringBuffer();
@@ -55,13 +38,7 @@ public class ManageCode {
             e.printStackTrace();
         }//get file
     }
-    public void setContent(String content){
-        this.content = content;
-    }
-    public String getContent() {
-        return this.content;
-    }
-    public void saveContent(){
+    private void saveContent(){
         try {
             if(file.canWrite()) {
                 FileOutputStream fos = new FileOutputStream(this.path);
@@ -73,10 +50,63 @@ public class ManageCode {
             e.printStackTrace();
         }
     }
+    private void loadContent() {
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            file = new File(this.path);
+            if (file.exists()) {
+                setContentFromFile();//if file already exists, get content
+            } else {//if file doesn't exist, create a new file
+                saveContent();
+            }
+        }
+    }
+
+    public ManageCode(String path) {
+        setPath(path);
+        loadContent();
+    }
+
+    public void save(List<BlockLists> blocks){
+        String[] lines = this.getContent().split("\n");
+        StringBuilder temp = new StringBuilder();
+        for(int i = 0;i<lines.length;i++){
+            ArrayList<Integer> a = this.getPairsLine(i);
+            if(!a.isEmpty()) {
+                Collections.reverse(a);
+                int aValue = a.get(0) + 1;
+                int functionLength = lines[i].length();
+                temp.append(
+                        lines[i].substring(0, aValue))//texts before arguments
+                        .append(blocks.get(i).arg)//arguments in edit text
+                        .append(lines[i].substring(a.get(1), functionLength));//texts after arguments
+            }else{//if brackets not exists
+                temp.append(lines[i]);
+            }
+            temp.append("\n");
+        }
+        this.setContent(temp.toString());
+        this.saveContent();
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
     public void addBracket(String left, String right){
         this.bracketLists.add(left);
         this.bracketLists.add(right);
     }
+
+    public String getPath() {
+        return this.path;
+    }
+
+    public void setContent(String content){
+        this.content = content;
+    }
+    public String getContent() {
+        return this.content;
+    }
+
     public ArrayList<String> getBrackets(){
         return bracketLists;
     }
@@ -108,6 +138,7 @@ public class ManageCode {
         Collections.reverse(pairs);
         return pairs;
     }
+
     public boolean removeFile(){
         if(file!=null&&file.exists()){
             file.delete();
