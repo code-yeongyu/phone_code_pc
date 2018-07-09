@@ -17,8 +17,9 @@
             android:layout_height="wrap_content"
             android:singleLine="false"
             android:text="@string/sample_function"
+            android:textAlignment="viewStart"
             android:textColor="@android:color/background_dark"
-            android:textSize="20sp" />
+            android:textSize="23sp" />
 
     </LinearLayout>
 

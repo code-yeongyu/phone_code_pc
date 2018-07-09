@@ -2,6 +2,7 @@ package exlock.phonecode_pc.EditFeatures;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Environment;
@@ -25,6 +26,7 @@ import com.getbase.floatingactionbutton.AddFloatingActionButton;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import exlock.phonecode_pc.EditFeatures.CustomDialogs.CategoryDialogActivity;
 import exlock.phonecode_pc.LanguageProfile;
 import exlock.phonecode_pc.R;
 import exlock.phonecode_pc.Tools.ManageCode;
@@ -37,12 +39,12 @@ public class EditActivity extends AppCompatActivity {
     ManageCode mc;
     BlockAdapter mAdapter;
     RecyclerView mRecyclerView;
-    public void makeBlock(String func, ArrayList<Integer> brackets){
+    private void makeBlock(String func, ArrayList<Integer> brackets){
         int aValue = brackets.get(0) + 1;
         int bValue = brackets.get(1);
         makeBlock(func.substring(0, aValue),func.substring(aValue, bValue),func.substring(bValue, func.length()));
     }
-    public void makeBlock(String func1, String arg, String func2){
+    private void makeBlock(String func1, String arg, String func2){
         this.mAdapter.blocks.add(this.mAdapter.getItemCount(),
                 new BlockLists().newInstance(
                         func1,arg,func2
@@ -64,7 +66,7 @@ public class EditActivity extends AppCompatActivity {
     }
     //Todo: horizontal scroll or new line for long codes in a line
 
-    public void updateUI(){
+    private void updateUI(){
         mAdapter.blocks.clear();
         String[] lines = mc.getContent().split("\n");
         for(int i = 0;i<lines.length;i++){
@@ -72,7 +74,7 @@ public class EditActivity extends AppCompatActivity {
         }
         this.mAdapter.notifyDataSetChanged();
     }
-    public void save(){
+    private void save(){
         String[] lines = mc.getContent().split("\n");
         StringBuilder temp = new StringBuilder();
         for(int i = 0;i<lines.length;i++){
@@ -92,49 +94,6 @@ public class EditActivity extends AppCompatActivity {
         }
         mc.setContent(temp.toString());
         mc.saveContent();
-    }
-
-    public void creategoriesDialog(final String[] items, final LanguageProfile lp){
-        LinearLayout ll = new LinearLayout(EditActivity.this);
-        final EditText searchBar = new EditText(EditActivity.this);//Todo: add a searching feature
-        final Button b = new Button(EditActivity.this);
-        b.setText("Search");
-        ll.addView(searchBar);
-        ll.addView(b);
-        AlertDialog.Builder builder = new AlertDialog.Builder(EditActivity.this);
-        builder.setView(ll);
-        builder.setTitle("")
-                .setItems(items, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, final int whichCategory) {
-                        final String[] functions = lp.getFunctions(items[whichCategory]).toArray(new String[0]);
-                        functionsDialog(functions, items[whichCategory], lp);
-                    }
-                });
-        builder.show();
-    }
-    public void functionsDialog(final String[] items, final String category, final LanguageProfile lp){
-        LinearLayout ll = new LinearLayout(EditActivity.this);
-        final Button b = new Button(EditActivity.this);
-        final EditText searchBar = new EditText(EditActivity.this);//Todo: add a searching feature
-        AlertDialog.Builder builder = new AlertDialog.Builder(EditActivity.this);
-        b.setText("Search");
-        ll.addView(searchBar);
-        ll.addView(b);
-        builder.setView(ll);
-        builder.setTitle(category)
-                .setItems(items, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichFunction) {
-                        //InputMethodManager mInputMethodManager = (InputMethodManager) getApplication().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        //if(mInputMethodManager != null)
-                        //    mInputMethodManager.hideSoftInputFromWindow(searchBar.getWindowToken(), 0);
-                        String content = mc.getContent();
-                        String function = lp.getFunctionValue(category, items[whichFunction]);
-                        mc.setContent(content+"\n"+function);
-                        addBlock(function, StringTools.findStringPositions(content, "\n").size()+1);
-                        mAdapter.notifyDataSetChanged();
-                    }
-                });
-        builder.show();
     }
 
     @Override
@@ -162,7 +121,13 @@ public class EditActivity extends AppCompatActivity {
         addBlockButton.setOnClickListener(new View.OnClickListener() {
                                               @Override
                                               public void onClick(View v) {
-                                                  creategoriesDialog(categories, lp);
+                                                  CategoryDialogActivity cda = new CategoryDialogActivity(EditActivity.this);
+                                                  cda.init(
+                                                          getSharedPreferences("json", MODE_PRIVATE)
+                                                          .getString("profileJson", ""),
+                                                          mc,
+                                                          mAdapter);
+                                                  cda.show();
                                               }
                                           }
         );
@@ -183,10 +148,7 @@ public class EditActivity extends AppCompatActivity {
                                                                         if(mInputMethodManager != null)
                                                                             mInputMethodManager.hideSoftInputFromWindow(et.getWindowToken(), 0);
                                                                         String etText = et.getText().toString();
-                                                                        String content = mc.getContent();
-                                                                        mc.setContent(content+"\n"+etText);
-                                                                        addBlock(etText, StringTools.findStringPositions(content, "\n").size()+1);
-                                                                        mAdapter.notifyDataSetChanged();
+                                                                        addAnewBlock(etText, mc);
                                                                     }
                                                                 })
                                                                 .setNegativeButton("cancel", null)
@@ -196,6 +158,13 @@ public class EditActivity extends AppCompatActivity {
                                                 }
         );//Todo: seperate dialogs to another class
     }
+    private void addAnewBlock(String code, ManageCode mc){
+        String content = mc.getContent();
+        mc.setContent(content+"\n"+code);
+        addBlock(code, StringTools.findStringPositions(content, "\n").size()+1);
+        mAdapter.notifyDataSetChanged();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         MenuInflater inflater = getMenuInflater();
@@ -210,6 +179,7 @@ public class EditActivity extends AppCompatActivity {
                 return true;
             case R.id.action_search:
                 //todo: search feature with regex
+                this.updateUI();
                 return true;
             default :
                 return super.onOptionsItemSelected(item);

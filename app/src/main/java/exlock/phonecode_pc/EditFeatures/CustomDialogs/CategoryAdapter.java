@@ -10,22 +10,33 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import exlock.phonecode_pc.EditFeatures.BlockAdapter;
+import exlock.phonecode_pc.EditFeatures.EditActivity;
+import exlock.phonecode_pc.LanguageProfile;
 import exlock.phonecode_pc.R;
+import exlock.phonecode_pc.Tools.ManageCode;
 
-class CategoryFunctionAdapter extends RecyclerView.Adapter<CategoryFunctionAdapter.ViewHolder> {
+import static android.content.Context.MODE_PRIVATE;
+
+class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
 
     List<CategoryFunctionLists> lists = new ArrayList<>();
-
+    private ManageCode mc;
+    private BlockAdapter ba;
+    private CategoryDialogActivity cda;
     static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView name;
+        private final View v;
 
         ViewHolder(final View v){
             super(v);
-            name = v.findViewById(R.id.func1);
+            this.name = v.findViewById(R.id.func1);
+            this.v = v;
         }
         TextView getName() {
             return name;
         }
+        View getView() {return v;}
     }
 
     @Override
@@ -36,16 +47,27 @@ class CategoryFunctionAdapter extends RecyclerView.Adapter<CategoryFunctionAdapt
     }
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        final String name = lists.get(position).name;
+        final String categoryName = lists.get(position).name;
         final TextView nameTextView = holder.getName();
-        nameTextView.setText(name);
+        nameTextView.setText(categoryName);
         nameTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(nameTextView.getContext(), FunctionDialogActivity.class);
-                i.putExtra("categoryName", name);
+                FunctionDialogActivity fda = new FunctionDialogActivity(holder.getView().getContext());
+                fda.init(holder.getView().getContext().getSharedPreferences("json", MODE_PRIVATE)
+                        .getString("profileJson", ""),
+                        categoryName,
+                        mc,
+                        ba);
+                fda.show();
+                cda.dismiss();
             }
         });
+    }
+    void init(ManageCode mc, BlockAdapter ba, CategoryDialogActivity cda){
+        this.mc = mc;
+        this.ba = ba;
+        this.cda = cda;
     }
     @Override
     public int getItemCount() {

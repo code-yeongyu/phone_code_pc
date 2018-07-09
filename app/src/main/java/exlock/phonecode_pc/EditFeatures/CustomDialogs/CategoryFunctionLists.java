@@ -1,9 +1,9 @@
-package exlock.phonecode_pc.EditFeatures;
+package exlock.phonecode_pc.EditFeatures.CustomDialogs;
 
-public class CategoryFunctionLists {
+class CategoryFunctionLists {
     String name;
 
-    public CategoryFunctionLists newInstance(String name) {
+    CategoryFunctionLists newInstance(String name) {
         this.name = name;
         return CategoryFunctionLists.this;
     }

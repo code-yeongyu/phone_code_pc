@@ -20,15 +20,14 @@ import java.util.List;
 import exlock.phonecode_pc.LanguageProfile;
 import exlock.phonecode_pc.R;
 
-class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> {
+public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> {
 
-    List<BlockLists> blocks = new ArrayList<>();
+    public List<BlockLists> blocks = new ArrayList<>();
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView func1;
         private final TextView func2;
         private final EditText arg;
-        private final View separator;
         private final RelativeLayout itemBlock;
 
         ViewHolder(final View v){
@@ -36,7 +35,6 @@ class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> {
             func1 = v.findViewById(R.id.func1);
             func2 = v.findViewById(R.id.func2);
             arg = v.findViewById(R.id.argEditText);
-            separator = v.findViewById(R.id.separator);
             itemBlock = v.findViewById(R.id.itemBlock);
         }
         TextView getFunc1() {
@@ -48,7 +46,6 @@ class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> {
         EditText getArg() {
             return arg;
         }
-        View getSeparator(){return separator;}
         RelativeLayout getItemBlock() {
             return itemBlock;
         }

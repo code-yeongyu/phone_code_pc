@@ -1,4 +1,4 @@
-package exlock.phonecode_pc.EditFeatures;
+package exlock.phonecode_pc.EditFeatures.CustomDialogs;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -10,32 +10,41 @@ import android.view.Window;
 
 import java.util.ArrayList;
 
+import exlock.phonecode_pc.EditFeatures.BlockAdapter;
 import exlock.phonecode_pc.LanguageProfile;
 import exlock.phonecode_pc.R;
+import exlock.phonecode_pc.Tools.ManageCode;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class FunctionDialogActivity extends Dialog {
+    private FunctionAdapter mAdapter;
+    private String categoryName;
+    private LanguageProfile lp;
 
-    public FunctionDialogActivity(Context context) { super(context); }
-    CategoryFunctionAdapter mAdapter;
-    RecyclerView mRecyclerView;
-    String profileJson, categoryName;
-    LanguageProfile lp;
+    FunctionDialogActivity(Context context) { super(context); }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_category_function_dialog);
-        Intent i = getOwnerActivity().getIntent();
-        this.profileJson = i.getStringExtra("profileJson");
-        this.categoryName = i.getStringExtra("categoryName");
-        this.lp = new LanguageProfile(this.profileJson);
-        this.mAdapter = new CategoryFunctionAdapter();
-        this.mRecyclerView = findViewById(R.id.CategoryFunctionView);
-        this.mRecyclerView.setAdapter(mAdapter);
-        this.mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        RecyclerView mRecyclerView = findViewById(R.id.CategoryFunctionView);
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        
         updateUI();
     }
-    public void updateUI(){
+    void init(String profileJson, String categoryName, ManageCode mc, BlockAdapter ba){
+        this.lp = new LanguageProfile(
+                profileJson
+        );
+        this.categoryName = categoryName;
+        this.mAdapter = new FunctionAdapter();
+        this.mAdapter.init(mc, categoryName, ba, this);
+    }
+    private void updateUI(){
         this.mAdapter.lists.clear();
         ArrayList<String> functions = lp.getFunctions(this.categoryName);
         for(int i = 0;i<functions.size();i++){
