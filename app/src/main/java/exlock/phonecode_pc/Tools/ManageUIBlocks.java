@@ -66,5 +66,4 @@ public class ManageUIBlocks {
         }
         this.mAdapter.notifyDataSetChanged();
     }
-
 }
