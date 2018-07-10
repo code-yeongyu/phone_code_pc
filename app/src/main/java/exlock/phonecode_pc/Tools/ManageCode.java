@@ -70,40 +70,18 @@ public class ManageCode {
         }
     }
 
-    public ManageCode(String path, LanguageProfile lp, BlockAdapter mAdapter) {
+    public ManageCode(String path, LanguageProfile lp) {
         this.setPath(path);
         this.setLanguageProfile(lp);
         this.loadContent();
-    }
-
-    public void save() {
-        List<BlockLists> blocks = this.mAdapter.blocks;
-        String[] lines = this.getContent().split("\n");
-        StringBuilder temp = new StringBuilder();
-        for(int i = 0;i<lines.length;i++){
-            ArrayList<Integer> a = this.getPairsLine(i);
-            if(!a.isEmpty()) {
-                Collections.reverse(a);
-                int aValue = a.get(0) + 1;
-                int functionLength = lines[i].length();
-                temp.append(
-                        lines[i].substring(0, aValue))//texts before arguments
-                        .append(blocks.get(i).arg)//arguments in edit text
-                        .append(lines[i].substring(a.get(1), functionLength));//texts after arguments
-            }else{//if brackets not exists
-                temp.append(lines[i]);
-            }
-            temp.append("\n");
-        }
-        this.setContent(temp.toString());
-        this.saveContent();
+        this.setBlockAdapter(new BlockAdapter());
     }
 
     public void addBracket(String left, String right) {
         this.bracketLists.add(left);
         this.bracketLists.add(right);
     }
-    public ArrayList<String> getBrackets(){
+    public ArrayList<String> getBrackets() {
         return this.bracketLists;
     }
 
@@ -164,6 +142,28 @@ public class ManageCode {
         return pairs;
     }
 
+    public void save() {
+        List<BlockLists> blocks = this.mAdapter.blocks;
+        String[] lines = this.getContent().split("\n");
+        StringBuilder temp = new StringBuilder();
+        for(int i = 0;i<lines.length;i++){
+            ArrayList<Integer> a = this.getPairsLine(i);
+            if(!a.isEmpty()) {
+                Collections.reverse(a);
+                int aValue = a.get(0) + 1;
+                int functionLength = lines[i].length();
+                temp.append(
+                        lines[i].substring(0, aValue))//texts before arguments
+                        .append(blocks.get(i).arg)//arguments in edit text
+                        .append(lines[i].substring(a.get(1), functionLength));//texts after arguments
+            }else{//if brackets not exists
+                temp.append(lines[i]);
+            }
+            temp.append("\n");
+        }
+        this.setContent(temp.toString());
+        this.saveContent();
+    }
     public boolean removeFile() {
         if(file!=null&&file.exists()){
             file.delete();
@@ -205,8 +205,12 @@ public class ManageCode {
                     .findStringPositions(this.getContent(), "\n")
                     .size()
         );
+    }
+
+    public void notifyUpdatesInUI(){
         this.mAdapter.notifyDataSetChanged();
     }
+
     public void updateUI() {
         mAdapter.blocks.clear();
         String[] lines = this.getContent().split("\n");

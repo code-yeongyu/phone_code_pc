@@ -9,7 +9,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import exlock.phonecode_pc.Tools.ManageUIBlocks;
 import exlock.phonecode_pc.R;
 
 import static android.content.Context.MODE_PRIVATE;

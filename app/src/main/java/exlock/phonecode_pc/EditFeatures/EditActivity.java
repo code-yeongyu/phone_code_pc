@@ -23,15 +23,11 @@ import exlock.phonecode_pc.EditFeatures.CustomDialogs.CategoryDialogActivity;
 import exlock.phonecode_pc.LanguageProfile;
 import exlock.phonecode_pc.R;
 import exlock.phonecode_pc.Tools.ManageCode;
-import exlock.phonecode_pc.Tools.ManageUIBlocks;
 
 public class EditActivity extends AppCompatActivity {
 
     final String testPath = Environment.getExternalStorageDirectory() + "/PhoneCode/hello_world.py";//Todo: remove this if file manager is developed
-    ManageUIBlocks mub;
     ManageCode mc;
-    BlockAdapter mAdapter;
-    RecyclerView mRecyclerView;
     //Todo: horizontal scroll or new line for long codes in a line
 
     @Override
@@ -42,23 +38,23 @@ public class EditActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mAdapter = new BlockAdapter();
-        mRecyclerView = findViewById(R.id.blocksView);
+        final LanguageProfile lp = new LanguageProfile(
+                getSharedPreferences("json", MODE_PRIVATE).getString("profileJson", ""));
+
+        this.mc = new ManageCode(this.testPath, lp);//only for testing. Directory will be able to change in the future
+
+        RecyclerView mRecyclerView = findViewById(R.id.blocksView);
         mRecyclerView.setNestedScrollingEnabled(false);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplication()));
-        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setAdapter(this.mc.getBlockAdapter());
 
         AddFloatingActionButton addBlockButton = findViewById(R.id.addBlockButton);
         AddFloatingActionButton addCustomBlockButton = findViewById(R.id.addCustomBlockButton);
 
-        this.mc = new ManageCode(this.testPath);//only for testing. Directory will be able to change in the future
         this.mc.addBracket("(", ")");
 
-        final LanguageProfile lp = new LanguageProfile(
-                getSharedPreferences("json", MODE_PRIVATE).getString("profileJson", ""));
-        this.mub = new ManageUIBlocks(this.mAdapter, this.mc, lp);
 
-        this.mub.updateUI();
+        this.mc.updateUI();
 
         addBlockButton.setOnClickListener(new View.OnClickListener() {
                                               @Override
@@ -87,7 +83,7 @@ public class EditActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item){
         switch(item.getItemId()){
             case R.id.action_save:
-                mc.save(this.mAdapter.blocks);
+                mc.save();
                 return true;
             case R.id.action_search:
                 //todo: search feature with regex
@@ -110,7 +106,9 @@ public class EditActivity extends AppCompatActivity {
                         InputMethodManager mInputMethodManager = (InputMethodManager) getApplication().getSystemService(Context.INPUT_METHOD_SERVICE);
                         if(mInputMethodManager != null)
                             mInputMethodManager.hideSoftInputFromWindow(et.getWindowToken(), 0);
-                        mub.addBlock(et.getText().toString());
+                        mc.setContent(mc.getContent()+"\n"+et.getText().toString());
+                        mc.addUIBlock(et.getText().toString());
+                        mc.notifyUpdatesInUI();
                     }
                 })
                 .setNegativeButton("cancel", null)

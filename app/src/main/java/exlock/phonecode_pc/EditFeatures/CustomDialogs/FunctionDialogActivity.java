@@ -9,7 +9,6 @@ import android.view.Window;
 
 import java.util.ArrayList;
 
-import exlock.phonecode_pc.Tools.ManageUIBlocks;
 import exlock.phonecode_pc.LanguageProfile;
 import exlock.phonecode_pc.R;
 
