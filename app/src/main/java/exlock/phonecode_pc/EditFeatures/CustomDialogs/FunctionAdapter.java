@@ -11,6 +11,7 @@ import java.util.List;
 
 import exlock.phonecode_pc.Tools.ManageUIBlocks;
 import exlock.phonecode_pc.R;
+import exlock.phonecode_pc.Tools.StringTools;
 
 class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.ViewHolder> {
 
@@ -54,7 +55,10 @@ class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.ViewHolder> {
         nameTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mub.addBlock(category, functionName);
+                String content = mub.getManageCode().getContent();
+                String functionValue = mub.getLanguageProfile().getFunctionValue(category, functionName);
+                mub.getManageCode().setContent(content+"\n"+functionValue);
+                mub.addBlock(functionValue);
                 fda.dismiss();
             }
         });

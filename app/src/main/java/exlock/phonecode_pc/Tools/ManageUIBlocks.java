@@ -43,20 +43,14 @@ public class ManageUIBlocks {
         makeBlock(function, "", "");
     }
     public void addBlock(String code){//todo: select line and add function there
-        String content = this.mc.getContent();
-        this.mc.setContent(content+"\n"+code);
         addBlock(code, StringTools.findStringPositions(this.mc.getContent(), "\n").size());
         this.mAdapter.notifyDataSetChanged();
     }
     public LanguageProfile getLanguageProfile(){
         return this.lp;
     }
-    public void addBlock(String category, String funcName){//todo: select line and add function there
-        String content = this.mc.getContent();
-        String functionValue = this.lp.getFunctionValue(category, funcName);
-        this.mc.setContent(content+"\n"+functionValue);
-        addBlock(functionValue, StringTools.findStringPositions(this.mc.getContent(), "\n").size());
-        mAdapter.notifyDataSetChanged();
+    public ManageCode getManageCode(){
+        return this.mc;
     }
     public void updateUI(){
         mAdapter.blocks.clear();
