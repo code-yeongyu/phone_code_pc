@@ -10,11 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import exlock.phonecode_pc.R;
+import exlock.phonecode_pc.Tools.ManageCode;
 
 class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.ViewHolder> {
 
     List<CategoryFunctionLists> lists = new ArrayList<>();
-    private ManageUIBlocks mub;
+    private ManageCode mc;
     private String category;
     private FunctionDialogActivity fda;
 
@@ -40,8 +41,8 @@ class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.ViewHolder> {
         return new ViewHolder(v);
     }
 
-    void init(ManageUIBlocks mub, String category, FunctionDialogActivity fda){
-        this.mub = mub;
+    void init(ManageCode mc, String category, FunctionDialogActivity fda){
+        this.mc = mc;
         this.category = category;
         this.fda = fda;
     }
@@ -53,10 +54,11 @@ class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.ViewHolder> {
         nameTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String content = mub.getManageCode().getContent();
-                String functionValue = mub.getLanguageProfile().getFunctionValue(category, functionName);
-                mub.getManageCode().setContent(content+"\n"+functionValue);
-                mub.addBlock(functionValue);
+                String content = mc.getContent();
+                String functionValue = mc.getLanguageProfile().getFunctionValue(category, functionName);
+                mc.setContent(content+"\n"+functionValue);
+                mc.addUIBlock(functionValue);
+                mc.notifyUpdatesInUI();
                 fda.dismiss();
             }
         });

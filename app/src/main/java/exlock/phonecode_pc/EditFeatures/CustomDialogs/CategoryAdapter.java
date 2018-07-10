@@ -10,14 +10,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import exlock.phonecode_pc.R;
+import exlock.phonecode_pc.Tools.ManageCode;
 
 import static android.content.Context.MODE_PRIVATE;
 
 class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
 
     List<CategoryFunctionLists> lists = new ArrayList<>();
-    private ManageUIBlocks mub;
     private CategoryDialogActivity cda;
+    private ManageCode mc;
+
     static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView name;
         private final View v;
@@ -51,14 +53,14 @@ class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
                 fda.init(holder.getView().getContext().getSharedPreferences("json", MODE_PRIVATE)
                         .getString("profileJson", ""),
                         categoryName,
-                        mub);
+                        mc);
                 fda.show();
                 cda.dismiss();
             }
         });
     }
-    void init(ManageUIBlocks mub, CategoryDialogActivity cda){
-        this.mub = mub;
+    void init(ManageCode mc, CategoryDialogActivity cda){
+        this.mc = mc;
         this.cda = cda;
     }
     @Override

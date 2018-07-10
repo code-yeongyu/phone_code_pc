@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import exlock.phonecode_pc.LanguageProfile;
 import exlock.phonecode_pc.R;
+import exlock.phonecode_pc.Tools.ManageCode;
 
 public class FunctionDialogActivity extends Dialog {
     private FunctionAdapter mAdapter;
@@ -31,13 +32,13 @@ public class FunctionDialogActivity extends Dialog {
         
         updateUI();
     }
-    void init(String profileJson, String categoryName, ManageUIBlocks mub){
+    void init(String profileJson, String categoryName, ManageCode mc){
         this.lp = new LanguageProfile(
                 profileJson
         );
         this.categoryName = categoryName;
         this.mAdapter = new FunctionAdapter();
-        this.mAdapter.init(mub, categoryName, this);
+        this.mAdapter.init(mc, categoryName, this);
     }
     private void updateUI(){
         this.mAdapter.lists.clear();

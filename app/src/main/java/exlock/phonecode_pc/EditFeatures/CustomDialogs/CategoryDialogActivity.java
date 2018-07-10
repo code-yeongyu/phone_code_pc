@@ -10,16 +10,17 @@ import android.view.Window;
 import java.util.ArrayList;
 
 import exlock.phonecode_pc.R;
+import exlock.phonecode_pc.Tools.ManageCode;
 
 public class CategoryDialogActivity extends Dialog {
     private CategoryAdapter mAdapter;
-    private ManageUIBlocks mub;
+    ManageCode mc;
 
     public CategoryDialogActivity(Context context) { super(context); }
-    public void init(ManageUIBlocks mub){
+    public void init(ManageCode mc){
         this.mAdapter = new CategoryAdapter();
-        this.mAdapter.init(mub, this);
-        this.mub = mub;
+        this.mc = mc;
+        this.mAdapter.init(mc, this);
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +36,7 @@ public class CategoryDialogActivity extends Dialog {
     }
     private void updateUI(){
         this.mAdapter.lists.clear();
-        ArrayList<String> categories = this.mub.getLanguageProfile().getCategories();
+        ArrayList<String> categories = this.mc.getLanguageProfile().getCategories();
         for(int i = 0;i<categories.size();i++){
             this.mAdapter.lists.add(this.mAdapter.getItemCount(),
                     new CategoryFunctionLists().newInstance(

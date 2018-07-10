@@ -60,7 +60,7 @@ public class EditActivity extends AppCompatActivity {
                                               @Override
                                               public void onClick(View v) {
                                                   CategoryDialogActivity cda = new CategoryDialogActivity(EditActivity.this);
-                                                  cda.init(mub);
+                                                  cda.init(mc);
                                                   cda.show();
                                               }
                                           }

@@ -102,7 +102,7 @@ public class ManageCode {
     public void setBlockAdapter(BlockAdapter mAdapter) {
         this.mAdapter = mAdapter;
     }
-    public BlockAdapter getBlockAdapter(BlockAdapter mAdapter) {
+    public BlockAdapter getBlockAdapter() {
         return this.mAdapter;
     }
 
