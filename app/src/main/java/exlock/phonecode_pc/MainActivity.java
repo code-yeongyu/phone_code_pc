@@ -31,20 +31,20 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {//if accessing to storage is available
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder builder = new StringBuilder();
             String data;
             try {
                 String path = Environment.getExternalStorageDirectory() + "/PhoneCode/language1.json";//set path
                 BufferedReader reader = new BufferedReader(new FileReader(path));//get profile json from set path
                 data = reader.readLine();
                 while (data != null) {
-                    buffer.append(data);
+                    builder.append(data);
                     data = reader.readLine();
                 }//get json string from file
                 reader.close();
                 SharedPreferences sp = getSharedPreferences("json", MODE_PRIVATE);
                 SharedPreferences.Editor editor = sp.edit();
-                editor.putString("profileJson", buffer.toString());
+                editor.putString("profileJson", builder.toString());
                 editor.apply();
             } catch (IOException e) {
                 e.printStackTrace();
