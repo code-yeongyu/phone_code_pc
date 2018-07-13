@@ -16,7 +16,6 @@ import java.util.List;
 
 import exlock.phonecode_pc.EditFeatures.BlockAdapter;
 import exlock.phonecode_pc.EditFeatures.BlockLists;
-import exlock.phonecode_pc.LanguageProfile;
 
 import static exlock.phonecode_pc.Tools.StringTools.findStringPositions;
 

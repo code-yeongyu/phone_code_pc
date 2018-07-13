@@ -1,4 +1,4 @@
-package exlock.phonecode_pc;
+package exlock.phonecode_pc.Tools;
 
 import java.util.ArrayList;
 
@@ -20,7 +20,7 @@ public class LanguageProfile {
                     (JsonManager.getJsonOBJByKey(json, "symbols"));
             this.reserved = JsonManager.getJsonAllkeys
                     (JsonManager.getJsonOBJByKey(json, "reserved"));
-        }catch (Exception e){//when got json wrong json file
+        }catch (Exception e){//when got wrong json file
             e.printStackTrace();
         }
     }
@@ -38,7 +38,7 @@ public class LanguageProfile {
     }
     public ArrayList<String> getCategories(){
         return this.categories;
-    }//A function that returns all the categories
+    }
     public ArrayList<String> getFunctions(String category){
         String jsonFunctions = JsonManager.getJsonOBJByKey(this.json, "functions");//json->function
         String jsonCategory = JsonManager.getJsonOBJByKey(

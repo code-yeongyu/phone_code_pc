@@ -9,7 +9,7 @@ import android.view.Window;
 
 import java.util.ArrayList;
 
-import exlock.phonecode_pc.LanguageProfile;
+import exlock.phonecode_pc.Tools.LanguageProfile;
 import exlock.phonecode_pc.R;
 import exlock.phonecode_pc.Tools.ManageCode;
 

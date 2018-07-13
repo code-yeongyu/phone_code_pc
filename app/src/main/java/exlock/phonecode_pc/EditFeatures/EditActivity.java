@@ -20,7 +20,7 @@ import android.widget.EditText;
 import com.getbase.floatingactionbutton.AddFloatingActionButton;
 
 import exlock.phonecode_pc.EditFeatures.CustomDialogs.CategoryDialogActivity;
-import exlock.phonecode_pc.LanguageProfile;
+import exlock.phonecode_pc.Tools.LanguageProfile;
 import exlock.phonecode_pc.R;
 import exlock.phonecode_pc.Tools.ManageCode;
 
