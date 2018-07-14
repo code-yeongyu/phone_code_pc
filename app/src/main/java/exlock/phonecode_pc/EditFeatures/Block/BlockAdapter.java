@@ -12,12 +12,15 @@ import android.widget.HorizontalScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import exlock.phonecode_pc.R;
 
-public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> {
+public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> implements ItemTouchHelperAdapter {
 
     public List<BlockLists> blocks = new ArrayList<>();
 
@@ -46,6 +49,26 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
         HorizontalScrollView getItemBlock() {
             return itemBlock;
         }
+    }
+
+    @Override
+    public boolean onItemMove(int fromPosition, int toPosition) {
+        if (fromPosition < toPosition) {
+            for (int i = fromPosition; i < toPosition; i++) {
+                Collections.swap(blocks, i, i + 1);
+            }//if move the item to down
+        } else {
+            for (int i = fromPosition; i > toPosition; i--) {
+                Collections.swap(blocks, i, i - 1);
+            }//if move the item to up
+        }
+        notifyItemMoved(fromPosition, toPosition);
+        return true;
+    }
+
+    @Override
+    public void onItemDismiss(int position) {
+        //todo: write here code indenting or add a tab
     }
 
     @Override
@@ -82,7 +105,7 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
         }
         holder.getArg().setText(arg);
     }
-    private void createDialog(ViewHolder holder){
+    private void createDialog(@NotNull ViewHolder holder){
         final String[] items = {"Remove Block", "Edit Block", "Add Block Below"};
         final Context context = holder.getItemBlock().getContext();
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
