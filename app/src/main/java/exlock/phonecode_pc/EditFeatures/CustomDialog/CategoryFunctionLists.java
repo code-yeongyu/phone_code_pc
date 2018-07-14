@@ -1,4 +1,4 @@
-package exlock.phonecode_pc.EditFeatures.CustomDialogs;
+package exlock.phonecode_pc.EditFeatures.CustomDialog;
 
 class CategoryFunctionLists {
     String name;

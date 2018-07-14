@@ -1,4 +1,4 @@
-package exlock.phonecode_pc.EditFeatures.CustomDialogs;
+package exlock.phonecode_pc.EditFeatures.CustomDialog;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

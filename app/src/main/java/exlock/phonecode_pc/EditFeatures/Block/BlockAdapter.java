@@ -1,4 +1,4 @@
-package exlock.phonecode_pc.EditFeatures;
+package exlock.phonecode_pc.EditFeatures.Block;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import exlock.phonecode_pc.EditFeatures.ItemTouchHelperAdapter;
 import exlock.phonecode_pc.R;
 
 public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> implements ItemTouchHelperAdapter {

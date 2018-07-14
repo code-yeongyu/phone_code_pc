@@ -1,4 +1,4 @@
-package exlock.phonecode_pc.EditFeatures;
+package exlock.phonecode_pc.EditFeatures.Block;
 
 public class BlockLists {
     public String func1;
