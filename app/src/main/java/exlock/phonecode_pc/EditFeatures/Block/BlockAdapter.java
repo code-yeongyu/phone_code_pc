@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,7 +30,7 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
         private final TextView func1;
         private final TextView func2;
         private final EditText arg;
-        private final HorizontalScrollView itemBlock;
+        private final LinearLayout itemBlock;
 
         ViewHolder(final View v){
             super(v);
@@ -47,7 +48,7 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
         EditText getArg() {
             return arg;
         }
-        HorizontalScrollView getItemBlock() {
+        LinearLayout getItemBlock() {
             return itemBlock;
         }
     }
@@ -69,6 +70,7 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
 
     @Override
     public void onItemDismiss(int position) {
+        
         //todo: write here code indenting or add a tab
     }
 

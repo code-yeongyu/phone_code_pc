@@ -5,49 +5,43 @@
     android:orientation="vertical">
 
 
-    <HorizontalScrollView
+    <LinearLayout
         android:id="@+id/itemBlock"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/func1"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:singleLine="false"
+            android:text="@string/sample_block1"
+            android:textColor="@android:color/background_dark"
+            android:textSize="20sp" />
 
-            <TextView
-                android:id="@+id/func1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:singleLine="false"
-                android:text="@string/sample_block1"
-                android:textColor="@android:color/background_dark"
-                android:textSize="20sp" />
+        <EditText
+            android:id="@+id/argEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:labelFor="@+id/argEditText"
+            android:text="@string/sample_arg"
+            android:textColor="@android:color/holo_green_dark"
+            android:textSize="20sp"
+            android:visibility="visible" />
 
-            <EditText
-                android:id="@+id/argEditText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="text"
-                android:labelFor="@+id/argEditText"
-                android:text="@string/sample_arg"
-                android:textColor="@android:color/holo_green_dark"
-                android:textSize="20sp"
-                android:visibility="visible" />
+        <TextView
+            android:id="@+id/func2"
 
-            <TextView
-                android:id="@+id/func2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sample_block2"
+            android:textColor="@android:color/background_dark"
+            android:textSize="20sp"
+            android:visibility="visible" />
 
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/sample_block2"
-                android:textColor="@android:color/background_dark"
-                android:textSize="20sp"
-                android:visibility="visible" />
-
-        </LinearLayout>
-
-    </HorizontalScrollView>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

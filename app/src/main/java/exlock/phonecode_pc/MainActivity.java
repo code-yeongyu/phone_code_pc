@@ -36,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences sp = getSharedPreferences("json", MODE_PRIVATE);
                 SharedPreferences.Editor editor = sp.edit();
                 editor.putString("profileJson", builder.toString());
-                Log.d("builder", builder.toString()+"\nthis");
                 editor.apply();
             } catch (IOException e) {
                 e.printStackTrace();
