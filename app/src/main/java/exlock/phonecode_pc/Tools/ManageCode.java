@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import exlock.phonecode_pc.EditFeatures.BlockAdapter;
-import exlock.phonecode_pc.EditFeatures.BlockLists;
+import exlock.phonecode_pc.EditFeatures.Block.BlockAdapter;
+import exlock.phonecode_pc.EditFeatures.Block.BlockLists;
 
 import static exlock.phonecode_pc.Tools.StringTools.findStringPositions;
 
@@ -30,18 +30,18 @@ public class ManageCode {
     private void setContentFromFile() {
         try {
             String data;
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder builder = new StringBuilder();
             BufferedReader reader = new BufferedReader(new FileReader(this.path));//get profile json from set path
             data = reader.readLine();
             while (data != null) {
-                buffer.append(data);
+                builder.append(data);
                 data = reader.readLine();
                 if(data!=null){
-                    buffer.append("\n");
+                    builder.append("\n");
                 }
             }
             reader.close();
-            this.content = buffer.toString();
+            this.content = builder.toString();
         } catch (IOException e) {
             e.printStackTrace();
         }//get file
@@ -196,7 +196,6 @@ public class ManageCode {
         }
         this.makeUIBlock(function, "", "");
     }
-
     public void addUIBlock(String code) {//todo: select line and add function there
         this.addBlock(
                 code,
@@ -205,11 +204,9 @@ public class ManageCode {
                     .size()
         );
     }
-
     public void notifyUpdatesInUI(){
         this.mAdapter.notifyDataSetChanged();
     }
-
     public void updateUI() {
         mAdapter.blocks.clear();
         String[] lines = this.getContent().split("\n");

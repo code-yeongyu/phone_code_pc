@@ -5,7 +5,7 @@
     android:id="@+id/EditLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="exlock.phonecode_pc.EditFeatures.EditActivity"
+    tools:context="exlock.phonecode_pc.EditActivity"
     android:fitsSystemWindows="true">
 
     <include

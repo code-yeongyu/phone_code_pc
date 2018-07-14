@@ -20,7 +20,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".EditFeatures.EditActivity"
+            android:name=".EditActivity"
             android:label="@string/title_activity_edit"
             android:theme="@style/AppTheme" />
     </application>

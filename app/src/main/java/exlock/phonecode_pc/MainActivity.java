@@ -5,12 +5,11 @@ import android.content.SharedPreferences;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-
-import exlock.phonecode_pc.EditFeatures.EditActivity;
 
 public class MainActivity extends AppCompatActivity {
     @Override
@@ -22,14 +21,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(i);
     }
     private void loadJson(){
-        SharedPreferences exe = getSharedPreferences("executeCount", MODE_PRIVATE);
-        if(!exe.getBoolean("isFirstTime", false)){//if it's first time
-            SharedPreferences.Editor editor = exe.edit();
-            editor.putBoolean("isFirstTime", true);
-            editor.apply();
-        }else{
-            return;
-        }
         if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {//if accessing to storage is available
             StringBuilder builder = new StringBuilder();
             String data;
@@ -45,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences sp = getSharedPreferences("json", MODE_PRIVATE);
                 SharedPreferences.Editor editor = sp.edit();
                 editor.putString("profileJson", builder.toString());
+                Log.d("builder", builder.toString()+"\nthis");
                 editor.apply();
             } catch (IOException e) {
                 e.printStackTrace();
