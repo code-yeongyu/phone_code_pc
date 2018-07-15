@@ -102,8 +102,8 @@
         "def":"def",
         "import":"import",
         "self":"self",
-	"if":"if",
-	"else":"else",
-	"elif":"elif"
+		"if":"if",
+		"else":"else",
+		"elif":"elif"
     }
 }

@@ -2,6 +2,7 @@ package exlock.phonecode_pc.Tools;
 
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -11,6 +12,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -113,12 +115,12 @@ public class ManageCode {
     }
 
     public ArrayList<Integer> getPairsLine(int line) {
-        String[] function = this.content.split("\n");
+        String[] lines = this.content.split("\n");
         ArrayList<ArrayList<Integer>> bracketPositions = new ArrayList<>();
         ArrayList<Integer> pairs = new ArrayList<>();
 
         for(int i = 0;i<bracketLists.size();i++){
-            bracketPositions.add(StringTools.findStringPositions(function[line], bracketLists.get(i)));
+            bracketPositions.add(StringTools.findStringPositions(lines[line], bracketLists.get(i)));
         }//create positions per every brackets
         for(int i = 0;i<bracketLists.size();i+=2){
             ArrayList<Integer> left = bracketPositions.get(i);
@@ -139,6 +141,12 @@ public class ManageCode {
         }
         Collections.reverse(pairs);
         return pairs;
+    }
+
+    public void removeLine(int line){
+        List<String> lines = Arrays.asList(this.content.split("\n"));
+        lines.remove(line);
+        Log.d("hi", lines.toString());
     }
 
     public void save() {
