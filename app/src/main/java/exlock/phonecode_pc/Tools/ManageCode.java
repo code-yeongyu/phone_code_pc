@@ -2,8 +2,6 @@ package exlock.phonecode_pc.Tools;
 
 import android.os.Environment;
 import android.support.annotation.NonNull;
-import android.util.Log;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
@@ -19,8 +17,6 @@ import java.util.List;
 import exlock.phonecode_pc.EditFeatures.Block.BlockAdapter;
 import exlock.phonecode_pc.EditFeatures.Block.BlockLists;
 
-import static exlock.phonecode_pc.Tools.StringTools.findStringPositions;
-
 public class ManageCode {
     private String path;
     private LanguageProfile lp;
@@ -29,12 +25,19 @@ public class ManageCode {
     private ArrayList<String> bracketLists = new ArrayList<>();
     private BlockAdapter mAdapter;
 
+    public ManageCode(String path, LanguageProfile lp) {
+        this.setPath(path);
+        this.setLanguageProfile(lp);
+        this.loadContent();
+        this.setBlockAdapter(new BlockAdapter());
+    }
+
+    //files
     private void setContentFromFile() {
         try {
-            String data;
             StringBuilder builder = new StringBuilder();
             BufferedReader reader = new BufferedReader(new FileReader(this.path));//get profile json from set path
-            data = reader.readLine();
+            String data = reader.readLine();
             while (data != null) {
                 builder.append(data);
                 data = reader.readLine();
@@ -62,101 +65,21 @@ public class ManageCode {
     }
     private void loadContent() {
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            file = new File(this.path);
+            file = new File(this.getPath());
             if (file.exists()) {
-                setContentFromFile();//if file already exists, get content
+                this.setContentFromFile();//if file already exists, get content
             } else {//if file doesn't exist, create a new file
-                saveContent();
+                this.saveContent();
             }
         }
     }
-
-    public ManageCode(String path, LanguageProfile lp) {
-        this.setPath(path);
-        this.setLanguageProfile(lp);
-        this.loadContent();
-        this.setBlockAdapter(new BlockAdapter());
-    }
-
-    public void addBracket(String left, String right) {
-        this.bracketLists.add(left);
-        this.bracketLists.add(right);
-    }
-    public ArrayList<String> getBrackets() {
-        return this.bracketLists;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-    public String getPath() {
-        return this.path;
-    }
-
-    public void setLanguageProfile(LanguageProfile lp){
-        this.lp = lp;
-    }
-    public LanguageProfile getLanguageProfile(){
-        return this.lp;
-    }
-
-    public void setBlockAdapter(BlockAdapter mAdapter) {
-        this.mAdapter = mAdapter;
-    }
-    public BlockAdapter getBlockAdapter() {
-        return this.mAdapter;
-    }
-
-    public void setContent(String content){
-        this.content = content;
-    }
-    public String getContent() {
-        return this.content;
-    }
-
-    public ArrayList<Integer> getPairsLine(int line) {
-        String[] lines = this.content.split("\n");
-        ArrayList<ArrayList<Integer>> bracketPositions = new ArrayList<>();
-        ArrayList<Integer> pairs = new ArrayList<>();
-
-        for(int i = 0;i<bracketLists.size();i++){
-            bracketPositions.add(StringTools.findStringPositions(lines[line], bracketLists.get(i)));
-        }//create positions per every brackets
-        for(int i = 0;i<bracketLists.size();i+=2){
-            ArrayList<Integer> left = bracketPositions.get(i);
-            left.addAll(bracketPositions.get(i+1));//merge left and right
-            if(left.size()%2==0) {//if it's able to get pairs
-                Collections.sort(left, new Descending());
-                int leftSize = left.size();
-                while(leftSize!=0) {
-                    int temp = (leftSize / 2) - 1;
-                    pairs.add(left.get(temp));
-                    pairs.add(left.get(temp + 1));//make pairs start from center
-                    left.remove(temp);
-                    left.remove(temp);
-                    //remove the center values
-                    leftSize -= 2;
-                }
-            }
-        }
-        Collections.reverse(pairs);
-        return pairs;
-    }
-
-    public void removeLine(int line){
-        List<String> lines = Arrays.asList(this.content.split("\n"));
-        lines.remove(line);
-        Log.d("hi", lines.toString());
-    }
-
     public void save() {
-        List<BlockLists> blocks = this.mAdapter.blocks;
+        List<BlockLists> blocks = this.getBlockAdapter().blocks;
         String[] lines = this.getContent().split("\n");
         StringBuilder temp = new StringBuilder();
         for(int i = 0;i<lines.length;i++){
-            ArrayList<Integer> a = this.getPairsLine(i);
+            ArrayList<Integer> a = this.getPairs(this.getLine(i));
             if(!a.isEmpty()) {
-                Collections.reverse(a);
                 int aValue = a.get(0) + 1;
                 int functionLength = lines[i].length();
                 temp.append(
@@ -178,49 +101,121 @@ public class ManageCode {
         }
         return false;
     }
+    public void setPath(String path) {
+        this.path = path;
+    }
+    public String getPath() {
+        return this.path;
+    }
 
-    private void makeUIBlock(@NonNull @NotNull String func, @NonNull @NotNull ArrayList<Integer> brackets) {
+    //managing the content
+    public void setContent(String content){
+        this.content = content;
+    }
+    public String getContent() {
+        return this.content;
+    }
+    public void addBracket(String left, String right) {
+        this.bracketLists.add(left);
+        this.bracketLists.add(right);
+    }//faster index means higher priority
+    public ArrayList<String> getBrackets() {
+        return this.bracketLists;
+    }
+    public void setLanguageProfile(LanguageProfile lp){
+        this.lp = lp;
+    }
+    public LanguageProfile getLanguageProfile(){
+        return this.lp;
+    }
+
+    //utils
+    private ArrayList<Integer> getPairs(String code){
+        ArrayList<Integer> pairs = new ArrayList<>();
+        ArrayList<Integer> bracketPositions = new ArrayList<>();
+
+        for(int i = 0;i<this.getBrackets().size();i++){
+            bracketPositions.addAll(StringTools.findStringPositions(code, this.getBrackets().get(i)));
+        }//put all the positions of brackets positions
+
+        if(bracketPositions.size()%2==0) {//if it's able to get pairs
+            Collections.sort(bracketPositions, new Descending());//sort bracketPositions from lower value to higher value
+            pairs.add(bracketPositions.get(bracketPositions.size() - 1));
+            pairs.add(bracketPositions.get(0));
+            //get the outermost bracket pairs and add it to pairs
+        }
+        return pairs;//return the ArrayList which has the positions of outermost bracket pairs
+    }
+    public void setLine(int line, String to) {
+        List<String> lines = Arrays.asList(this.getContent().split("\n"));
+        lines.set(line, to);
+        StringBuilder builder = new StringBuilder();
+        for(int i = 0;i<lines.size();i++){
+            builder.append(lines.get(i));
+        }
+        this.content = builder.toString();
+    }
+    public String getLine(int line) {
+        List<String> lines = Arrays.asList(this.content.split("\n"));
+        return lines.get(line);
+    }
+    public void removeLine(int line) {
+        List<String> lines = Arrays.asList(this.content.split("\n"));
+        lines.remove(line);
+    }
+
+    //UI
+    private BlockLists makeUIBlock(String func1, String arg, String func2) {
+        BlockLists bl = new BlockLists();
+        bl.newInstance(func1, arg, func2);
+        return bl;
+    }
+    private BlockLists makeUIBlock(@NonNull @NotNull String func) {
+        ArrayList<Integer> brackets = this.getPairs(func);
         int aValue = brackets.get(0) + 1;
         int bValue = brackets.get(1);
-        this.makeUIBlock(func.substring(0, aValue),func.substring(aValue, bValue),func.substring(bValue, func.length()));
-    }
-    private void makeUIBlock(String func1, String arg, String func2) {
-        this.mAdapter.blocks.add(this.mAdapter.getItemCount(),
-                new BlockLists().newInstance(
-                        func1,arg,func2
-                )
-        );
+        return this.makeUIBlock(func.substring(0, aValue),func.substring(aValue, bValue),func.substring(bValue, func.length()));
     }
     private void addBlock(String function, int line) {
         //todo: ables user to select what symbols will be replaced with EditTexts
-
-        ArrayList<Integer> dam = findStringPositions(function, ").");
-        ArrayList<Integer> brackets = this.getPairsLine(line);
+        ArrayList<Integer> dam = StringTools.findStringPositions(function, ").");
+        ArrayList<Integer> brackets = this.getPairs(this.getLine(line));
         if(dam==null||dam.isEmpty()) {
             if (!brackets.isEmpty()) {
-                this.makeUIBlock(function, brackets);
+                this.getBlockAdapter().blocks.add(getBlockAdapter().getItemCount(), this.makeUIBlock(function));
                 return;
             }
         }
         this.makeUIBlock(function, "", "");
     }
-    public void addUIBlock(String code) {//todo: select line and add function there
-        this.addBlock(
-                code,
-                StringTools
-                    .findStringPositions(this.getContent(), "\n")
-                    .size()
-        );
+    public void setBlockAdapter(BlockAdapter mAdapter) {
+        this.mAdapter = mAdapter;
+    }
+    public BlockAdapter getBlockAdapter() {
+        return this.mAdapter;
     }
     public void notifyUpdatesInUI(){
         this.mAdapter.notifyDataSetChanged();
     }
     public void updateUI() {
-        mAdapter.blocks.clear();
+        this.getBlockAdapter().blocks.clear();
         String[] lines = this.getContent().split("\n");
         for(int i = 0;i<lines.length;i++){
             this.addBlock(lines[i], i);
         }
-        this.mAdapter.notifyDataSetChanged();
+        this.getBlockAdapter().notifyDataSetChanged();
+    }
+    public void addUIBlock(String code) {//todo: select line and add function there
+        this.addBlock(
+                code,
+                StringTools
+                        .findStringPositions(this.getContent(), "\n")
+                        .size()
+        );
+    }
+    public void updateBlock(int line){
+        List<String> lines = Arrays.asList(this.getContent().split("\n"));
+        BlockLists bl = this.makeUIBlock(lines.get(line));
+        this.getBlockAdapter().blocks.set(line, bl);
     }
 }
