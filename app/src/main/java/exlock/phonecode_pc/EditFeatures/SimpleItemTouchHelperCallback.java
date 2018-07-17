@@ -3,10 +3,8 @@ package exlock.phonecode_pc.EditFeatures;
 import android.graphics.Canvas;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 
 import exlock.phonecode_pc.Tools.ManageCode;
-import exlock.phonecode_pc.Tools.StringTools;
 
 
 public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
@@ -32,8 +30,6 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
         String target = this.mc.getLine(position);
         if(direction==ItemTouchHelper.RIGHT){
             this.mc.setLine(position, "\t"+target);
-            this.mc.updateBlock(position);
-            this.mc.getBlockAdapter().notifyItemChanged(position);
         }else if(direction==ItemTouchHelper.LEFT && target.charAt(0)=='\t'){
             this.mc.setLine(position, target.substring(1, target.length()));
         }
