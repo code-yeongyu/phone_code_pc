@@ -30,7 +30,7 @@ public class CategoryDialogActivity extends Dialog {
 
         RecyclerView mRecyclerView = findViewById(R.id.CategoryFunctionView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setAdapter(this.mAdapter);
 
         updateUI();
     }
