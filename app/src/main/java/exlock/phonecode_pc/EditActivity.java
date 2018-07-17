@@ -58,7 +58,7 @@ public class EditActivity extends AppCompatActivity {
         this.mc.updateUI();
 
         ItemTouchHelper.Callback callback =
-                new SimpleItemTouchHelperCallback(mc.getBlockAdapter());
+                new SimpleItemTouchHelperCallback(this.mc);
         ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
         touchHelper.attachToRecyclerView(mRecyclerView);
 
