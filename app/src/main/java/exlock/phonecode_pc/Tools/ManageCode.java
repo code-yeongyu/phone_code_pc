@@ -2,6 +2,7 @@ package exlock.phonecode_pc.Tools;
 
 import android.os.Environment;
 import android.support.annotation.NonNull;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
@@ -152,8 +153,9 @@ public class ManageCode {
         StringBuilder builder = new StringBuilder();
         for(int i = 0;i<lines.size();i++){
             builder.append(lines.get(i));
+            builder.append("\n");
         }
-        this.content = builder.toString();
+        this.setContent(builder.toString());
     }
     public String getLine(int line) {
         List<String> lines = Arrays.asList(this.content.split("\n"));
@@ -162,6 +164,18 @@ public class ManageCode {
     public void removeLine(int line) {
         List<String> lines = Arrays.asList(this.content.split("\n"));
         lines.remove(line);
+    }
+    private void addBlock(String function, int line) {
+        //todo: ables user to select what symbols will be replaced with EditTexts
+        ArrayList<Integer> dam = StringTools.findStringPositions(function, ").");
+        ArrayList<Integer> brackets = this.getPairs(this.getLine(line));
+        if(dam==null||dam.isEmpty()) {
+            if (!brackets.isEmpty()) {
+                this.getBlockAdapter().blocks.add(getBlockAdapter().getItemCount(), this.makeUIBlock(function));
+                return;
+            }
+        }
+        this.makeUIBlock(function, "", "");
     }
 
     //UI
@@ -175,18 +189,6 @@ public class ManageCode {
         int aValue = brackets.get(0) + 1;
         int bValue = brackets.get(1);
         return this.makeUIBlock(func.substring(0, aValue),func.substring(aValue, bValue),func.substring(bValue, func.length()));
-    }
-    private void addBlock(String function, int line) {
-        //todo: ables user to select what symbols will be replaced with EditTexts
-        ArrayList<Integer> dam = StringTools.findStringPositions(function, ").");
-        ArrayList<Integer> brackets = this.getPairs(this.getLine(line));
-        if(dam==null||dam.isEmpty()) {
-            if (!brackets.isEmpty()) {
-                this.getBlockAdapter().blocks.add(getBlockAdapter().getItemCount(), this.makeUIBlock(function));
-                return;
-            }
-        }
-        this.makeUIBlock(function, "", "");
     }
     public void setBlockAdapter(BlockAdapter mAdapter) {
         this.mAdapter = mAdapter;
