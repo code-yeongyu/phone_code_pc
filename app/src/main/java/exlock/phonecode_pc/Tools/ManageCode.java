@@ -79,7 +79,7 @@ public class ManageCode {
         String[] lines = this.getContent().split("\n");
         StringBuilder temp = new StringBuilder();
         for(int i = 0;i<lines.length;i++){
-            ArrayList<Integer> a = this.getPairs(this.getLine(i));
+            ArrayList<Integer> a = this.getOutermostPairs(this.getLine(i));
             if(!a.isEmpty()) {
                 int aValue = a.get(0) + 1;
                 int functionLength = lines[i].length();
@@ -131,7 +131,8 @@ public class ManageCode {
     }
 
     //utils
-    private ArrayList<Integer> getPairs(String code){
+    private ArrayList<Integer> getOutermostPairs(String code){
+        //todo: fix a bug after brackets, nothing displays...
         ArrayList<Integer> pairs = new ArrayList<>();
         ArrayList<Integer> bracketPositions = new ArrayList<>();
 
@@ -141,12 +142,48 @@ public class ManageCode {
 
         if(bracketPositions.size()%2==0) {//if it's able to get pairs
             Collections.sort(bracketPositions, new Descending());//sort bracketPositions from lower value to higher value
-            pairs.add(bracketPositions.get(bracketPositions.size() - 1));
+            pairs.add(bracketPositions.get(bracketPositions.size() - 1)+1);
             pairs.add(bracketPositions.get(0));
             //get the outermost bracket pairs and add it to pairs
         }
         return pairs;//return the ArrayList which has the positions of outermost bracket pairs
     }
+    private ArrayList<Integer> getOutermostdPairs(String code){
+        ArrayList<Integer> pairs = new ArrayList<>();
+        ArrayList<ArrayList<Integer>> bracketPositions = new ArrayList<>();
+
+        for(int i = 0;i<this.getBrackets().size()/2;i++){
+            ArrayList<Integer> tempPositions = new ArrayList<>();
+            for(int j = 0;j<this.getBrackets().size();j++){
+                tempPositions.addAll(StringTools.findStringPositions(code, this.getBrackets().get(j)));
+            }//add all positions per brackets
+            bracketPositions.add(tempPositions);
+        }//put all the positions of brackets positions
+        //todo: *done
+
+        ArrayList<Integer> temp = new ArrayList<>();
+        for(int i = 0;i<this.getBrackets().size()/2;i++){
+            if(bracketPositions.get(i).size()%2==0) {//if it's able to get pairs
+                Collections.sort(bracketPositions.get(i), new Descending());//sort bracketPositions from lower value to higher value
+                temp.add(bracketPositions.get(i).get(bracketPositions.size()));//get the front value of pairs
+            }
+        }
+        int i;
+        Collections.sort(temp, new Descending());
+        int position = 0;
+        for(i = 0;i<temp.size();i++){
+            if(bracketPositions.get(i).contains(temp.get(i))) {
+                position = bracketPositions.get(i).indexOf(temp.get(i));
+                break;
+            }
+        }
+
+
+        pairs.add(bracketPositions.get(i).get(0));
+        pairs.add(bracketPositions.get(i).get(position));
+        return pairs;//return the ArrayList which has the positions of outermost bracket pairs
+    }//deprecated
+
     public void setLine(int line, String to) {
         List<String> lines = Arrays.asList(this.getContent().split("\n"));
         lines.set(line, to);
@@ -165,10 +202,12 @@ public class ManageCode {
         List<String> lines = Arrays.asList(this.content.split("\n"));
         lines.remove(line);
     }
+
+    //UI
     private void addBlock(String function, int line) {
         //todo: ables user to select what symbols will be replaced with EditTexts
         ArrayList<Integer> dam = StringTools.findStringPositions(function, ").");
-        ArrayList<Integer> brackets = this.getPairs(this.getLine(line));
+        ArrayList<Integer> brackets = this.getOutermostPairs(this.getLine(line));
         if(dam==null||dam.isEmpty()) {
             if (!brackets.isEmpty()) {
                 this.getBlockAdapter().blocks.add(getBlockAdapter().getItemCount(), this.makeUIBlock(function));
@@ -177,18 +216,19 @@ public class ManageCode {
         }
         this.makeUIBlock(function, "", "");
     }
-
-    //UI
     private BlockLists makeUIBlock(String func1, String arg, String func2) {
         BlockLists bl = new BlockLists();
         bl.newInstance(func1, arg, func2);
         return bl;
     }
     private BlockLists makeUIBlock(@NonNull @NotNull String func) {
-        ArrayList<Integer> brackets = this.getPairs(func);
-        int aValue = brackets.get(0) + 1;
+        ArrayList<Integer> brackets = this.getOutermostPairs(func);
+        int aValue = brackets.get(0);
         int bValue = brackets.get(1);
-        return this.makeUIBlock(func.substring(0, aValue),func.substring(aValue, bValue),func.substring(bValue, func.length()));
+        String func1 = func.substring(0, aValue);
+        String arg = func.substring(aValue, bValue);
+        String func2 = func.substring(bValue, func.length());
+        return this.makeUIBlock(func1, arg, func2);
     }
     public void setBlockAdapter(BlockAdapter mAdapter) {
         this.mAdapter = mAdapter;
