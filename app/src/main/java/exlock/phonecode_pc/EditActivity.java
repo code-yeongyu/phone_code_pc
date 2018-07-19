@@ -21,6 +21,10 @@ import android.widget.EditText;
 
 import com.getbase.floatingactionbutton.AddFloatingActionButton;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import exlock.phonecode_pc.EditFeatures.Block.BlockLists;
 import exlock.phonecode_pc.EditFeatures.CustomDialog.CategoryDialogActivity;
 import exlock.phonecode_pc.EditFeatures.SimpleItemTouchHelperCallback;
 import exlock.phonecode_pc.Tools.LanguageProfile;
@@ -41,7 +45,8 @@ public class EditActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         final LanguageProfile lp = new LanguageProfile(
-                getSharedPreferences("json", MODE_PRIVATE).getString("profileJson", ""));
+                getSharedPreferences("json", MODE_PRIVATE).getString("profileJson", "")
+        );
 
         this.mc = new ManageCode(this.testPath, lp);//only for testing. Directory will be able to change in the future
 
@@ -59,6 +64,7 @@ public class EditActivity extends AppCompatActivity {
 
         ItemTouchHelper.Callback callback =
                 new SimpleItemTouchHelperCallback(this.mc);
+
         ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
         touchHelper.attachToRecyclerView(mRecyclerView);
 
