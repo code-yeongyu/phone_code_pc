@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +22,13 @@ import java.util.List;
 
 import exlock.phonecode_pc.EditFeatures.ItemTouchHelperAdapter;
 import exlock.phonecode_pc.R;
+import exlock.phonecode_pc.Tools.ManageCode;
 
 public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> implements ItemTouchHelperAdapter {
-
+    private ManageCode mc;
+    public BlockAdapter(ManageCode mc){
+        this.mc = mc;
+    }
     public List<BlockLists> blocks = new ArrayList<>();
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -31,11 +37,28 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
         private final EditText arg;
         private final LinearLayout itemBlock;
 
-        ViewHolder(final View v){
+        ViewHolder(final View v, final ManageCode mc){
             super(v);
+            arg = v.findViewById(R.id.argEditText);
+            final String argText = arg.getText().toString();
+            TextWatcher textWatcher = new TextWatcher() {
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    //todo: get text's positions
+                    mc.getCallback().setEditTextValue(s.toString(), getPosition());
+                }
+            };
+            arg.addTextChangedListener(textWatcher);
             func1 = v.findViewById(R.id.func1);
             func2 = v.findViewById(R.id.func2);
-            arg = v.findViewById(R.id.argEditText);
             itemBlock = v.findViewById(R.id.itemBlock);
         }
         TextView getFunc1() {
@@ -77,7 +100,7 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType){
         View v = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.item_block, viewGroup, false);
-        return new ViewHolder(v);
+        return new ViewHolder(v, this.mc);
     }
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {

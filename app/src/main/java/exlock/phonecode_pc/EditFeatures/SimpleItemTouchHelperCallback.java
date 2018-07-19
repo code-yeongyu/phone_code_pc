@@ -5,15 +5,28 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 import exlock.phonecode_pc.EditFeatures.Block.BlockLists;
 import exlock.phonecode_pc.Tools.ManageCode;
 
 
 public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
     private ManageCode mc;
+    private String editTextValue;
+    private int position;
 
     public SimpleItemTouchHelperCallback(ManageCode mc) {
         this.mc = mc;
+    }
+
+    public void setManageCode(ManageCode mc){
+        this.mc = mc;
+    }
+
+    public void setEditTextValue(String value, int position){
+        this.editTextValue = value;
+        this.position = position;
     }
 
     @Override
@@ -29,7 +42,13 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
         int position = viewHolder.getAdapterPosition();
-        String target = this.mc.getLine(position);
+        BlockLists bl = this.mc.getBlockAdapter().blocks.get(position);
+        String target;
+        if(position == this.position){
+            target = bl.func1+this.editTextValue+bl.func2;
+        }else{
+            target = this.mc.getLine(position);
+        }
         if(direction==ItemTouchHelper.RIGHT){
             this.mc.setLine(position, "\t"+target);
         }else if(direction==ItemTouchHelper.LEFT && target.charAt(0)=='\t'){

@@ -2,6 +2,7 @@ package exlock.phonecode_pc.Tools;
 
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.helper.ItemTouchHelper;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -17,6 +18,7 @@ import java.util.List;
 
 import exlock.phonecode_pc.EditFeatures.Block.BlockAdapter;
 import exlock.phonecode_pc.EditFeatures.Block.BlockLists;
+import exlock.phonecode_pc.EditFeatures.SimpleItemTouchHelperCallback;
 
 public class ManageCode {
     private String path;
@@ -25,12 +27,25 @@ public class ManageCode {
     private File file;
     private ArrayList<String> bracketLists = new ArrayList<>();
     private BlockAdapter mAdapter;
+    private SimpleItemTouchHelperCallback callback;
+    private ItemTouchHelper helper;
 
     public ManageCode(String path, LanguageProfile lp) {
         this.setPath(path);
         this.setLanguageProfile(lp);
         this.loadContent();
-        this.setBlockAdapter(new BlockAdapter());
+        this.setBlockAdapter(new BlockAdapter(this));
+        this.callback =
+                new SimpleItemTouchHelperCallback(this);
+        this.helper = new ItemTouchHelper(this.callback);
+    }
+
+    public SimpleItemTouchHelperCallback getCallback() {
+        return this.callback;
+    }
+
+    public ItemTouchHelper getTouchHelper(){
+        return this.helper;
     }
 
     //files

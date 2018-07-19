@@ -62,11 +62,8 @@ public class EditActivity extends AppCompatActivity {
 
         this.mc.updateUI();
 
-        ItemTouchHelper.Callback callback =
-                new SimpleItemTouchHelperCallback(this.mc);
+        this.mc.getTouchHelper().attachToRecyclerView(mRecyclerView);
 
-        ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
-        touchHelper.attachToRecyclerView(mRecyclerView);
 
         addBlockButton.setOnClickListener(new View.OnClickListener() {
                                               @Override
