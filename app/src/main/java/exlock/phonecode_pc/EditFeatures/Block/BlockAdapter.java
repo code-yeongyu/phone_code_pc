@@ -106,6 +106,7 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
             return;
         }
         holder.getArg().setText(arg);
+        holder.getFunc2().setText(funcString2);
     }
     private void createDialog(@NotNull ViewHolder holder){
         final String[] items = {"Remove Block", "Edit Block", "Add Block Below"};
