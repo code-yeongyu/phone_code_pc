@@ -3,12 +3,14 @@ package exlock.phonecode_pc.EditFeatures;
 import android.graphics.Canvas;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 
+import exlock.phonecode_pc.EditFeatures.Block.BlockLists;
 import exlock.phonecode_pc.Tools.ManageCode;
 
 
 public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
-    private final ManageCode mc;
+    private ManageCode mc;
 
     public SimpleItemTouchHelperCallback(ManageCode mc) {
         this.mc = mc;
@@ -41,6 +43,6 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
         if(!isCurrentlyActive){
             super.onChildDraw(c, recyclerView, viewHolder, 0, dY, actionState, false);
         }
-        super.onChildDraw(c, recyclerView, viewHolder, dX / 8, dY, actionState, isCurrentlyActive);
+        super.onChildDraw(c, recyclerView, viewHolder, dX / 16, dY, actionState, isCurrentlyActive);
     }
 }
