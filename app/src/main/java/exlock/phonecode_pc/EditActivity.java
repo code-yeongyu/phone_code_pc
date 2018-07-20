@@ -97,6 +97,9 @@ public class EditActivity extends AppCompatActivity {
             case R.id.action_search:
                 //todo: search feature with regex
                 return true;
+            case R.id.action_textmode:
+                Log.d("content", mc.getContent());
+                return true;
             default :
                 return super.onOptionsItemSelected(item);
         }
