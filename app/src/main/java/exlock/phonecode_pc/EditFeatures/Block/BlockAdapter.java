@@ -53,7 +53,14 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
                 @Override
                 public void afterTextChanged(Editable s) {
                     //todo: get text's positions
-                    mc.getCallback().setEditTextValue(s.toString(), getPosition());
+                    int position = getPosition();
+
+                    BlockLists bl = mc.getBlockAdapter().blocks.get(position);
+
+                    String editedText = bl.func1+s.toString()+s+bl.func2;
+
+                    mc.setLine(position, editedText);
+                    mc.getCallback().init(position);
                 }
             };
             arg.addTextChangedListener(textWatcher);
