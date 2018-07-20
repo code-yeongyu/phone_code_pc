@@ -13,7 +13,6 @@ import exlock.phonecode_pc.Tools.ManageCode;
 
 public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
     private ManageCode mc;
-    private String editTextValue;
     private int position;
 
     public SimpleItemTouchHelperCallback(ManageCode mc) {
@@ -24,8 +23,7 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
         this.mc = mc;
     }
 
-    public void setEditTextValue(String value, int position){
-        this.editTextValue = value;
+    public void init(int position){
         this.position = position;
     }
 
@@ -44,11 +42,9 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
         int position = viewHolder.getAdapterPosition();
         BlockLists bl = this.mc.getBlockAdapter().blocks.get(position);
         String target;
-        if(position == this.position){
-            target = bl.func1+this.editTextValue+bl.func2;
-        }else{
-            target = this.mc.getLine(position);
-        }
+
+        target = this.mc.getLine(position);
+
         if(direction==ItemTouchHelper.RIGHT){
             this.mc.setLine(position, "\t"+target);
         }else if(direction==ItemTouchHelper.LEFT && target.charAt(0)=='\t'){
