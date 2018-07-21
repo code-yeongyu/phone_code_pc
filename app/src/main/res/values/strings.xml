@@ -12,4 +12,5 @@
     <string name="action_save">Save</string>
     <string name="action_search">Search</string>
     <string name="action_textmode">Text mode</string>
+    <string name="action_blockmode">Block mode</string>
 </resources>

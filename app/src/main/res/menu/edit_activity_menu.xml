@@ -11,7 +11,7 @@
         android:title="@string/action_search"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_textmode"
+        android:id="@+id/action_changemode"
         android:title="@string/action_textmode"
         app:showAsAction="never" />
 </menu>

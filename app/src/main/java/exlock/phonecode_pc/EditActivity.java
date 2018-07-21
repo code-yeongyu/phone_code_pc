@@ -22,6 +22,7 @@ import android.widget.EditText;
 import com.getbase.floatingactionbutton.AddFloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import exlock.phonecode_pc.EditFeatures.Block.BlockLists;
@@ -34,6 +35,9 @@ public class EditActivity extends AppCompatActivity {
 
     final String testPath = Environment.getExternalStorageDirectory() + "/PhoneCode/hello_world.py";//Todo: remove this if file manager is developed
     ManageCode mc;
+    EditText codeEditor;
+    RecyclerView mRecyclerView;
+    Boolean isBlockmode = true;
     //Todo: horizontal scroll or new line for long codes in a line
 
     @Override
@@ -47,13 +51,14 @@ public class EditActivity extends AppCompatActivity {
         final LanguageProfile lp = new LanguageProfile(
                 getSharedPreferences("json", MODE_PRIVATE).getString("profileJson", "")
         );
+        this.codeEditor = findViewById(R.id.textEditor);
 
         this.mc = new ManageCode(this.testPath, lp);//only for testing. Directory will be able to change in the future
 
-        RecyclerView mRecyclerView = findViewById(R.id.blocksView);
-        mRecyclerView.setNestedScrollingEnabled(false);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplication()));
-        mRecyclerView.setAdapter(this.mc.getBlockAdapter());
+        this.mRecyclerView = findViewById(R.id.blocksView);
+        this.mRecyclerView.setNestedScrollingEnabled(false);
+        this.mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplication()));
+        this.mRecyclerView.setAdapter(this.mc.getBlockAdapter());
 
         AddFloatingActionButton addBlockButton = findViewById(R.id.addBlockButton);
         AddFloatingActionButton addCustomBlockButton = findViewById(R.id.addCustomBlockButton);
@@ -92,13 +97,26 @@ public class EditActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item){
         switch(item.getItemId()){
             case R.id.action_save:
-                mc.save();
+                this.mc.save();
                 return true;
             case R.id.action_search:
                 //todo: search feature with regex
                 return true;
-            case R.id.action_textmode:
-                Log.d("content", mc.getContent());
+            case R.id.action_changemode:
+                if(this.isBlockmode){
+                    this.codeEditor.setText(this.mc.getContent());
+                    this.mRecyclerView.setVisibility(View.GONE);
+                    this.codeEditor.setVisibility(View.VISIBLE);
+                    this.isBlockmode = false;
+                    item.setTitle(getString(R.string.action_blockmode));
+                }else{
+                    this.codeEditor.setVisibility(View.GONE);
+                    this.mRecyclerView.setVisibility(View.VISIBLE);
+                    this.mc.setContent(this.codeEditor.getText().toString());
+                    this.mc.updateUI();
+                    this.isBlockmode = true;
+                    item.setTitle(getString(R.string.action_textmode));
+                }
                 return true;
             default :
                 return super.onOptionsItemSelected(item);
