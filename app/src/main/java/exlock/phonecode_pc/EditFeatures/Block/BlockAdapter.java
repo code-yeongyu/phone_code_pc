@@ -2,11 +2,13 @@ package exlock.phonecode_pc.EditFeatures.Block;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -36,11 +38,10 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
         private final TextView func2;
         private final EditText arg;
         private final LinearLayout itemBlock;
+        private final TextView lineNumber;
 
         ViewHolder(final View v, final ManageCode mc){
             super(v);
-            arg = v.findViewById(R.id.argEditText);
-            final String argText = arg.getText().toString();
             TextWatcher textWatcher = new TextWatcher() {
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -63,23 +64,29 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
                     mc.getCallback().init(position);
                 }
             };
-            arg.addTextChangedListener(textWatcher);
-            func1 = v.findViewById(R.id.func1);
-            func2 = v.findViewById(R.id.func2);
-            itemBlock = v.findViewById(R.id.itemBlock);
+            this.arg = v.findViewById(R.id.argEditText);
+            this.arg.addTextChangedListener(textWatcher);
+            this.lineNumber = v.findViewById(R.id.line_number);
+            this.func1 = v.findViewById(R.id.func1);
+            this.func2 = v.findViewById(R.id.func2);
+            this.itemBlock = v.findViewById(R.id.itemBlock);
         }
         TextView getFunc1() {
-            return func1;
+            return this.func1;
         }
         TextView getFunc2() {
-            return func2;
+            return this.func2;
         }
         EditText getArg() {
-            return arg;
+            return this.arg;
+        }
+        TextView getLineNumber(){
+            return this.lineNumber;
         }
         LinearLayout getItemBlock() {
-            return itemBlock;
+            return this.itemBlock;
         }
+
     }
 
     @Override
@@ -103,6 +110,7 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
         //todo: write here code indenting or add a tab
     }
 
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType){
         View v = LayoutInflater.from(viewGroup.getContext())
@@ -111,9 +119,10 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
     }
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        String funcString1 = blocks.get(position).func1;
-        String arg = blocks.get(position).arg;
-        String funcString2 = blocks.get(position).func2;
+        String funcString1 = this.blocks.get(position).func1;
+        String arg = this.blocks.get(position).arg;
+        String funcString2 = this.blocks.get(position).func2;
+
 
         holder.getItemBlock().setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -137,6 +146,16 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
         }
         holder.getArg().setText(arg);
         holder.getFunc2().setText(funcString2);
+        holder.getLineNumber().setText(" "+(position+1)+" ");
+        holder.getLineNumber().setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN){
+
+                }
+                return false;
+            }
+        });
     }
     private void createDialog(@NotNull ViewHolder holder){
         final String[] items = {"Remove Block", "Edit Block", "Add Block Below"};
