@@ -199,10 +199,7 @@ public class ManageCode {
         pairs.add(bracketPositions.get(i).get(position));
         return pairs;//return the ArrayList which has the positions of outermost bracket pairs
     }//deprecated
-
-    public void setLine(int line, String to) {
-        List<String> lines = Arrays.asList(this.getContent().split("\n"));
-        lines.set(line, to);
+    private void setListAsContent(List<String> lines){
         StringBuilder builder = new StringBuilder();
         for(int i = 0;i<lines.size();i++){
             builder.append(lines.get(i));
@@ -210,13 +207,20 @@ public class ManageCode {
         }
         this.setContent(builder.toString());
     }
+
+    public void setLine(int line, String to) {
+        List<String> lines = Arrays.asList(this.getContent().split("\n"));
+        lines.set(line, to);
+        this.setListAsContent(lines);
+    }
     public String getLine(int line) {
         List<String> lines = Arrays.asList(this.content.split("\n"));
         return lines.get(line);
     }
     public void removeLine(int line) {
-        List<String> lines = Arrays.asList(this.content.split("\n"));
+        ArrayList<String> lines = new ArrayList<>(Arrays.asList(this.content.split("\n")));
         lines.remove(line);
+        this.setListAsContent(lines);
     }
 
     //UI
