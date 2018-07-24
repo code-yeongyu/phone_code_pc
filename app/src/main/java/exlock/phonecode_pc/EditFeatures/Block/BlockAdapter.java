@@ -26,6 +26,10 @@ import exlock.phonecode_pc.EditFeatures.ItemTouchHelperAdapter;
 import exlock.phonecode_pc.R;
 import exlock.phonecode_pc.Tools.ManageCode;
 
+enum MenuList {
+    REMOVE, EDIT, ADD_BELOW
+}
+
 public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> implements ItemTouchHelperAdapter {
     private ManageCode mc;
     public BlockAdapter(ManageCode mc){
