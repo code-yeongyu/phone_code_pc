@@ -57,8 +57,7 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    //todo: get text's positions
-                    int position = getPosition();
+                    int position = getAdapterPosition();
 
                     BlockLists bl = mc.getBlockAdapter().blocks.get(position);
 
@@ -123,15 +122,16 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
     }
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+        position = holder.getAdapterPosition();
+        final int pos = position;
         String funcString1 = this.blocks.get(position).func1;
         String arg = this.blocks.get(position).arg;
         String funcString2 = this.blocks.get(position).func2;
 
-
         holder.getItemBlock().setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                createDialog(holder);
+                createDialog(holder, pos);
                 return true;
             }
         });
@@ -161,14 +161,27 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
             }
         });
     }
-    private void createDialog(@NotNull ViewHolder holder){
+    private void createDialog(@NotNull ViewHolder holder, final int position){
         final String[] items = {"Remove Block", "Edit Block", "Add Block Below"};
         final Context context = holder.getItemBlock().getContext();
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("")
                 .setItems(items, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, final int which) {
-                        Toast.makeText(context, "You clicked "+items[which], Toast.LENGTH_SHORT).show();
+                        MenuList[] values = MenuList.values();
+                        switch (values[which]){
+                            case REMOVE:
+                                mc.removeLine(position);
+                                mc.getBlockAdapter().notifyItemRemoved(position);
+                                mc.updateUI();
+                                break;
+                            case EDIT:
+                                Toast.makeText(context, "You clicked Edit!", Toast.LENGTH_SHORT).show();
+                                break;
+                            case ADD_BELOW:
+                                Toast.makeText(context, "You clicked Add below!", Toast.LENGTH_SHORT).show();
+                                break;
+                        }
                     }
                 });
         builder.show();
