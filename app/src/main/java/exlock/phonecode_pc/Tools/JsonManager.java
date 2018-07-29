@@ -1,5 +1,8 @@
 package exlock.phonecode_pc.Tools;
 
+import android.support.annotation.NonNull;
+
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,16 +43,18 @@ public class JsonManager {
         }
         return jsonStringResult;
     }
-    static public ArrayList<String> getJsonAllkeys(String jsonString){
+    static public ArrayList<String> getJsonAllkeys(@NonNull @NotNull String jsonString){
         ArrayList<String> keys_array = new ArrayList<>();
         try {
             JSONArray jarray = new JSONArray("[" + jsonString + "]");
             JSONObject json_array = jarray.optJSONObject(0);
-            Iterator<?> keys = json_array.keys();
-            while (keys.hasNext()) {
-                String key = (String) keys.next();
-                keys_array.add(key);
-            }
+            if(json_array != null) {
+                Iterator<?> keys = json_array.keys();
+                while (keys.hasNext()) {
+                    String key = (String) keys.next();
+                    keys_array.add(key);
+                }
+            }//todo: if json_array == null, print wrong json file
         }catch (JSONException e){
             e.printStackTrace();
             return keys_array;
