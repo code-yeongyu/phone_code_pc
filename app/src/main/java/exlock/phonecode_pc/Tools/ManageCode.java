@@ -35,7 +35,14 @@ public class ManageCode {
     public ManageCode(String path, LanguageProfile lp) {
         this.setPath(path);
         this.setLanguageProfile(lp);
-        this.loadContent();
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            file = new File(this.getPath());
+            if (file.exists()) {
+                this.setContentFromFile();//if file already exists, get content
+            } else {//if file doesn't exist, create a new file
+                this.saveContent();
+            }
+        }
         this.setBlockAdapter(new BlockAdapter(this));
         this.callback =
                 new SimpleItemTouchHelperCallback(this);
@@ -65,6 +72,8 @@ public class ManageCode {
             }
             reader.close();
             this.content = builder.toString();
+        } catch(FileNotFoundException e){
+            //todo: check permission and alert dialog or print no file
         } catch (IOException e) {
             e.printStackTrace();
         }//get file
@@ -79,16 +88,6 @@ public class ManageCode {
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }
-    }
-    private void loadContent() {
-        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            file = new File(this.getPath());
-            if (file.exists()) {
-                this.setContentFromFile();//if file already exists, get content
-            } else {//if file doesn't exist, create a new file
-                this.saveContent();
-            }
         }
     }
     public void save() {
