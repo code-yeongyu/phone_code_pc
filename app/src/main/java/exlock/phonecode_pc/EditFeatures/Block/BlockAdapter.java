@@ -61,9 +61,8 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
 
                     BlockLists bl = mc.getBlockAdapter().blocks.get(position);
 
-                    String editedText = bl.func1+s.toString()+s+bl.func2;
 
-                    mc.setLine(position, editedText);
+                    mc.setLine(position, bl.func1+s.toString()+bl.func2);
                     mc.getCallback().init(position);
                 }
             };
@@ -141,13 +140,6 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
         if(isFunc1Empty){
             return;
         }
-        boolean isFunc2Empty = funcString2.equals("");
-        holder.getArg().setVisibility(isFunc2Empty ? View.GONE : View.VISIBLE);
-        holder.getFunc2().setVisibility(isFunc2Empty ? View.GONE : View.VISIBLE);
-        holder.getFunc1().setText(funcString1);
-        if(isFunc2Empty){
-            return;
-        }
         holder.getArg().setText(arg);
         holder.getFunc2().setText(funcString2);
         holder.getLineNumber().setText(" "+(position+1)+" ");
@@ -160,6 +152,13 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
                 return false;
             }
         });
+        boolean isFunc2Empty = funcString2.equals("");
+        holder.getArg().setVisibility(isFunc2Empty ? View.GONE : View.VISIBLE);
+        holder.getFunc2().setVisibility(isFunc2Empty ? View.GONE : View.VISIBLE);
+        holder.getFunc1().setText(funcString1);
+        if(isFunc2Empty){
+            return;
+        }
     }
     private void createDialog(@NotNull ViewHolder holder, final int position){
         final String[] items = {"Remove Block", "Edit Block", "Add Block Below"};
