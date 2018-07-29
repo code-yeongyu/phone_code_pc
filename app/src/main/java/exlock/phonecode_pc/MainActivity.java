@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -20,8 +21,9 @@ public class MainActivity extends AppCompatActivity {
         Intent i = new Intent(this, EditActivity.class);
         startActivity(i);
     }
-    private void loadJson(){
-        if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {//if accessing to storage is available
+
+    private void loadJson() {
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {//if accessing to storage is available
             StringBuilder builder = new StringBuilder();
             String data;
             try {
@@ -37,9 +39,12 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = sp.edit();
                 editor.putString("profileJson", builder.toString());
                 editor.apply();
+            } catch (FileNotFoundException e) {
+                //todo: check permission and alert dialog or print no file
+                this.finishAndRemoveTask();
             } catch (IOException e) {
                 e.printStackTrace();
-            }//get file
+            }
         }
     }
 }
