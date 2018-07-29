@@ -3,15 +3,16 @@ package exlock.phonecode_pc.Tools;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -148,7 +149,6 @@ public class ManageCode {
 
     //utils
     private ArrayList<Integer> getOutermostPairs(String code){
-        //todo: fix a bug after brackets, nothing displays...
         ArrayList<Integer> pairs = new ArrayList<>();
         ArrayList<Integer> bracketPositions = new ArrayList<>();
 
@@ -156,7 +156,7 @@ public class ManageCode {
             bracketPositions.addAll(StringTools.findStringPositions(code, this.getBrackets().get(i)));
         }//put all the positions of brackets positions
 
-        if(bracketPositions.size()%2==0) {//if it's able to get pairs
+        if(!bracketPositions.isEmpty() && bracketPositions.size()%2==0) {//if it's able to get pairs
             Collections.sort(bracketPositions, new Descending());//sort bracketPositions from lower value to higher value
             pairs.add(bracketPositions.get(bracketPositions.size() - 1)+1);
             pairs.add(bracketPositions.get(0));
@@ -230,11 +230,13 @@ public class ManageCode {
         ArrayList<Integer> brackets = this.getOutermostPairs(this.getLine(line));
         if(dam==null||dam.isEmpty()) {
             if (!brackets.isEmpty()) {
-                this.getBlockAdapter().blocks.add(getBlockAdapter().getItemCount(), this.makeUIBlock(function));
+                this.getBlockAdapter().blocks.add(getBlockAdapter().getItemCount(),
+                        this.makeUIBlock(function));
                 return;
             }
         }
-        this.makeUIBlock(function, "", "");
+        this.getBlockAdapter().blocks.add(getBlockAdapter().getItemCount(),
+                this.makeUIBlock(function, "", ""));
     }
     private BlockLists makeUIBlock(String func1, String arg, String func2) {
         BlockLists bl = new BlockLists();
