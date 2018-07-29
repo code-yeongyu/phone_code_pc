@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.AddFloatingActionButton;
 
@@ -62,6 +63,7 @@ public class EditActivity extends AppCompatActivity {
 
         AddFloatingActionButton addBlockButton = findViewById(R.id.addBlockButton);
         AddFloatingActionButton addCustomBlockButton = findViewById(R.id.addCustomBlockButton);
+        AddFloatingActionButton addReservedKeywordButton = findViewById(R.id.addReserved);
 
         this.mc.addBracket("(", ")");
 
@@ -86,6 +88,12 @@ public class EditActivity extends AppCompatActivity {
                                                     }
                                                 }
         );
+        addReservedKeywordButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reservedKeywordDialog().show();
+            }
+        });
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
@@ -142,6 +150,22 @@ public class EditActivity extends AppCompatActivity {
                     }
                 })
                 .setNegativeButton("cancel", null)
+                .create();
+        return dialog;
+    }
+    private Dialog reservedKeywordDialog(){
+        ArrayList<String> list = mc.getLanguageProfile().getReserved();
+        final CharSequence[] cs = list.toArray(new CharSequence[list.size()]);
+        AlertDialog dialog = new AlertDialog.Builder(EditActivity.this)
+                .setTitle("Add a reserved keyword")
+                .setItems(cs, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mc.setContent(mc.getContent()+"\n"+cs[which]);
+                        mc.addUIBlock(cs[which].toString());
+                        mc.notifyUpdatesInUI();
+                    }
+                })
                 .create();
         return dialog;
     }
