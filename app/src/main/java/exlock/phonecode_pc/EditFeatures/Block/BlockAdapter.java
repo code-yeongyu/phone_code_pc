@@ -175,7 +175,7 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
                                 mc.updateUI();
                                 break;
                             case EDIT:
-                                Toast.makeText(context, "You clicked Edit!", Toast.LENGTH_SHORT).show();
+                                editBlockDialog(context, position).show();
                                 break;
                             case ADD_BELOW:
                                 Toast.makeText(context, "You clicked Add below!", Toast.LENGTH_SHORT).show();
@@ -188,5 +188,28 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
     @Override
     public int getItemCount() {
         return blocks.size();
+    }
+    private Dialog editBlockDialog(final Context context, final int position){
+        final EditText et = new EditText(context);
+        et.setLines(1);
+        et.setSingleLine();
+        et.setText(mc.getLine(position));
+        AlertDialog dialog = new AlertDialog.Builder(context)
+                .setTitle("Edit line "+position+1)
+                .setView(et)
+                .setPositiveButton("change", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        InputMethodManager mInputMethodManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        if(mInputMethodManager != null)
+                            mInputMethodManager.hideSoftInputFromWindow(et.getWindowToken(), 0);
+                        mc.setLine(position, et.getText().toString());
+                        mc.getBlockAdapter().notifyItemChanged(position);
+                        mc.updateUI();
+                    }
+                })
+                .setNegativeButton("cancel", null)
+                .create();
+        return dialog;
     }
 }
