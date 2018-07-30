@@ -1,18 +1,23 @@
 package exlock.phonecode_pc.EditFeatures.Block;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +27,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import exlock.phonecode_pc.EditActivity;
+import exlock.phonecode_pc.EditFeatures.CustomDialog.CategoryDialogActivity;
 import exlock.phonecode_pc.EditFeatures.ItemTouchHelperAdapter;
 import exlock.phonecode_pc.R;
 import exlock.phonecode_pc.Tools.ManageCode;
@@ -41,7 +48,7 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
         private final TextView func1;
         private final TextView func2;
         private final EditText arg;
-        private final LinearLayout itemBlock;
+        private final LinearLayout block;
         private final TextView lineNumber;
 
         ViewHolder(final View v, final ManageCode mc){
@@ -71,7 +78,7 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
             this.lineNumber = v.findViewById(R.id.line_number);
             this.func1 = v.findViewById(R.id.func1);
             this.func2 = v.findViewById(R.id.func2);
-            this.itemBlock = v.findViewById(R.id.itemBlock);
+            this.block = v.findViewById(R.id.block);
         }
         TextView getFunc1() {
             return this.func1;
@@ -85,10 +92,9 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
         TextView getLineNumber(){
             return this.lineNumber;
         }
-        LinearLayout getItemBlock() {
-            return this.itemBlock;
+        LinearLayout getblock() {
+            return this.block;
         }
-
     }
 
     @Override
@@ -108,7 +114,6 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
 
     @Override
     public void onItemDismiss(int position) {
-        
         //todo: write here code indenting or add a tab
     }
 
@@ -121,13 +126,16 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
     }
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+        
         position = holder.getAdapterPosition();
         final int pos = position;
+
         String funcString1 = this.blocks.get(position).func1;
         String arg = this.blocks.get(position).arg;
         String funcString2 = this.blocks.get(position).func2;
 
-        holder.getItemBlock().setOnLongClickListener(new View.OnLongClickListener() {
+
+        holder.getblock().setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 createDialog(holder, pos);
@@ -136,7 +144,7 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
         });
 
         boolean isFunc1Empty = funcString1.equals("");
-        holder.getItemBlock().setVisibility(isFunc1Empty ? View.VISIBLE : View.VISIBLE);
+        holder.getblock().setVisibility(isFunc1Empty ? View.VISIBLE : View.VISIBLE);
         if(isFunc1Empty){
             return;
         }
@@ -162,7 +170,7 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
     }
     private void createDialog(@NotNull ViewHolder holder, final int position){
         final String[] items = {"Remove Block", "Edit Block", "Add Block Below"};
-        final Context context = holder.getItemBlock().getContext();
+        final Context context = holder.getblock().getContext();
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("")
                 .setItems(items, new DialogInterface.OnClickListener() {
@@ -178,7 +186,9 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
                                 editBlockDialog(context, position).show();
                                 break;
                             case ADD_BELOW:
-                                Toast.makeText(context, "You clicked Add below!", Toast.LENGTH_SHORT).show();
+                                CategoryDialogActivity cda = new CategoryDialogActivity(context);
+                                cda.init(mc);
+                                cda.show();
                                 break;
                         }
                     }
