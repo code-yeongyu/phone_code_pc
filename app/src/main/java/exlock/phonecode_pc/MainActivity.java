@@ -1,8 +1,13 @@
 package exlock.phonecode_pc;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,9 +22,30 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        loadJson();
-        Intent i = new Intent(this, EditActivity.class);
-        startActivity(i);
+        if(checkAndAskPermission()) {
+            loadJson();
+            Intent i = new Intent(this, EditActivity.class);
+            startActivity(i);
+        }
+    }
+    @Override
+
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(grantResults[0]== PackageManager.PERMISSION_GRANTED){
+            loadJson();
+            Intent i = new Intent(this, EditActivity.class);
+            startActivity(i);
+        }
+    }
+    private boolean checkAndAskPermission(){
+        if(checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+            return true;
+        }
+        //if(checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        //}
+        return false;
     }
 
     private void loadJson() {
@@ -40,8 +66,7 @@ public class MainActivity extends AppCompatActivity {
                 editor.putString("profileJson", builder.toString());
                 editor.apply();
             } catch (FileNotFoundException e) {
-                //todo: check permission and alert dialog or print no file
-                this.finishAndRemoveTask();
+                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
