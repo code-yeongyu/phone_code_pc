@@ -2,6 +2,7 @@ package exlock.phonecode_pc.Tools;
 
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 
@@ -242,8 +243,12 @@ public class ManageCode {
         bl.newInstance(func1, arg, func2);
         return bl;
     }
+    @Nullable
     private BlockLists makeUIBlock(@NonNull @NotNull String func) {
         ArrayList<Integer> brackets = this.getOutermostPairs(func);
+        if(brackets.isEmpty()){
+            return this.makeUIBlock(func, "", "");
+        }
         int aValue = brackets.get(0);
         int bValue = brackets.get(1);
         String func1 = func.substring(0, aValue);
