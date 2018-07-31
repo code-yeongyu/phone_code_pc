@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Window;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ public class FunctionDialogActivity extends Dialog {
     private FunctionAdapter mAdapter;
     private String categoryName;
     private LanguageProfile lp;
+    private int line = -1;
 
     FunctionDialogActivity(Context context) { super(context); }
 
@@ -38,7 +40,15 @@ public class FunctionDialogActivity extends Dialog {
         );
         this.categoryName = categoryName;
         this.mAdapter = new FunctionAdapter();
-        this.mAdapter.init(mc, categoryName, this);
+    }
+    void init(String profileJson, String categoryName, ManageCode mc, int line){
+        this.lp = new LanguageProfile(
+                profileJson
+        );
+        this.categoryName = categoryName;
+        this.mAdapter = new FunctionAdapter();
+        this.line = line;
+        this.mAdapter.init(mc, categoryName, this, this.line);
     }
     private void updateUI(){
         this.mAdapter.lists.clear();

@@ -238,7 +238,7 @@ public class ManageCode {
         this.getBlockAdapter().blocks.add(getBlockAdapter().getItemCount(),
                 this.makeUIBlock(function, "", ""));
     }
-    private BlockLists makeUIBlock(String func1, String arg, String func2) {
+    public BlockLists makeUIBlock(String func1, String arg, String func2) {
         BlockLists bl = new BlockLists();
         bl.newInstance(func1, arg, func2);
         return bl;
@@ -278,7 +278,7 @@ public class ManageCode {
                 code,
                 StringTools
                         .findStringPositions(this.getContent(), "\n")
-                        .size()
+                        .size()-1
         );
     }
     public void updateBlock(int line){

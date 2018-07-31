@@ -1,6 +1,7 @@
 package exlock.phonecode_pc.EditFeatures.CustomDialog;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
     List<CategoryFunctionLists> lists = new ArrayList<>();
     private CategoryDialogActivity cda;
     private ManageCode mc;
+    private int line = -1;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView name;
@@ -50,10 +52,18 @@ class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
                 FunctionDialogActivity fda = new FunctionDialogActivity(holder.getView().getContext());
-                fda.init(holder.getView().getContext().getSharedPreferences("json", MODE_PRIVATE)
-                        .getString("profileJson", ""),
-                        categoryName,
-                        mc);
+                if(line == -1) {
+                    fda.init(holder.getView().getContext().getSharedPreferences("json", MODE_PRIVATE)
+                                    .getString("profileJson", ""),
+                            categoryName,
+                            mc);
+                }else{
+                    fda.init(holder.getView().getContext().getSharedPreferences("json", MODE_PRIVATE)
+                                    .getString("profileJson", ""),
+                            categoryName,
+                            mc,
+                            line);
+                }
                 fda.show();
                 cda.dismiss();
             }
@@ -62,6 +72,11 @@ class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
     void init(ManageCode mc, CategoryDialogActivity cda){
         this.mc = mc;
         this.cda = cda;
+    }
+    void init(ManageCode mc, CategoryDialogActivity cda, int line){
+        this.mc = mc;
+        this.cda = cda;
+        this.line = line;
     }
     @Override
     public int getItemCount() {

@@ -185,7 +185,7 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
                                 break;
                             case ADD_BELOW:
                                 CategoryDialogActivity cda = new CategoryDialogActivity(context);
-                                cda.init(mc);
+                                cda.init(mc, position);
                                 cda.show();
                                 break;
                         }
