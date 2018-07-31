@@ -53,9 +53,14 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
 
         ViewHolder(final View v, final ManageCode mc){
             super(v);
+            //todo: keep values inside the edit text when try to add an indent to a block
             TextWatcher textWatcher = new TextWatcher() {
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    //int position = getAdapterPosition();
+                    //BlockLists bl = mc.getBlockAdapter().blocks.get(position);
+                    //Log.d("cs", bl.func1+s.toString()+bl.func2);
+                    //mc.setLine(position, bl.func1+s.toString()+bl.func2);
                 }
 
                 @Override
@@ -64,13 +69,6 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    int position = getAdapterPosition();
-
-                    BlockLists bl = mc.getBlockAdapter().blocks.get(position);
-
-
-                    mc.setLine(position, bl.func1+s.toString()+bl.func2);
-                    mc.getCallback().init(position);
                 }
             };
             this.arg = v.findViewById(R.id.argEditText);
