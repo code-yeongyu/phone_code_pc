@@ -205,7 +205,7 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
         et.setSingleLine();
         et.setText(mc.getLine(position));
         AlertDialog dialog = new AlertDialog.Builder(context)
-                .setTitle("Edit line "+position+1)
+                .setTitle("Edit line "+(position+1))
                 .setView(et)
                 .setPositiveButton("change", new DialogInterface.OnClickListener() {
                     @Override
