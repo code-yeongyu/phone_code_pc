@@ -40,6 +40,7 @@ public class FunctionDialogActivity extends Dialog {
         );
         this.categoryName = categoryName;
         this.mAdapter = new FunctionAdapter();
+        this.mAdapter.init(mc, categoryName, this);
     }
     void init(String profileJson, String categoryName, ManageCode mc, int line){
         this.lp = new LanguageProfile(
