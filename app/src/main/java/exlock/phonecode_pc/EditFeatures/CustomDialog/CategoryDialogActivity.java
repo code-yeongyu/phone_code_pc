@@ -47,6 +47,7 @@ public class CategoryDialogActivity extends Dialog {
                     )
             );
         }
+
         this.mAdapter.notifyDataSetChanged();//update ui
     }
 }
