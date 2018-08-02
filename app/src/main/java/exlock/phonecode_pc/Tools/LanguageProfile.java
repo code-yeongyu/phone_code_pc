@@ -1,8 +1,10 @@
 package exlock.phonecode_pc.Tools;
 
-import java.util.ArrayList;
+import android.util.Log;
 
-import exlock.phonecode_pc.Tools.JsonManager;
+import org.json.JSONArray;
+
+import java.util.ArrayList;
 
 public class LanguageProfile {
     private String json, name, version;
@@ -12,14 +14,14 @@ public class LanguageProfile {
         try {
             this.json = json;
             String informsJson = JsonManager.getJsonOBJByKey(this.json, "lang_informs");
+            String symbolsJson = JsonManager.getJsonOBJByKey(json, "symbols");
+            String reservedJson = JsonManager.getJsonOBJByKey(json, "reserved");
             this.name = JsonManager.getJsonStrByKey(informsJson, "name");
             this.version = JsonManager.getJsonStrByKey(informsJson, "version");
             this.categories = JsonManager.getJsonAllkeys
                     (JsonManager.getJsonOBJByKey(json, "functions"));
-            this.symbols = JsonManager.getJsonAllkeys
-                    (JsonManager.getJsonOBJByKey(json, "symbols"));
-            this.reserved = JsonManager.getJsonAllkeys
-                    (JsonManager.getJsonOBJByKey(json, "reserved"));
+            this.symbols = JsonManager.getJsonArrByKey(symbolsJson, "normal");
+            this.reserved = JsonManager.getJsonArrByKey(reservedJson, "normal");
         }catch (Exception e){//when got wrong json file
             e.printStackTrace();
         }
@@ -30,31 +32,17 @@ public class LanguageProfile {
     public String getLanguageVersion(){
         return this.version;
     }
-    public ArrayList<String> getReserved() {
-        return this.reserved;
+    public ArrayList<String> getCategories(){
+        return this.categories;
     }
     public ArrayList<String> getSymbols() {
         return this.symbols;
     }
-    public ArrayList<String> getCategories(){
-        return this.categories;
+    public ArrayList<String> getReserved() {
+        return this.reserved;
     }
-    public ArrayList<String> getFunctions(String category){
+    public ArrayList<String> getFunctions(String categoryName){
         String jsonFunctions = JsonManager.getJsonOBJByKey(this.json, "functions");//json->function
-        String jsonCategory = JsonManager.getJsonOBJByKey(
-                jsonFunctions, category);//function->category
-        return JsonManager.getJsonAllkeys(jsonCategory);
-    }
-    public String getFunctionValue(String category, String function){
-        String jsonFunctions = JsonManager.getJsonOBJByKey(this.json, "functions");//json->function
-        String jsonCategory = JsonManager.getJsonOBJByKey(
-                jsonFunctions, category);//function->category
-        String functionValue = JsonManager.getJsonStrByKey(jsonCategory, function);//category->function value
-        //monitor the function value
-        try {
-            return functionValue;
-        }catch (Exception e){
-            return "";
-        }
+        return JsonManager.getJsonArrByKey(jsonFunctions, categoryName);
     }
 }

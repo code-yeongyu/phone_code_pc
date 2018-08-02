@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -42,6 +43,20 @@ public class JsonManager {
             e.printStackTrace();
         }
         return jsonStringResult;
+    }
+    static public ArrayList<String> getJsonArrByKey(String jsonString, String key){
+        ArrayList<String> result = new ArrayList<>();
+        try{
+            JSONArray jarray;
+            jarray = new JSONArray(getJsonStrByKey(jsonString, key));
+            for(int i=0; i < jarray.length(); i++){
+                result.add(jarray.get(i).toString());
+            }
+        }
+        catch(JSONException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
     static public ArrayList<String> getJsonAllkeys(@NonNull @NotNull String jsonString){
         ArrayList<String> keys_array = new ArrayList<>();

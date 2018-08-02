@@ -56,7 +56,9 @@ class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.ViewHolder> {
         this.fda = fda;
         this.line = line;
     }
-
+    private String convertToFuncString(String functionName){
+        return functionName+"()";
+    }
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final String functionName = lists.get(position).name;
@@ -67,7 +69,7 @@ class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.ViewHolder> {
                 @Override
                 public void onClick(View v) {
                     String content = mc.getContent();
-                    String functionValue = mc.getLanguageProfile().getFunctionValue(category, functionName);
+                    String functionValue = convertToFuncString(functionName);
                     mc.setContent(content + "\n" + functionValue);
                     mc.addUIBlock(functionValue);
                     mc.notifyUpdatesInUI();
@@ -79,7 +81,7 @@ class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.ViewHolder> {
                 @Override
                 public void onClick(View v) {
                     String content = mc.getContent();
-                    String functionValue = mc.getLanguageProfile().getFunctionValue(category, functionName);
+                    String functionValue = convertToFuncString(functionName);
                     mc.setContent(content + "\n" + functionValue);
                     BlockAdapter ba = mc.getBlockAdapter();
                     ba.blocks.add(line+1,
@@ -87,7 +89,6 @@ class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.ViewHolder> {
                     );
                     mc.notifyUpdatesInUI();
                     fda.dismiss();
-                    //todo: finish add below feature
                 }
             });
         }
