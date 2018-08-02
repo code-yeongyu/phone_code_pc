@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,17 +17,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.AddFloatingActionButton;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
-import exlock.phonecode_pc.EditFeatures.Block.BlockLists;
 import exlock.phonecode_pc.EditFeatures.CustomDialog.CategoryDialogActivity;
-import exlock.phonecode_pc.EditFeatures.SimpleItemTouchHelperCallback;
 import exlock.phonecode_pc.Tools.LanguageProfile;
 import exlock.phonecode_pc.Tools.ManageCode;
 
@@ -49,6 +43,10 @@ public class EditActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        AddFloatingActionButton addBlockButton = findViewById(R.id.addBlockButton);
+        AddFloatingActionButton addCustomBlockButton = findViewById(R.id.addCustomBlockButton);
+        AddFloatingActionButton addReservedKeywordButton = findViewById(R.id.addReserved);
+
         final LanguageProfile lp = new LanguageProfile(
                 getSharedPreferences("json", MODE_PRIVATE).getString("profileJson", "")
         );
@@ -61,16 +59,10 @@ public class EditActivity extends AppCompatActivity {
         this.mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplication()));
         this.mRecyclerView.setAdapter(this.mc.getBlockAdapter());
 
-        AddFloatingActionButton addBlockButton = findViewById(R.id.addBlockButton);
-        AddFloatingActionButton addCustomBlockButton = findViewById(R.id.addCustomBlockButton);
-        AddFloatingActionButton addReservedKeywordButton = findViewById(R.id.addReserved);
-
         this.mc.addBracket("(", ")");
 
         this.mc.updateUI();
-
-        this.mc.getTouchHelper().attachToRecyclerView(mRecyclerView);
-
+        this.mc.getTouchHelper().attachToRecyclerView(this.mRecyclerView);
 
         addBlockButton.setOnClickListener(new View.OnClickListener() {
                                               @Override
@@ -130,6 +122,7 @@ public class EditActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
     private Dialog customBlockDialog(){
         final EditText et = new EditText(EditActivity.this);
         et.setLines(1);
