@@ -2,7 +2,7 @@
     <string name="app_name">PhoneCode-PC</string>
     <string name="title_activity_edit">EditActivity</string>
 
-    <string name="add_block">Add a block</string>
+    <string name="add_func_block">Add a function block</string>
     <string name="add_custom_block">Add a custom block</string>
     <string name="add_reserved">Add reserved keyword</string>
     <string name="add_object">Create object</string>
