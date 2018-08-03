@@ -1,14 +1,11 @@
 package exlock.phonecode_pc.Tools;
 
-import android.util.Log;
-
-import org.json.JSONArray;
-
 import java.util.ArrayList;
 
 public class LanguageProfile {
-    private String json, name, version;
+    private String json, name, version, wayToCreateVar;
     private ArrayList<String> categories, symbols, reserved;
+    private ArrayList<String> reservedObject;
 
     public LanguageProfile(String json){
         try {
@@ -18,10 +15,12 @@ public class LanguageProfile {
             String reservedJson = JsonManager.getJsonOBJByKey(json, "reserved");
             this.name = JsonManager.getJsonStrByKey(informsJson, "name");
             this.version = JsonManager.getJsonStrByKey(informsJson, "version");
+            this.wayToCreateVar = JsonManager.getJsonStrByKey(informsJson, "way_to_create_var");
             this.categories = JsonManager.getJsonAllkeys
                     (JsonManager.getJsonOBJByKey(json, "functions"));
             this.symbols = JsonManager.getJsonArrByKey(symbolsJson, "normal");
             this.reserved = JsonManager.getJsonArrByKey(reservedJson, "normal");
+            this.reservedObject = JsonManager.getJsonArrByKey(reservedJson, "object");
         }catch (Exception e){//when got wrong json file
             e.printStackTrace();
         }
@@ -32,6 +31,9 @@ public class LanguageProfile {
     public String getLanguageVersion(){
         return this.version;
     }
+    public String getWayToCreateVar(){
+        return this.wayToCreateVar;
+    }
     public ArrayList<String> getCategories(){
         return this.categories;
     }
@@ -40,6 +42,9 @@ public class LanguageProfile {
     }
     public ArrayList<String> getReserved() {
         return this.reserved;
+    }
+    public ArrayList<String> getReservedObject() {
+        return this.reservedObject;
     }
     public ArrayList<String> getFunctions(String categoryName){
         String jsonFunctions = JsonManager.getJsonOBJByKey(this.json, "functions");//json->function
