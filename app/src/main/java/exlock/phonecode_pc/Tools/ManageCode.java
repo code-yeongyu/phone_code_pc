@@ -14,10 +14,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import exlock.phonecode_pc.EditFeatures.Block.BlockAdapter;
 import exlock.phonecode_pc.EditFeatures.Block.BlockLists;
@@ -246,10 +249,10 @@ public class ManageCode {
         if(dam==null||dam.isEmpty()) {
             if (!brackets.isEmpty()) {
                 this.getBlockAdapter().blocks.add(getBlockAdapter().getItemCount(),
-                        this.makeUIBlock(function));
+                        this.makeUIBlock(function, brackets));
                 return;
             }
-        }
+        }//if has brackets
         this.getBlockAdapter().blocks.add(getBlockAdapter().getItemCount(),
                 this.makeUIBlock(function, "", ""));
     }
@@ -259,8 +262,7 @@ public class ManageCode {
         return bl;
     }
     @Nullable
-    private BlockLists makeUIBlock(@NonNull @NotNull String func) {
-        ArrayList<Integer> brackets = this.getOutermostPairs(func);
+    private BlockLists makeUIBlock(@NonNull @NotNull String func, ArrayList<Integer> brackets) {
         if(brackets.isEmpty()){
             return this.makeUIBlock(func, "", "");
         }
@@ -297,8 +299,9 @@ public class ManageCode {
         );
     }
     public void updateBlock(int line){
-        List<String> lines = Arrays.asList(this.getContent().split("\n"));
-        BlockLists bl = this.makeUIBlock(lines.get(line));
+        String target = this.getLine(line);
+        ArrayList<Integer> brackets = this.getOutermostPairs(target);
+        BlockLists bl = this.makeUIBlock(target, brackets);
         this.getBlockAdapter().blocks.set(line, bl);
     }
     //Todo: set indent
