@@ -1,7 +1,8 @@
 {
     "lang_informs": {
         "name": "python",
-        "version": "3.6.5"
+        "version": "3.6.5",
+		"way_to_create_var":"="
     },
     "functions": {
         "built-in": [
@@ -81,10 +82,6 @@
             "=",
             ">",
             "!",
-            "is",
-            "not",
-            "or",
-            "and",
             "+",
             "-",
             "*",
@@ -98,9 +95,6 @@
             "{",
             "}",
             "@"
-        ],
-        "indent": [
-            ":"
         ]
     },
     "reserved": {
@@ -137,7 +131,7 @@
             "assert",
             "pass"
         ],
-        "objects": [
+        "object": [
             "def",
             "class"
         ]
