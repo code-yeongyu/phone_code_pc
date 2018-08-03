@@ -23,6 +23,7 @@
             android:name=".EditActivity"
             android:label="@string/title_activity_edit"
             android:theme="@style/AppTheme" />
+        <activity android:name=".SettingActivity"></activity>
     </application>
 
 </manifest>
