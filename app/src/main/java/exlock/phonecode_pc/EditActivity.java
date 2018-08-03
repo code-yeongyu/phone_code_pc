@@ -22,6 +22,8 @@ import com.getbase.floatingactionbutton.AddFloatingActionButton;
 
 import java.util.ArrayList;
 
+import javax.xml.validation.Validator;
+
 import exlock.phonecode_pc.EditFeatures.CustomDialog.CategoryDialogActivity;
 import exlock.phonecode_pc.Tools.LanguageProfile;
 import exlock.phonecode_pc.Tools.ManageCode;
@@ -46,6 +48,7 @@ public class EditActivity extends AppCompatActivity {
         AddFloatingActionButton addBlockButton = findViewById(R.id.addBlockButton);
         AddFloatingActionButton addCustomBlockButton = findViewById(R.id.addCustomBlockButton);
         AddFloatingActionButton addReservedKeywordButton = findViewById(R.id.addReserved);
+        AddFloatingActionButton addObjectButton = findViewById(R.id.addObject);
 
         final LanguageProfile lp = new LanguageProfile(
                 getSharedPreferences("json", MODE_PRIVATE).getString("profileJson", "")
@@ -84,6 +87,12 @@ public class EditActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 reservedKeywordDialog().show();
+            }
+        });
+        addObjectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                objectDialog().show();
             }
         });
     }
@@ -159,6 +168,92 @@ public class EditActivity extends AppCompatActivity {
                         mc.notifyUpdatesInUI();
                     }
                 })
+                .create();
+        return dialog;
+    }
+    private boolean isPUT_VALUEAdded = false;
+    private Dialog objectDialog(){
+        ArrayList<String> list = mc.getLanguageProfile().getReservedObject();
+        final String PUT_VALUE = "[PUT VALUE IN A VARIABLE]";
+        if(!isPUT_VALUEAdded&&mc.getLanguageProfile().getWayToCreateVar().equals("=")){
+            list.add(PUT_VALUE);
+            isPUT_VALUEAdded = true;
+        }//todo: add more conditional states for other languages(this only works in python)
+        final CharSequence[] cs = list.toArray(new CharSequence[list.size()]);
+        AlertDialog dialog = new AlertDialog.Builder(EditActivity.this)
+                .setTitle("Create an object")
+                .setItems(cs, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String value = cs[which].toString();
+                        objectCreateDialog(value).show();
+                    }
+                })
+                .create();
+        return dialog;
+    }
+    private Dialog objectCreateDialog(final String value){
+        final EditText et = new EditText(EditActivity.this);
+        et.setLines(1);
+        et.setSingleLine();
+        if(value.equals("[PUT VALUE IN A VARIABLE]")){
+            AlertDialog dialog = new AlertDialog.Builder(EditActivity.this)
+                    .setTitle("Type the name of variable")
+                    .setView(et)
+                    .setPositiveButton("done", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            InputMethodManager mInputMethodManager = (InputMethodManager) getApplication().getSystemService(Context.INPUT_METHOD_SERVICE);
+                            if(mInputMethodManager != null)
+                                mInputMethodManager.hideSoftInputFromWindow(et.getWindowToken(), 0);
+                            String final_value = et.getText().toString()+mc.getLanguageProfile().getWayToCreateVar();
+
+                            varValueCreateDialog(final_value).show();
+                        }
+                    })
+                    .setNegativeButton("cancel", null)
+                    .create();
+            return dialog;
+        }
+        AlertDialog dialog = new AlertDialog.Builder(EditActivity.this)
+                .setTitle("Create an object")
+                .setView(et)
+                .setPositiveButton("create", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        InputMethodManager mInputMethodManager = (InputMethodManager) getApplication().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        if(mInputMethodManager != null)
+                            mInputMethodManager.hideSoftInputFromWindow(et.getWindowToken(), 0);
+                        String final_value = value+" "+et.getText().toString();
+                        mc.setContent(mc.getContent()+"\n"+final_value);
+                        mc.addUIBlock(final_value);
+                        mc.notifyUpdatesInUI();
+                    }
+                })
+                .setNegativeButton("cancel", null)
+                .create();
+        return dialog;
+    }
+    private Dialog varValueCreateDialog(final String VALUE){
+        final EditText et = new EditText(EditActivity.this);
+        et.setLines(1);
+        et.setSingleLine();
+        AlertDialog dialog = new AlertDialog.Builder(EditActivity.this)
+                .setTitle("Type the value of variable")
+                .setView(et)
+                .setPositiveButton("done", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        InputMethodManager mInputMethodManager = (InputMethodManager) getApplication().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        if(mInputMethodManager != null)
+                            mInputMethodManager.hideSoftInputFromWindow(et.getWindowToken(), 0);
+                            String final_value = VALUE+et.getText().toString();
+                            mc.setContent(mc.getContent()+"\n"+final_value);
+                            mc.addUIBlock(final_value);
+                            mc.notifyUpdatesInUI();
+                        }
+                })
+                .setNegativeButton("cancel", null)
                 .create();
         return dialog;
     }
