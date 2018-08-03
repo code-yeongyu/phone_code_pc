@@ -222,6 +222,21 @@ public class ManageCode {
         lines.remove(line);
         this.setListAsContent(lines);
     }
+    public ArrayList<String> getFunctionsInCode(){
+        List<String> lines = Arrays.asList(this.content.split("\n"));
+        ArrayList<String> result = new ArrayList<>();
+        for(int i = 0;i<lines.size();i++){
+            String line = lines.get(i);
+            ArrayList<Integer> pairs = this.getOutermostPairs(line);
+            if(!pairs.isEmpty()){//if targeting line has brackets
+                result.add(line.substring(0, pairs.get(0)-1));
+            }
+        }
+        Set<String> set = new LinkedHashSet<>(result);
+        result.clear();
+        result.addAll(set);
+        return result;
+    }
 
     //UI
     private void addBlock(String function, int line) {
