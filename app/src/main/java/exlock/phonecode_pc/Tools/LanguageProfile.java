@@ -8,8 +8,8 @@ public class LanguageProfile {
     private ArrayList<String> reservedObject;
 
     public LanguageProfile(String json){
+        this.json = json;
         try {
-            this.json = json;
             String informsJson = JsonManager.getJsonOBJByKey(this.json, "lang_informs");
             String symbolsJson = JsonManager.getJsonOBJByKey(json, "symbols");
             String reservedJson = JsonManager.getJsonOBJByKey(json, "reserved");
