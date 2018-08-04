@@ -235,6 +235,10 @@ public class ManageCode {
                 result.add(line.substring(0, pairs.get(0)-1));
             }
         }
+        for(int i = 0;i<result.size();i++){
+            String target = result.get(i);
+            result.set(i,target.replaceAll("\\s+","").replaceAll("\t", ""));//remove blanks
+        }
         Set<String> set = new LinkedHashSet<>(result);
         result.clear();
         result.addAll(set);
@@ -295,7 +299,7 @@ public class ManageCode {
                 code,
                 StringTools
                         .findStringPositions(this.getContent(), "\n")
-                        .size()-1
+                        .size()
         );
     }
     public void updateBlock(int line){
