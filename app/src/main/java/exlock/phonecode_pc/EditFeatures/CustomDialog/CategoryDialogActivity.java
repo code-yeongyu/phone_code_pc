@@ -40,6 +40,11 @@ public class CategoryDialogActivity extends Dialog {
 
         this.mAdapter.lists.clear();
         ArrayList<String> categories = this.mc.getLanguageProfile().getCategories();
+        ArrayList<String> funcs = mc.getFunctionsInCode();
+
+        if(!funcs.isEmpty()){
+            this.mAdapter.lists.add(new CategoryFunctionLists().newInstance("used functions"));
+        }
         for(int i = 0;i<categories.size();i++){
             this.mAdapter.lists.add(this.mAdapter.getItemCount(),
                     new CategoryFunctionLists().newInstance(
