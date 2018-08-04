@@ -18,7 +18,6 @@ class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.ViewHolder> {
 
     List<CategoryFunctionLists> lists = new ArrayList<>();
     private ManageCode mc;
-    private String category;
     private FunctionDialogActivity fda;
     private int line = -1;
 
@@ -44,15 +43,13 @@ class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.ViewHolder> {
         return new ViewHolder(v);
     }
 
-    void init(ManageCode mc, String category, FunctionDialogActivity fda){
+    void init(ManageCode mc, FunctionDialogActivity fda){
         this.mc = mc;
-        this.category = category;
         this.fda = fda;
     }
 
-    void init(ManageCode mc, String category, FunctionDialogActivity fda, int line){
+    void init(ManageCode mc, FunctionDialogActivity fda, int line){
         this.mc = mc;
-        this.category = category;
         this.fda = fda;
         this.line = line;
     }
