@@ -25,7 +25,8 @@ public class SettingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent();
-                i.setAction(Intent.ACTION_GET_CONTENT);
+                i.setAction(Intent.ACTION_OPEN_DOCUMENT);
+                i.setType("application/*");
                 i.addCategory(Intent.CATEGORY_OPENABLE);
                     startActivityForResult(Intent.createChooser(i,"Select the language profiies"), 0);
             }
