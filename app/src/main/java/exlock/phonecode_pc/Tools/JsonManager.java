@@ -1,5 +1,7 @@
 package exlock.phonecode_pc.Tools;
 
+import android.content.SharedPreferences;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 
 import org.jetbrains.annotations.NotNull;
@@ -7,11 +9,39 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class JsonManager {
+    static public String getJsonFromPath(String path) {
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {//if accessing to storage is available
+            StringBuilder builder = new StringBuilder();
+            String data;
+            try {
+                BufferedReader reader = new BufferedReader(new FileReader(path));//get profile json from set path
+                data = reader.readLine();
+                while (data != null) {
+                    builder.append(data);
+                    data = reader.readLine();
+                }//get json string from file
+                reader.close();
+                return builder.toString();
+            } catch (FileNotFoundException e) {
+                return "noFile";
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
     static public String getJsonOBJByKey(String jsonString, String key){
         String jsonStringResult = "";
         try{
