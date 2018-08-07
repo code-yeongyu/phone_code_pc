@@ -11,8 +11,10 @@ import android.view.Window;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
+import exlock.phonecode_pc.Tools.JsonManager;
 import exlock.phonecode_pc.Tools.LanguageProfile;
 import exlock.phonecode_pc.R;
+import exlock.phonecode_pc.Tools.LanguageProfileMember;
 import exlock.phonecode_pc.Tools.ManageCode;
 
 public class FunctionDialogActivity extends Dialog {
@@ -37,18 +39,18 @@ public class FunctionDialogActivity extends Dialog {
         updateUI();
     }
     void init(String profileJson, String categoryName, ManageCode mc){
-        this.lp = new LanguageProfile(
-                profileJson
-        );
+        LanguageProfileMember lpm = LanguageProfile.getProfileMembers(profileJson);
+        if(lpm!=null)
+            this.lp = new LanguageProfile(lpm);
         this.categoryName = categoryName;
         this.mAdapter = new FunctionAdapter();
         this.mc = mc;
         this.mAdapter.init(mc, this);
     }
     void init(String profileJson, String categoryName, ManageCode mc, int line){
-        this.lp = new LanguageProfile(
-                profileJson
-        );
+        LanguageProfileMember lpm = LanguageProfile.getProfileMembers(profileJson);
+        if(lpm!=null)
+            this.lp = new LanguageProfile(lpm);
         this.categoryName = categoryName;
         this.mAdapter = new FunctionAdapter();
         this.line = line;
