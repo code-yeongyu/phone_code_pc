@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
     }
     public void loadJsonToSharedPreferences(){
         String path = Environment.getExternalStorageDirectory() + "/PhoneCode/language1.json";//set path
-
         SharedPreferences sp = getSharedPreferences("json", MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("profileJson", JsonManager.getJsonFromPath(path));
