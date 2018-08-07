@@ -26,6 +26,7 @@ import javax.xml.validation.Validator;
 
 import exlock.phonecode_pc.EditFeatures.CustomDialog.CategoryDialogActivity;
 import exlock.phonecode_pc.Tools.LanguageProfile;
+import exlock.phonecode_pc.Tools.LanguageProfileMember;
 import exlock.phonecode_pc.Tools.ManageCode;
 
 public class EditActivity extends AppCompatActivity {
@@ -49,13 +50,19 @@ public class EditActivity extends AppCompatActivity {
         AddFloatingActionButton addCustomBlockButton = findViewById(R.id.addCustomBlockButton);
         AddFloatingActionButton addReservedKeywordButton = findViewById(R.id.addReserved);
         AddFloatingActionButton addObjectButton = findViewById(R.id.addObject);
-
-        final LanguageProfile lp = new LanguageProfile(
-                getSharedPreferences("json", MODE_PRIVATE).getString("profileJson", "")
+        LanguageProfileMember lpm = LanguageProfile.getProfileMembers(
+                getSharedPreferences("json", MODE_PRIVATE)
+                        .getString("profileJson", "")
         );
+        final LanguageProfile lp;
+        if(lpm!=null){
+            lp = new LanguageProfile(lpm);
+            this.mc = new ManageCode(this.testPath, lp);//only for testing. Directory will be able to change in the future
+        }else{
+            finish();
+        }
         this.codeEditor = findViewById(R.id.textEditor);
 
-        this.mc = new ManageCode(this.testPath, lp);//only for testing. Directory will be able to change in the future
 
         this.mRecyclerView = findViewById(R.id.blocksView);
         this.mRecyclerView.setNestedScrollingEnabled(false);
