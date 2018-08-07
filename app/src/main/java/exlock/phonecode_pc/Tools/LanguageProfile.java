@@ -1,5 +1,7 @@
 package exlock.phonecode_pc.Tools;
 
+import android.support.annotation.Nullable;
+
 import java.util.ArrayList;
 
 public class LanguageProfile {
@@ -7,23 +9,49 @@ public class LanguageProfile {
     private ArrayList<String> categories, symbols, reserved;
     private ArrayList<String> reservedObject;
 
-    public LanguageProfile(String json){
-        this.json = json;
+    @Nullable
+    public static LanguageProfileMember getProfileMembers(String json){
+        String name, version, wayToCreateVar;
+        ArrayList<String> categories, symbols, reserved, reservedObject;
+        LanguageProfileMember lpm = new LanguageProfileMember();
         try {
-            String informsJson = JsonManager.getJsonOBJByKey(this.json, "lang_informs");
+            String informsJson = JsonManager.getJsonOBJByKey(json, "lang_informs");
             String symbolsJson = JsonManager.getJsonOBJByKey(json, "symbols");
             String reservedJson = JsonManager.getJsonOBJByKey(json, "reserved");
-            this.name = JsonManager.getJsonStrByKey(informsJson, "name");
-            this.version = JsonManager.getJsonStrByKey(informsJson, "version");
-            this.wayToCreateVar = JsonManager.getJsonStrByKey(informsJson, "way_to_create_var");
-            this.categories = JsonManager.getJsonAllkeys
+
+            name = JsonManager.getJsonStrByKey(informsJson, "name");
+            version = JsonManager.getJsonStrByKey(informsJson, "version");
+            wayToCreateVar = JsonManager.getJsonStrByKey(informsJson, "way_to_create_var");
+            categories = JsonManager.getJsonAllkeys
                     (JsonManager.getJsonOBJByKey(json, "functions"));
-            this.symbols = JsonManager.getJsonArrByKey(symbolsJson, "normal");
-            this.reserved = JsonManager.getJsonArrByKey(reservedJson, "normal");
-            this.reservedObject = JsonManager.getJsonArrByKey(reservedJson, "object");
+            symbols = JsonManager.getJsonArrByKey(symbolsJson, "normal");
+            reserved = JsonManager.getJsonArrByKey(reservedJson, "normal");
+            reservedObject = JsonManager.getJsonArrByKey(reservedJson, "object");
+
+            lpm.json = json;
+            lpm.name = name;
+            lpm.version = version;
+            lpm.wayToCreateVar = wayToCreateVar;
+            lpm.categories = categories;
+            lpm.symbols = symbols;
+            lpm.reserved = reserved;
+            lpm.reservedObject = reservedObject;
+
+            return lpm;
         }catch (Exception e){//when got wrong json file
-            e.printStackTrace();
+            return null;//not valid profile
         }
+    }
+
+    public LanguageProfile(LanguageProfileMember lpm){
+        this.json = lpm.json;
+        this.name = lpm.name;
+        this.version = lpm.version;
+        this.wayToCreateVar = lpm.wayToCreateVar;
+        this.categories = lpm.categories;
+        this.symbols = lpm.symbols;
+        this.reserved = lpm.reserved;
+        this.reservedObject = lpm.reservedObject;
     }
     public String getLanguageName(){
         return this.name;
