@@ -18,4 +18,6 @@
     <string name="action_textmode">Text mode</string>
     <string name="action_blockmode">Block mode</string>
 
+    <string name="toast_not_json">Please select a json file.</string>
+    <string name="toast_wrong_json">This is not an valid profile.</string>
 </resources>
