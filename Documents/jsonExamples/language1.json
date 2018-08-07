@@ -2,7 +2,8 @@
     "lang_informs": {
         "name": "python",
         "version": "3.6.5",
-		"way_to_create_var":"="
+        "way_to_create_var":"=",
+        "indent":"    "
     },
     "functions": {
         "built-in": [
