@@ -20,4 +20,7 @@
 
     <string name="toast_not_json">Please select a json file.</string>
     <string name="toast_wrong_json">This is not an valid profile.</string>
+
+    <string name="setting_set_indent">Set indent</string>
+    <string name="setting_choose_language_profile">Choose the language profile</string>
 </resources>
