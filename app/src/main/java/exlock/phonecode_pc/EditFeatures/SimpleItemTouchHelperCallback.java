@@ -40,14 +40,13 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
         int position = viewHolder.getAdapterPosition();
-        BlockLists bl = this.mc.getBlockAdapter().blocks.get(position);
         String target;
 
         target = this.mc.getLine(position);
-
+        String indent = mc.getLanguageProfile().getIndent();
         if(direction==ItemTouchHelper.RIGHT){
             this.mc.setLine(position, mc.getLanguageProfile().getIndent()+target);
-        }else if(direction==ItemTouchHelper.LEFT && target.charAt(0)=='\t'){
+        }else if(direction==ItemTouchHelper.LEFT && target.substring(0, indent.length()).equals(mc.getLanguageProfile().getIndent())){
             this.mc.setLine(position, target.substring(1, target.length()));
         }
         this.mc.updateBlock(position);
