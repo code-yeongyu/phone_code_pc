@@ -17,6 +17,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+import exlock.phonecode_pc.Tools.JsonManager;
+
 public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +35,13 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(grantResults[0]== PackageManager.PERMISSION_GRANTED){
-            loadJson();
+            String path = Environment.getExternalStorageDirectory() + "/PhoneCode/language1.json";//set path
+
+            SharedPreferences sp = getSharedPreferences("json", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sp.edit();
+            editor.putString("profileJson", JsonManager.getJsonFromPath(path));
+            editor.apply();
+
             Intent i = new Intent(this, EditActivity.class);
             startActivity(i);
         }
@@ -44,30 +52,5 @@ public class MainActivity extends AppCompatActivity {
         }
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
         return false;
-    }
-
-    private void loadJson() {
-        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {//if accessing to storage is available
-            StringBuilder builder = new StringBuilder();
-            String data;
-            try {
-                String path = Environment.getExternalStorageDirectory() + "/PhoneCode/language1.json";//set path
-                BufferedReader reader = new BufferedReader(new FileReader(path));//get profile json from set path
-                data = reader.readLine();
-                while (data != null) {
-                    builder.append(data);
-                    data = reader.readLine();
-                }//get json string from file
-                reader.close();
-                SharedPreferences sp = getSharedPreferences("json", MODE_PRIVATE);
-                SharedPreferences.Editor editor = sp.edit();
-                editor.putString("profileJson", builder.toString());
-                editor.apply();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 }
