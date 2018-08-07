@@ -33,7 +33,7 @@
             android:id="@+id/settingIndentTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView"
+            android:text="@string/setting_set_indent"
             android:textSize="30sp"
             tools:layout_editor_absoluteX="4dp"
             tools:layout_editor_absoluteY="7dp" />
@@ -47,7 +47,7 @@
             android:id="@+id/settingLanguageProfileTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView"
+            android:text="@string/setting_choose_language_profile"
             android:textSize="30sp"
             tools:layout_editor_absoluteX="4dp"
             tools:layout_editor_absoluteY="7dp" />
