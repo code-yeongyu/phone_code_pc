@@ -1,19 +1,28 @@
 package exlock.phonecode_pc;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Environment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import android.net.Uri;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+
 import exlock.phonecode_pc.Tools.JsonManager;
 import exlock.phonecode_pc.Tools.LanguageProfile;
+import exlock.phonecode_pc.Tools.LanguageProfileMember;
 
 public class SettingActivity extends AppCompatActivity {
 
@@ -21,12 +30,16 @@ public class SettingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
-        TextView indentSetting = findViewById(R.id.settingIndentTextView);
+        final TextView indentSetting = findViewById(R.id.settingIndentTextView);
         TextView profileSetting = findViewById(R.id.settingLanguageProfileTextView);
+
+        final String jsonString = getSharedPreferences("json", MODE_PRIVATE)
+                        .getString("profileJson", "");
+
         indentSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(SettingActivity.this, "On development", Toast.LENGTH_SHORT).show();
+                indentSetDialog(jsonString).show();
             }
         });
         profileSetting.setOnClickListener(new View.OnClickListener() {
@@ -66,5 +79,48 @@ public class SettingActivity extends AppCompatActivity {
                 editor.apply();
             }
         }
+    }
+    private Dialog indentSetDialog(final String jsonString){
+        ArrayList<String> temp = new ArrayList<>();
+        final String twoSpace = getString(R.string.setting_indent_two_space);
+        final String fourSpace = getString(R.string.setting_indent_four_space);
+        final String eightSpace = getString(R.string.setting_indent_eight_space);
+        final String oneTab = getString(R.string.setting_indent_one_tab);
+        final String twoTab = getString(R.string.setting_indent_two_tab);
+        temp.add(twoSpace);
+        temp.add(fourSpace);
+        temp.add(eightSpace);
+        temp.add(oneTab);
+        temp.add(twoTab);
+
+        final List<String> list = temp;
+        final CharSequence[] cs = list.toArray(new CharSequence[list.size()]);
+        AlertDialog dialog = new AlertDialog.Builder(SettingActivity.this)
+                .setTitle("Add a reserved keyword")
+                .setItems(cs, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String selected = list.get(which);
+                        String result = "";
+                        if(selected.equals(twoSpace)){
+                            result = "  ";
+                        }else if(selected.equals(fourSpace)){
+                            result = "    ";
+                        }else if(selected.equals(eightSpace)){
+                            result = "        ";
+                        }else if(selected.equals(oneTab)){
+                            result = "\t";
+                        }else if(selected.equals(twoTab)){
+                            result = "\t\t";
+                        }
+                        String modifiedJson = JsonManager.modifyJsonByKey(jsonString, "lang_informs", "indent", result);
+                        SharedPreferences sp = getSharedPreferences("json", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sp.edit();
+                        editor.putString("profileJson", modifiedJson);
+                        editor.apply();
+                    }
+                })
+                .create();
+        return dialog;
     }
 }

@@ -5,13 +5,13 @@ import android.support.annotation.Nullable;
 import java.util.ArrayList;
 
 public class LanguageProfile {
-    private String json, name, version, wayToCreateVar;
+    private String json, name, indent, version, wayToCreateVar;
     private ArrayList<String> categories, symbols, reserved;
     private ArrayList<String> reservedObject;
 
     @Nullable
     public static LanguageProfileMember getProfileMembers(String json){
-        String name, version, wayToCreateVar;
+        String name, version, wayToCreateVar, indent;
         ArrayList<String> categories, symbols, reserved, reservedObject;
         LanguageProfileMember lpm = new LanguageProfileMember();
         try {
@@ -20,6 +20,7 @@ public class LanguageProfile {
             String reservedJson = JsonManager.getJsonOBJByKey(json, "reserved");
 
             name = JsonManager.getJsonStrByKey(informsJson, "name");
+            indent = JsonManager.getJsonStrByKey(informsJson, "indent");
             version = JsonManager.getJsonStrByKey(informsJson, "version");
             wayToCreateVar = JsonManager.getJsonStrByKey(informsJson, "way_to_create_var");
             categories = JsonManager.getJsonAllkeys
@@ -30,6 +31,7 @@ public class LanguageProfile {
 
             lpm.json = json;
             lpm.name = name;
+            lpm.indent = indent;
             lpm.version = version;
             lpm.wayToCreateVar = wayToCreateVar;
             lpm.categories = categories;
@@ -46,6 +48,7 @@ public class LanguageProfile {
     public LanguageProfile(LanguageProfileMember lpm){
         this.json = lpm.json;
         this.name = lpm.name;
+        this.indent = lpm.indent;
         this.version = lpm.version;
         this.wayToCreateVar = lpm.wayToCreateVar;
         this.categories = lpm.categories;
@@ -56,6 +59,7 @@ public class LanguageProfile {
     public String getLanguageName(){
         return this.name;
     }
+    public String getIndent() { return this.indent; }
     public String getLanguageVersion(){
         return this.version;
     }

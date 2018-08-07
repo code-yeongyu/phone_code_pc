@@ -42,6 +42,24 @@ public class JsonManager {
         return null;
     }
 
+    static public String modifyJsonByKey(String jsonString, String position, String key, String value) {
+        String jsonStringResult = "";
+        try{
+            JSONArray jarray;
+            JSONObject jObject;
+            jarray = new JSONArray("["+jsonString+"]");
+            for(int i=0; i < jarray.length(); i++){
+                jObject = jarray.getJSONObject(i);
+                jObject.getJSONObject(position).put(key, value);
+                jsonStringResult = jObject.toString();
+            }
+        }
+        catch(JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonStringResult;
+    }
+
     static public String getJsonOBJByKey(String jsonString, String key){
         String jsonStringResult = "";
         try{

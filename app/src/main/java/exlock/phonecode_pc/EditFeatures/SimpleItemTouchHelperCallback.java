@@ -46,7 +46,7 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
         target = this.mc.getLine(position);
 
         if(direction==ItemTouchHelper.RIGHT){
-            this.mc.setLine(position, "\t"+target);
+            this.mc.setLine(position, mc.getLanguageProfile().getIndent()+target);
         }else if(direction==ItemTouchHelper.LEFT && target.charAt(0)=='\t'){
             this.mc.setLine(position, target.substring(1, target.length()));
         }
