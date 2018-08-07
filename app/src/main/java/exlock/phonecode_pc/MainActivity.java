@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if(checkAndAskPermission()) {
-            loadJson();
+            this.loadJsonToSharedPreferences();
             Intent i = new Intent(this, SettingActivity.class);
             startActivity(i);
         }
@@ -35,13 +35,7 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(grantResults[0]== PackageManager.PERMISSION_GRANTED){
-            String path = Environment.getExternalStorageDirectory() + "/PhoneCode/language1.json";//set path
-
-            SharedPreferences sp = getSharedPreferences("json", MODE_PRIVATE);
-            SharedPreferences.Editor editor = sp.edit();
-            editor.putString("profileJson", JsonManager.getJsonFromPath(path));
-            editor.apply();
-
+            this.loadJsonToSharedPreferences();
             Intent i = new Intent(this, EditActivity.class);
             startActivity(i);
         }
@@ -52,5 +46,13 @@ public class MainActivity extends AppCompatActivity {
         }
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
         return false;
+    }
+    public void loadJsonToSharedPreferences(){
+        String path = Environment.getExternalStorageDirectory() + "/PhoneCode/language1.json";//set path
+
+        SharedPreferences sp = getSharedPreferences("json", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("profileJson", JsonManager.getJsonFromPath(path));
+        editor.apply();
     }
 }
