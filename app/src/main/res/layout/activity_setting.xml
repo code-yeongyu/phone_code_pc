@@ -57,6 +57,15 @@
             android:layout_height="1dp"
             android:background="#bbbbbb" />
 
+        <TextView
+            android:id="@+id/settingAddLanguageProfileTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/setting_add_language_profile"
+            android:textSize="30sp"
+            tools:layout_editor_absoluteX="4dp"
+            tools:layout_editor_absoluteY="7dp" />
+
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
