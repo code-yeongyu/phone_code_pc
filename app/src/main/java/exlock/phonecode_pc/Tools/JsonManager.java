@@ -1,8 +1,8 @@
 package exlock.phonecode_pc.Tools;
 
-import android.content.SharedPreferences;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -13,11 +13,8 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
-
-import static android.content.Context.MODE_PRIVATE;
 
 public class JsonManager {
     static public String getJsonFromPath(String path) {
@@ -123,5 +120,22 @@ public class JsonManager {
             return keys_array;
         }
         return keys_array;
+    }
+    @Nullable
+    static public Object addJsonKeyToArray(@NonNull @NotNull String jsonString, String key, ArrayList<String> value){
+        JSONObject jObj;
+        try {
+            JSONArray jArray = new JSONArray("["+jsonString+"]");
+            JSONArray temp = new JSONArray();
+            for(int i = 0;i<value.size();i++) {
+                temp.put(value.get(i));
+            }
+            jObj = jArray.optJSONObject(0);
+            jObj.put(key, temp);
+            return jObj;
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+        return null;
     }
 }
