@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,10 +21,8 @@ import com.getbase.floatingactionbutton.AddFloatingActionButton;
 
 import java.util.ArrayList;
 
-import javax.xml.validation.Validator;
-
 import exlock.phonecode_pc.EditFeatures.CustomDialog.CategoryDialogActivity;
-import exlock.phonecode_pc.Tools.LanguageProfile;
+import exlock.phonecode_pc.Tools.LanguageProfileJsonReader;
 import exlock.phonecode_pc.Tools.LanguageProfileMember;
 import exlock.phonecode_pc.Tools.ManageCode;
 
@@ -50,13 +47,13 @@ public class EditActivity extends AppCompatActivity {
         AddFloatingActionButton addCustomBlockButton = findViewById(R.id.addCustomBlockButton);
         AddFloatingActionButton addReservedKeywordButton = findViewById(R.id.addReserved);
         AddFloatingActionButton addObjectButton = findViewById(R.id.addObject);
-        LanguageProfileMember lpm = LanguageProfile.getProfileMembers(
+        LanguageProfileMember lpm = LanguageProfileJsonReader.getProfileMembers(
                 getSharedPreferences("json", MODE_PRIVATE)
                         .getString("profileJson", "")
         );
-        final LanguageProfile lp;
+        final LanguageProfileJsonReader lp;
         if(lpm!=null){
-            lp = new LanguageProfile(lpm);
+            lp = new LanguageProfileJsonReader(lpm);
             this.mc = new ManageCode(this.testPath, lp);//only for testing. Directory will be able to change in the future
         }else{
             finish();

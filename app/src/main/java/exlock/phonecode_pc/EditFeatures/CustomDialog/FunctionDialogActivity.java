@@ -5,14 +5,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Window;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-import exlock.phonecode_pc.Tools.JsonManager;
-import exlock.phonecode_pc.Tools.LanguageProfile;
+import exlock.phonecode_pc.Tools.LanguageProfileJsonReader;
 import exlock.phonecode_pc.R;
 import exlock.phonecode_pc.Tools.LanguageProfileMember;
 import exlock.phonecode_pc.Tools.ManageCode;
@@ -20,7 +17,7 @@ import exlock.phonecode_pc.Tools.ManageCode;
 public class FunctionDialogActivity extends Dialog {
     private FunctionAdapter mAdapter;
     private String categoryName;
-    private LanguageProfile lp;
+    private LanguageProfileJsonReader lp;
     private ManageCode mc;
     private int line = -1;
 
@@ -39,18 +36,18 @@ public class FunctionDialogActivity extends Dialog {
         updateUI();
     }
     void init(String profileJson, String categoryName, ManageCode mc){
-        LanguageProfileMember lpm = LanguageProfile.getProfileMembers(profileJson);
+        LanguageProfileMember lpm = LanguageProfileJsonReader.getProfileMembers(profileJson);
         if(lpm!=null)
-            this.lp = new LanguageProfile(lpm);
+            this.lp = new LanguageProfileJsonReader(lpm);
         this.categoryName = categoryName;
         this.mAdapter = new FunctionAdapter();
         this.mc = mc;
         this.mAdapter.init(mc, this);
     }
     void init(String profileJson, String categoryName, ManageCode mc, int line){
-        LanguageProfileMember lpm = LanguageProfile.getProfileMembers(profileJson);
+        LanguageProfileMember lpm = LanguageProfileJsonReader.getProfileMembers(profileJson);
         if(lpm!=null)
-            this.lp = new LanguageProfile(lpm);
+            this.lp = new LanguageProfileJsonReader(lpm);
         this.categoryName = categoryName;
         this.mAdapter = new FunctionAdapter();
         this.line = line;

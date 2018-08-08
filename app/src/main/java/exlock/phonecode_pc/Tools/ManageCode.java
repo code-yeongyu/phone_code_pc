@@ -4,7 +4,6 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -14,7 +13,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -28,7 +26,7 @@ import exlock.phonecode_pc.EditFeatures.SimpleItemTouchHelperCallback;
 
 public class ManageCode {
     private String path;
-    private LanguageProfile lp;
+    private LanguageProfileJsonReader lp;
     private String content = "";
     private File file;
     private ArrayList<String> bracketLists = new ArrayList<>();
@@ -36,7 +34,7 @@ public class ManageCode {
     private SimpleItemTouchHelperCallback callback;
     private ItemTouchHelper helper;
 
-    public ManageCode(String path, LanguageProfile lp) {
+    public ManageCode(String path, LanguageProfileJsonReader lp) {
         this.setPath(path);
         this.setLanguageProfile(lp);
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
@@ -143,10 +141,10 @@ public class ManageCode {
     public ArrayList<String> getBrackets() {
         return this.bracketLists;
     }
-    public void setLanguageProfile(LanguageProfile lp){
+    public void setLanguageProfile(LanguageProfileJsonReader lp){
         this.lp = lp;
     }
-    public LanguageProfile getLanguageProfile(){
+    public LanguageProfileJsonReader getLanguageProfile(){
         return this.lp;
     }
 

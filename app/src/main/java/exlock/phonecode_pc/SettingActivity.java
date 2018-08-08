@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import exlock.phonecode_pc.Tools.JsonManager;
-import exlock.phonecode_pc.Tools.LanguageProfile;
+import exlock.phonecode_pc.Tools.LanguageProfileJsonReader;
 import exlock.phonecode_pc.Tools.LanguageProfileMember;
 
 public class SettingActivity extends AppCompatActivity {

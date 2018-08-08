@@ -4,7 +4,7 @@ import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 
-public class LanguageProfile {
+public class LanguageProfileJsonReader {
     private String json, name, indent, version, wayToCreateVar;
     private ArrayList<String> categories, symbols, reserved;
     private ArrayList<String> reservedObject;
@@ -45,7 +45,7 @@ public class LanguageProfile {
         }
     }
 
-    public LanguageProfile(LanguageProfileMember lpm){
+    public LanguageProfileJsonReader(LanguageProfileMember lpm){
         this.json = lpm.json;
         this.name = lpm.name;
         this.indent = lpm.indent;
