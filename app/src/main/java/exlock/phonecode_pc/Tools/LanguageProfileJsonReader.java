@@ -45,7 +45,7 @@ public class LanguageProfileJsonReader {
         }
     }
 
-    public LanguageProfileJsonReader(LanguageProfileMember lpm){
+    private void init(LanguageProfileMember lpm){
         this.json = lpm.json;
         this.name = lpm.name;
         this.indent = lpm.indent;
@@ -55,6 +55,10 @@ public class LanguageProfileJsonReader {
         this.symbols = lpm.symbols;
         this.reserved = lpm.reserved;
         this.reservedObject = lpm.reservedObject;
+    }
+
+    public LanguageProfileJsonReader(LanguageProfileMember lpm){
+        init(lpm);
     }
     public String getLanguageName(){
         return this.name;
