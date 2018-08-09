@@ -41,6 +41,8 @@ public class SettingActivity extends AppCompatActivity {
         final TextView indentSetting = findViewById(R.id.settingIndentTextView);
         TextView profileSetting = findViewById(R.id.settingLanguageProfileTextView);
         TextView addProfile = findViewById(R.id.settingAddLanguageProfileTextView);
+        TextView credit = findViewById(R.id.credit);
+
 
         final String jsonString = getSharedPreferences("json", MODE_PRIVATE)
                         .getString("profileJson", "");
@@ -69,6 +71,22 @@ public class SettingActivity extends AppCompatActivity {
                 i.setType("application/*");
                 i.addCategory(Intent.CATEGORY_OPENABLE);
                 startActivityForResult(Intent.createChooser(i,"Select the language profiies"), 44);
+            }
+        });
+        credit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<String> paths = getLanguageProfileDirectory();
+                StringBuilder sb = new StringBuilder();
+                sb.append(getString(R.string.setting_paths_information)).append("\n");
+                if(paths.size() > 0){
+                    sb.append("1: ")
+                            .append(paths.get(0));
+                }
+                for (int i = 1; i < paths.size(); i++) {
+                    sb.append("\n").append(i+1).append(": ").append(paths.get(i));
+                }
+                Toast.makeText(SettingActivity.this, sb.toString(), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -164,7 +182,8 @@ public class SettingActivity extends AppCompatActivity {
                                 ).toString());
                             }
                             SharedPreferences.Editor editor = profileJson.edit();
-                            editor.putString("profileJson", temp.get(temp.size()-1));
+                            oldLangProfile.setFunctions(temp.get(temp.size()-1));
+                            editor.putString("profileJson", new Gson().toJson(oldLangProfile));
                             editor.apply();
                             this.addLanguageProfileDirectory(absolutePath, false);
                         }

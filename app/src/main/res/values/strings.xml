@@ -24,6 +24,7 @@
     <string name="setting_set_indent">Set indent</string>
     <string name="setting_choose_language_profile">Choose the language profile</string>
     <string name="setting_add_language_profile">Add functions from profile</string>
+    <string name="setting_paths_information">You\'re using these profiles:</string>
 
     <string name="setting_indent_two_space">2 space</string>
     <string name="setting_indent_four_space">4 space</string>
