@@ -29,6 +29,7 @@ import exlock.phonecode_pc.Tools.JsonManager;
 import exlock.phonecode_pc.Tools.LanguageProfile;
 import exlock.phonecode_pc.Tools.LanguageProfileJsonReader;
 import exlock.phonecode_pc.Tools.LanguageProfileMember;
+import exlock.phonecode_pc.Tools.LanguageProfilesPath;
 
 public class SettingActivity extends AppCompatActivity {
 
@@ -210,19 +211,6 @@ public class SettingActivity extends AppCompatActivity {
                 .create();
         return dialog;
     }
-    private void setLanguageProfileDiretory(String absolutePath){
-        ArrayList<String> pathsArray = new ArrayList<>();
-        pathsArray.add(absolutePath);
-        Set<String> set = new LinkedHashSet<>(pathsArray);
-        pathsArray.clear();
-        pathsArray.addAll(set);
-
-        SharedPreferences absolutePaths = getSharedPreferences("language_profile_paths", MODE_PRIVATE);
-        SharedPreferences.Editor editor = absolutePaths.edit();
-        editor.putString("lpp", new Gson().toJson(pathsArray));
-        editor.apply();
-    }
-        ArrayList<String> pathsArray = new ArrayList<>();
     private void addLanguageProfileDirectory(String absolutePath, Boolean isClear){
         SharedPreferences absolutePaths = getSharedPreferences("json", MODE_PRIVATE);
 
