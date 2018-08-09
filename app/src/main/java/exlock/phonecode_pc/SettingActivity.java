@@ -31,6 +31,10 @@ import exlock.phonecode_pc.Tools.LanguageProfileJsonReader;
 import exlock.phonecode_pc.Tools.LanguageProfileMember;
 import exlock.phonecode_pc.Tools.LanguageProfilesPath;
 
+enum MenuList {
+    TWO_SPACE, FOUR_SPACE, ONE_TAB, TWO_TAB
+}
+
 public class SettingActivity extends AppCompatActivity {
 
     @Override
