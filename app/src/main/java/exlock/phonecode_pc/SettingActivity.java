@@ -226,18 +226,24 @@ public class SettingActivity extends AppCompatActivity {
     private void addLanguageProfileDirectory(String absolutePath, Boolean isClear){
         SharedPreferences absolutePaths = getSharedPreferences("json", MODE_PRIVATE);
 
-        String prev = absolutePaths.getString("language_profile_paths", "");
-        if(!prev.equals("")) {
-            pathsArray.add(prev);
-        }
-
-        pathsArray.add(absolutePath);
-        Set<String> set = new LinkedHashSet<>(pathsArray);
-        pathsArray.clear();
-        pathsArray.addAll(set);
-
         SharedPreferences.Editor editor = absolutePaths.edit();
-        editor.putString("language_profile_paths", new Gson().toJson(pathsArray));
+
+        JSONObject jObject = new JSONObject();
+        JSONArray jArray = new JSONArray();
+        String prevJson = absolutePaths.getString("language_profile_paths", "");
+        if(!isClear) {
+            ArrayList<String> paths = new Gson().fromJson(prevJson, LanguageProfilesPath.class).getPaths();
+            for(int i = 0;i<paths.size();i++)
+                jArray.put(paths.get(i));
+        }
+        jArray.put(absolutePath);
+        try {
+            jObject.put("paths", jArray);
+        }catch(JSONException e){
+            e.printStackTrace();
+            return;
+        }
+        editor.putString("language_profile_paths", jObject.toString());
         editor.apply();
     }
 }
