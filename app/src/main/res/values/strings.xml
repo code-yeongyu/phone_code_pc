@@ -34,4 +34,12 @@
         <item name="setting_indent_two_tab">2 tab</item>
     </string-array>
 
+    <string-array name="menu_block_array">
+        <item>Remove Block</item>
+        <item>Edit Block</item>
+        <item>Add Block Below</item>
+    </string-array>
+    <string name="menu_block_set_first_target">Set for the group edit target</string>
+    <string name="menu_block_set_last_target">Edit from line %1$s</string>
+
 </resources>
