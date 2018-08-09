@@ -26,9 +26,12 @@
     <string name="setting_add_language_profile">Add functions from profile</string>
     <string name="setting_paths_information">You\'re using these profiles:</string>
 
-    <string name="setting_indent_two_space">2 space</string>
-    <string name="setting_indent_four_space">4 space</string>
-    <string name="setting_indent_eight_space">8 space</string>
-    <string name="setting_indent_one_tab">1 tab</string>
-    <string name="setting_indent_two_tab">2 tab</string>
+    <string-array name="setting_indent_array">
+        <item name="setting_indent_two_space">2 space</item>
+        <item name="setting_indent_four_space">4 space</item>
+        <item name="setting_indent_eight_space">8 space</item>
+        <item name="setting_indent_one_tab">1 tab</item>
+        <item name="setting_indent_two_tab">2 tab</item>
+    </string-array>
+
 </resources>
