@@ -98,7 +98,7 @@ public class SettingActivity extends AppCompatActivity {
                     editor.putString("profileJson", json);
                     editor.apply();
 
-                    setLanguageProfileDiretory(absolutePath);
+                    addLanguageProfileDirectory(absolutePath, true);
                 }
 
             }else if(requestCode == 44){
@@ -158,6 +158,7 @@ public class SettingActivity extends AppCompatActivity {
                             SharedPreferences.Editor editor = jsonSP.edit();
                             editor.putString("profileJson", temp.get(temp.size()-1));
                             editor.apply();
+                            this.addLanguageProfileDirectory(absolutePath, false);
                         }
                     }else{
                         //error
@@ -221,8 +222,8 @@ public class SettingActivity extends AppCompatActivity {
         editor.putString("lpp", new Gson().toJson(pathsArray));
         editor.apply();
     }
-    private void addLanguageProfileDiretory(String absolutePath){
         ArrayList<String> pathsArray = new ArrayList<>();
+    private void addLanguageProfileDirectory(String absolutePath, Boolean isClear){
         SharedPreferences absolutePaths = getSharedPreferences("json", MODE_PRIVATE);
 
         String prev = absolutePaths.getString("language_profile_paths", "");
