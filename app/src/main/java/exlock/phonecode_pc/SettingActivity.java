@@ -199,37 +199,27 @@ public class SettingActivity extends AppCompatActivity {
         }
     }
     private Dialog indentSetDialog(final String jsonString) {
-        ArrayList<String> temp = new ArrayList<>();
-        final String twoSpace = getString(R.string.setting_indent_two_space);
-        final String fourSpace = getString(R.string.setting_indent_four_space);
-        final String eightSpace = getString(R.string.setting_indent_eight_space);
-        final String oneTab = getString(R.string.setting_indent_one_tab);
-        final String twoTab = getString(R.string.setting_indent_two_tab);
-        temp.add(twoSpace);
-        temp.add(fourSpace);
-        temp.add(eightSpace);
-        temp.add(oneTab);
-        temp.add(twoTab);
-
-        final List<String> list = temp;
-        final CharSequence[] cs = list.toArray(new CharSequence[list.size()]);
+        final CharSequence[] cs = getResources().getStringArray(R.array.setting_indent_array);
         AlertDialog dialog = new AlertDialog.Builder(SettingActivity.this)
                 .setTitle("Add a reserved keyword")
                 .setItems(cs, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String selected = list.get(which);
+                        CharSequence selected = cs[which];
                         String result = "";
-                        if (selected.equals(twoSpace)) {
-                            result = "  ";
-                        } else if (selected.equals(fourSpace)) {
-                            result = "    ";
-                        } else if (selected.equals(eightSpace)) {
-                            result = "        ";
-                        } else if (selected.equals(oneTab)) {
-                            result = "\t";
-                        } else if (selected.equals(twoTab)) {
-                            result = "\t\t";
+                        switch (MenuList.values()[which]){
+                            case TWO_SPACE:
+                                result = "  ";
+                                break;
+                            case FOUR_SPACE:
+                                result = "    ";
+                                break;
+                            case ONE_TAB:
+                                result = "\t";
+                                break;
+                            case TWO_TAB:
+                                result = "\t\t";
+                                break;
                         }
                         String modifiedJson = JsonManager.modifyJsonByKey(jsonString, "lang_informs", "indent", result);
                         SharedPreferences sp = getSharedPreferences("json", MODE_PRIVATE);
