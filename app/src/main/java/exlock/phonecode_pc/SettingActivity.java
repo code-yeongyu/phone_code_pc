@@ -121,10 +121,10 @@ public class SettingActivity extends AppCompatActivity {
                         Toast.makeText(SettingActivity.this, getString(R.string.toast_wrong_json), Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    SharedPreferences jsonSP = getSharedPreferences("json", MODE_PRIVATE);
+                    SharedPreferences profileJson = getSharedPreferences("json", MODE_PRIVATE);
 
                     LanguageProfileMember oldLPM = LanguageProfileJsonReader.getProfileMembers(
-                            jsonSP.getString("profileJson", "")
+                            profileJson.getString("profileJson", "")
                     );
                     LanguageProfileMember currLPM = LanguageProfileJsonReader.getProfileMembers(newJson);
 
@@ -134,7 +134,7 @@ public class SettingActivity extends AppCompatActivity {
                         currCategories = currLPM.categories;
 
                         LanguageProfile oldLangProfile = new Gson().fromJson(
-                                jsonSP.getString("profileJson", ""),
+                                profileJson.getString("profileJson", ""),
                                 LanguageProfile.class
                         );
 
@@ -156,7 +156,7 @@ public class SettingActivity extends AppCompatActivity {
                                         currLPJR.getFunctions(targetString)
                                 ).toString());
                             }
-                            SharedPreferences.Editor editor = jsonSP.edit();
+                            SharedPreferences.Editor editor = profileJson.edit();
                             editor.putString("profileJson", temp.get(temp.size()-1));
                             editor.apply();
                             this.addLanguageProfileDirectory(absolutePath, false);
