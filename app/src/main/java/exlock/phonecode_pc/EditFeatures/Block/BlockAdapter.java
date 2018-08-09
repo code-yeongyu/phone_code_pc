@@ -8,6 +8,7 @@ import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,7 +26,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import exlock.phonecode_pc.EditActivity;
 import exlock.phonecode_pc.EditFeatures.CustomDialog.CategoryDialogActivity;
@@ -166,16 +169,29 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
             return;
         }
     }
+    private int block = -1;
     private void createDialog(@NotNull ViewHolder holder, final int position){
-        final String[] items = {"Remove Block", "Edit Block", "Add Block Below"};
+
         final Context context = holder.getblock().getContext();
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+        String[] defaultMenu = context.getResources().getStringArray(R.array.menu_block_array);
+        ArrayList<String> items = new ArrayList<>();
+        for(int i = 0;i<defaultMenu.length;i++){
+            items.add(defaultMenu[i]);
+        }
+        if(block == -1)
+            items.add(context.getString(R.string.menu_block_set_first_target));
+        else
+            items.add(String.format(context.getString(R.string.menu_block_set_last_target), block+1));
+
         builder.setTitle("")
-                .setItems(items, new DialogInterface.OnClickListener() {
+                .setItems(items.toArray(new CharSequence[items.size()]), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, final int which) {
                         MenuList[] values = MenuList.values();
                         switch (values[which]){
                             case REMOVE:
+                                mc.updateLine();
                                 mc.removeLine(position);
                                 mc.getBlockAdapter().notifyItemRemoved(position);
                                 mc.updateUI();
@@ -187,6 +203,13 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
                                 CategoryDialogActivity cda = new CategoryDialogActivity(context);
                                 cda.init(mc, position);
                                 cda.show();
+                                break;
+                            case GROUP_EDIT:
+                                if(block==-1)//if it's the first time to select a target
+                                    block=position;
+                                else {
+                                    groupEditBlockDialog(context, position).show();
+                                }
                                 break;
                         }
                     }
@@ -201,7 +224,8 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
         final EditText et = new EditText(context);
         et.setLines(1);
         et.setSingleLine();
-        et.setText(mc.getLine(position));
+        this.mc.updateLine();
+        et.setText(this.mc.getLine(position));
         AlertDialog dialog = new AlertDialog.Builder(context)
                 .setTitle("Edit line "+(position+1))
                 .setView(et)
@@ -211,6 +235,7 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
                         InputMethodManager mInputMethodManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
                         if(mInputMethodManager != null)
                             mInputMethodManager.hideSoftInputFromWindow(et.getWindowToken(), 0);
+                        mc.updateLine();
                         mc.setLine(position, et.getText().toString());
                         mc.getBlockAdapter().notifyItemChanged(position);
                         mc.updateUI();
@@ -219,5 +244,56 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
                 .setNegativeButton("cancel", null)
                 .create();
         return dialog;
+    }
+
+    private Dialog groupEditBlockDialog(final Context context, final int position){
+        final EditText et = new EditText(context);
+        et.setElegantTextHeight(true);
+        et.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+        et.setSingleLine(false);
+        StringBuilder sb = new StringBuilder();
+        ArrayList<Integer> positions = new ArrayList<>();
+        positions.add(position);
+        positions.add(block);
+        Collections.sort(positions, new Ascending());
+        this.mc.updateLine();
+        ArrayList<String> lines = this.mc.getLines();
+        for(int i = positions.get(0);i<positions.get(1)+1;i++){
+            sb.append(lines.get(i)).append("\n");
+        }
+        et.setText(sb.toString());
+        AlertDialog dialog = new AlertDialog.Builder(context)
+                .setTitle("Group edit")
+                .setView(et)
+                .setPositiveButton("change", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        InputMethodManager mInputMethodManager =
+                                (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        if(mInputMethodManager != null)
+                            mInputMethodManager.hideSoftInputFromWindow(et.getWindowToken(), 0);
+                        mc.updateLine();
+                        String[] etLines = et.getText().toString().split("\n");
+                        int totalLine = etLines.length;
+                        for(i = positions.get(0);i<positions.get(1);i++){
+                            lines.set(i+1, etLines[i]);
+                        }
+                        for(i = positions.get(1);i<totalLine;i++){
+                            lines.add(etLines[i]);
+                        }
+                        mc.setListAsContent(lines);
+                        mc.updateUI();
+                        block=-1;
+                    }
+                })
+                .setNegativeButton("cancel", null)
+                .create();
+        return dialog;
+    }
+}
+class Ascending implements Comparator<Integer> {
+    @Override
+    public int compare(Integer o1, Integer o2) {
+        return o1.compareTo(o2);
     }
 }
