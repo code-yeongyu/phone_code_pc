@@ -33,6 +33,7 @@ public class ManageCode {
     private BlockAdapter mAdapter;
     private SimpleItemTouchHelperCallback callback;
     private ItemTouchHelper helper;
+    private ArrayList<String> lines;
 
     public ManageCode(String path, LanguageProfileJsonReader lp) {
         this.setPath(path);
@@ -97,7 +98,7 @@ public class ManageCode {
         String[] lines = this.getContent().split("\n");
         StringBuilder temp = new StringBuilder();
         for(int i = 0;i<lines.length;i++){
-            ArrayList<Integer> a = this.getOutermostPairs(this.getLine(i));
+            ArrayList<Integer> a = this.getOutermostPairs(lines[i]);
             if(!a.isEmpty()) {
                 int aValue = a.get(0) + 1;
                 int functionLength = lines[i].length();
@@ -200,7 +201,7 @@ public class ManageCode {
         pairs.add(bracketPositions.get(i).get(position));
         return pairs;//return the ArrayList which has the positions of outermost bracket pairs
     }//deprecated
-    private void setListAsContent(List<String> lines){
+    public void setListAsContent(@NotNull List<String> lines){
         StringBuilder builder = new StringBuilder();
         for(int i = 0;i<lines.size();i++){
             builder.append(lines.get(i));
@@ -209,19 +210,24 @@ public class ManageCode {
         this.setContent(builder.toString());
     }
 
-    public void setLine(int line, String to) {
-        List<String> lines = Arrays.asList(this.getContent().split("\n"));
-        lines.set(line, to);
-        this.setListAsContent(lines);
+    public void updateLine(){
+        this.lines = new ArrayList<>(Arrays.asList(this.content.split("\n")));
     }
+    public void setLine(int line, String to) {
+        this.lines.set(line, to);
+        this.setListAsContent(this.lines);
+    }
+
+    public ArrayList<String> getLines() {
+        return lines;
+    }
+
     public String getLine(int line) {
-        List<String> lines = Arrays.asList(this.content.split("\n"));
         return lines.get(line);
     }
     public void removeLine(int line) {
-        ArrayList<String> lines = new ArrayList<>(Arrays.asList(this.content.split("\n")));
-        lines.remove(line);
-        this.setListAsContent(lines);
+        this.lines.remove(line);
+        this.setListAsContent(this.lines);
     }
     public ArrayList<String> getFunctionsInCode(){
         List<String> lines = Arrays.asList(this.content.split("\n"));
@@ -247,6 +253,7 @@ public class ManageCode {
     private void addBlock(String function, int line) {
         //todo: ables user to select what symbols will be replaced with EditTexts
         ArrayList<Integer> dam = StringTools.findStringPositions(function, ").");
+        updateLine();
         ArrayList<Integer> brackets = this.getOutermostPairs(this.getLine(line));
         if(dam==null||dam.isEmpty()) {
             if (!brackets.isEmpty()) {
@@ -301,6 +308,7 @@ public class ManageCode {
         );
     }
     public void updateBlock(int line){
+        updateLine();
         String target = this.getLine(line);
         ArrayList<Integer> brackets = this.getOutermostPairs(target);
         BlockLists bl = this.makeUIBlock(target, brackets);
