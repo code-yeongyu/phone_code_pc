@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         if(checkAndAskPermission()) {
             this.loadJsonToSharedPreferences();
-            Intent i = new Intent(this, SettingActivity.class);
+            Intent i = new Intent(this, EditActivity.class);
             startActivity(i);
         }
     }

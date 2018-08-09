@@ -42,6 +42,7 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
         int position = viewHolder.getAdapterPosition();
         String target;
 
+        this.mc.updateLine();
         target = this.mc.getLine(position);
         String indent = mc.getLanguageProfile().getIndent();
         if(direction==ItemTouchHelper.RIGHT){
