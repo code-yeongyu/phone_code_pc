@@ -72,6 +72,25 @@ public class SettingActivity extends AppCompatActivity {
             }
         });
     }
+    public void loadJson(String selectedFile, String absolutePath){
+        String jsonExtension = selectedFile.substring(selectedFile.length() - 4, selectedFile.length());
+        if (!jsonExtension.equals("json")) {
+            Toast.makeText(SettingActivity.this, getString(R.string.toast_not_json), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String json = JsonManager.getJsonFromPath(absolutePath);
+
+        if (LanguageProfileJsonReader.getProfileMembers(json) == null) {
+            Toast.makeText(SettingActivity.this, getString(R.string.toast_wrong_json), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        SharedPreferences profileJson = getSharedPreferences("json", MODE_PRIVATE);
+        SharedPreferences.Editor editor = profileJson.edit();
+        editor.putString("profileJson", json);
+        editor.apply();
+
+        this.addLanguageProfileDirectory(absolutePath, true);
+    }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
 
@@ -81,25 +100,9 @@ public class SettingActivity extends AppCompatActivity {
                 if (resultData != null) {
                     uri = resultData.getData();
                     String selectedFile = uri.toString();
-                    String jsonExtension = selectedFile.substring(selectedFile.length() - 4, selectedFile.length());
-                    if (!jsonExtension.equals("json")) {
-                        Toast.makeText(SettingActivity.this, getString(R.string.toast_not_json), Toast.LENGTH_SHORT).show();
-                        return;
-                    }
                     String[] path = uri.getPath().split(":");
                     String absolutePath = Environment.getExternalStorageDirectory() + "/" + path[1];
-                    String json = JsonManager.getJsonFromPath(absolutePath);
-
-                    if (LanguageProfileJsonReader.getProfileMembers(json) == null) {
-                        Toast.makeText(SettingActivity.this, getString(R.string.toast_wrong_json), Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    SharedPreferences profileJson = getSharedPreferences("json", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = profileJson.edit();
-                    editor.putString("profileJson", json);
-                    editor.apply();
-
-                    addLanguageProfileDirectory(absolutePath, true);
+                    this.loadJson(selectedFile, absolutePath);
                 }
 
             }else if(requestCode == 44){
@@ -122,9 +125,13 @@ public class SettingActivity extends AppCompatActivity {
                         return;
                     }
                     SharedPreferences profileJson = getSharedPreferences("json", MODE_PRIVATE);
-
+                    String jsonString = profileJson.getString("profileJson", "");
+                    if(jsonString.equals("")){
+                        this.loadJson(selectedFile, absolutePath);
+                        return;
+                    }
                     LanguageProfileMember oldLPM = LanguageProfileJsonReader.getProfileMembers(
-                            profileJson.getString("profileJson", "")
+                            jsonString
                     );
                     LanguageProfileMember currLPM = LanguageProfileJsonReader.getProfileMembers(newJson);
 
@@ -134,7 +141,7 @@ public class SettingActivity extends AppCompatActivity {
                         currCategories = currLPM.categories;
 
                         LanguageProfile oldLangProfile = new Gson().fromJson(
-                                profileJson.getString("profileJson", ""),
+                                jsonString,
                                 LanguageProfile.class
                         );
 
