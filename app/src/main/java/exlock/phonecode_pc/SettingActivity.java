@@ -77,7 +77,7 @@ public class SettingActivity extends AppCompatActivity {
 
         if (resultCode == Activity.RESULT_OK) {//if set the language profiles
             if(requestCode == 43) {
-                Uri uri = null;
+                Uri uri;
                 if (resultData != null) {
                     uri = resultData.getData();
                     String selectedFile = uri.toString();
@@ -103,7 +103,7 @@ public class SettingActivity extends AppCompatActivity {
                 }
 
             }else if(requestCode == 44){
-                Uri uri = null;
+                Uri uri;
                 if (resultData != null) {
                     uri = resultData.getData();
                     String selectedFile = uri.toString();
