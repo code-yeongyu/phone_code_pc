@@ -18,12 +18,12 @@ import android.net.Uri;
 
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import exlock.phonecode_pc.Tools.JsonManager;
 import exlock.phonecode_pc.Tools.LanguageProfile;
@@ -233,5 +233,11 @@ public class SettingActivity extends AppCompatActivity {
         }
         editor.putString("language_profile_paths", jObject.toString());
         editor.apply();
+    }
+    private ArrayList<String> getLanguageProfileDirectory(){
+        SharedPreferences absolutePaths = getSharedPreferences("json", MODE_PRIVATE);
+        String pathsJson = absolutePaths.getString("language_profile_paths", "");
+        LanguageProfilesPath lpp = new Gson().fromJson(pathsJson, LanguageProfilesPath.class);
+        return lpp.getPaths();
     }
 }
