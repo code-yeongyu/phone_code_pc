@@ -267,6 +267,20 @@ public class ManageCode {
         this.getBlockAdapter().blocks.add(getBlockAdapter().getItemCount(),
                 this.makeUIBlock(function, "", ""));
     }
+    public void addBlockAt(int line, String function) {
+        //todo: ables user to select what symbols will be replaced with EditTexts
+        ArrayList<Integer> dam = StringTools.findStringPositions(function, ").");
+
+        ArrayList<Integer> brackets = this.getOutermostPairs(function);
+
+        if(dam==null||dam.isEmpty()) {
+            if (!brackets.isEmpty()) {
+                this.getBlockAdapter().blocks.add(line,
+                        this.makeUIBlock(function, brackets));
+                return;
+            }
+        }//if has brackets
+
         this.getBlockAdapter().blocks.add(getBlockAdapter().getItemCount(),
                 this.makeUIBlock(function, "", ""));
     }
