@@ -250,11 +250,12 @@ public class ManageCode {
     }
 
     //UI
-    private void addBlock(String function, int line) {
+    private void addBlock(String function) {
         //todo: ables user to select what symbols will be replaced with EditTexts
         ArrayList<Integer> dam = StringTools.findStringPositions(function, ").");
-        updateLine();
-        ArrayList<Integer> brackets = this.getOutermostPairs(this.getLine(line));
+
+        ArrayList<Integer> brackets = this.getOutermostPairs(function);
+
         if(dam==null||dam.isEmpty()) {
             if (!brackets.isEmpty()) {
                 this.getBlockAdapter().blocks.add(getBlockAdapter().getItemCount(),
@@ -262,6 +263,10 @@ public class ManageCode {
                 return;
             }
         }//if has brackets
+
+        this.getBlockAdapter().blocks.add(getBlockAdapter().getItemCount(),
+                this.makeUIBlock(function, "", ""));
+    }
         this.getBlockAdapter().blocks.add(getBlockAdapter().getItemCount(),
                 this.makeUIBlock(function, "", ""));
     }
@@ -295,16 +300,13 @@ public class ManageCode {
         this.getBlockAdapter().blocks.clear();
         String[] lines = this.getContent().split("\n");
         for(int i = 0;i<lines.length;i++){
-            this.addBlock(lines[i], i);
+            this.addBlock(lines[i]);
         }
         this.getBlockAdapter().notifyDataSetChanged();
     }
     public void addUIBlock(String code) {//todo: select line and add function there
         this.addBlock(
-                code,
-                StringTools
-                        .findStringPositions(this.getContent(), "\n")
-                        .size()
+                code
         );
     }
     public void updateBlock(int line){
