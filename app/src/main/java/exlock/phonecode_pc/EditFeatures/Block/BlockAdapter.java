@@ -145,10 +145,9 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
         });
 
         boolean isFunc1Empty = funcString1.equals("");
-        holder.getblock().setVisibility(isFunc1Empty ? View.VISIBLE : View.VISIBLE);
-        if(isFunc1Empty){
-            return;
-        }
+        holder.getFunc1().setVisibility(isFunc1Empty ? View.INVISIBLE : View.VISIBLE);
+        holder.getArg().setVisibility(isFunc1Empty ? View.INVISIBLE : View.VISIBLE);
+        holder.getFunc2().setVisibility(isFunc1Empty ? View.INVISIBLE : View.VISIBLE);
         holder.getArg().setText(arg);
         holder.getFunc2().setText(funcString2);
         holder.getLineNumber().setText(" "+(position+1)+" ");
@@ -161,6 +160,8 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
                 return false;
             }
         });
+        if(isFunc1Empty)
+            return;
         boolean isFunc2Empty = funcString2.equals("");
         holder.getArg().setVisibility(isFunc2Empty ? View.GONE : View.VISIBLE);
         holder.getFunc2().setVisibility(isFunc2Empty ? View.GONE : View.VISIBLE);
