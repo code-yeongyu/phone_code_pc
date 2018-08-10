@@ -16,8 +16,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.AddFloatingActionButton;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -113,6 +116,7 @@ public class EditActivity extends AppCompatActivity {
                 this.mc.save();
                 return true;
             case R.id.action_search:
+                this.searchingDialog().show();
                 //todo: search feature with regex
                 return true;
             case R.id.action_changemode:
@@ -196,7 +200,7 @@ public class EditActivity extends AppCompatActivity {
                 .create();
         return dialog;
     }
-    private Dialog objectCreateDialog(final String value){
+    private Dialog objectCreateDialog(@NotNull final String value){
         final EditText et = new EditText(EditActivity.this);
         et.setLines(1);
         et.setSingleLine();
@@ -256,6 +260,43 @@ public class EditActivity extends AppCompatActivity {
                             mc.addUIBlock(final_value);
                             mc.notifyUpdatesInUI();
                         }
+                })
+                .setNegativeButton("cancel", null)
+                .create();
+        return dialog;
+    }
+    private Dialog searchingDialog(){
+        final EditText et = new EditText(EditActivity.this);
+        et.setLines(1);
+        et.setSingleLine();
+        ArrayList<Integer> positionsOfBlocks = new ArrayList<>();
+        AlertDialog dialog = new AlertDialog.Builder(EditActivity.this)
+                .setTitle("Search")
+                .setView(et)
+                .setPositiveButton("search", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        InputMethodManager mInputMethodManager = (InputMethodManager) getApplication().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        if(mInputMethodManager != null)
+                            mInputMethodManager.hideSoftInputFromWindow(et.getWindowToken(), 0);
+
+                        ArrayList<String> lines = mc.getLines();
+                        for(i = 0;i<lines.size();i++){
+                            if(lines.get(i).contains(et.getText())){
+                                positionsOfBlocks.add(i);
+                            }
+                        }
+                        StringBuilder stringBuilder = new StringBuilder();
+                        if(positionsOfBlocks.isEmpty()){
+                            Toast.makeText(getApplicationContext(), "Nothing block with that text.", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        stringBuilder.append(positionsOfBlocks.get(0)+1);
+                        for(i = 1;i<positionsOfBlocks.size();i++){
+                            stringBuilder.append(", ").append(positionsOfBlocks.get(1)+1);
+                        }
+                        Toast.makeText(getApplicationContext(), "Line at: "+stringBuilder.toString(), Toast.LENGTH_LONG).show();
+                    }
                 })
                 .setNegativeButton("cancel", null)
                 .create();
