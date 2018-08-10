@@ -5,7 +5,10 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.view.Window;
+import android.widget.Button;
+import android.widget.EditText;
 
 import java.util.ArrayList;
 
@@ -32,7 +35,45 @@ public class FunctionDialogActivity extends Dialog {
         RecyclerView mRecyclerView = findViewById(R.id.CategoryFunctionView);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        
+
+        Button searchButton = findViewById(R.id.searchButton);
+        ArrayList<String> functions = lp.getFunctions(this.categoryName);
+
+        ArrayList<Integer> positionsOfFunctions = new ArrayList<>();
+        ArrayList<String> funcsInCode = mc.getFunctionsInCode();
+        searchButton.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                EditText searchEditText = findViewById(R.id.searchEditText);
+                                                String query = searchEditText.getText().toString();
+                                                if(query.equals("")){
+                                                    mAdapter.lists.clear();
+                                                    for(int i = 0;i<functions.size();i++){
+                                                        mAdapter.lists.add(
+                                                                new CategoryFunctionLists().newInstance(
+                                                                        functions.get(i)
+                                                                )
+                                                        );
+                                                    }
+                                                    mAdapter.notifyDataSetChanged();//update ui
+                                                    return;
+                                                }
+                                                mAdapter.lists.clear();
+                                                for(int i = 0;i<functions.size();i++){
+                                                    if(functions.get(i).contains(query)){
+                                                        positionsOfFunctions.add(i);
+                                                        mAdapter.lists.add(
+                                                                new CategoryFunctionLists().newInstance(
+                                                                        functions.get(i)
+                                                                )
+                                                        );
+                                                    }
+                                                }
+                                                mAdapter.notifyDataSetChanged();
+                                            }
+                                        }
+        );
+
         updateUI();
     }
     void init(String profileJson, String categoryName, ManageCode mc){
