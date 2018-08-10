@@ -80,9 +80,8 @@ class FunctionAdapter extends RecyclerView.Adapter<FunctionAdapter.ViewHolder> {
                     String content = mc.getContent();
                     String functionValue = convertToFuncString(functionName);
                     mc.setContent(content + "\n" + functionValue);
-                    BlockAdapter ba = mc.getBlockAdapter();
-                    ba.blocks.add(line+1,
-                            mc.makeUIBlock(functionValue, "", "")
+                    mc.addBlockAt(line+1,
+                            functionValue
                     );
                     mc.notifyUpdatesInUI();
                     fda.dismiss();
