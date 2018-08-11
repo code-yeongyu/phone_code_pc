@@ -4,10 +4,14 @@ import android.graphics.Canvas;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
 import exlock.phonecode_pc.EditFeatures.Block.BlockLists;
+import exlock.phonecode_pc.R;
 import exlock.phonecode_pc.Tools.ManageCode;
 
 
@@ -42,8 +46,14 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
         int position = viewHolder.getAdapterPosition();
         String target;
 
+        View v = viewHolder.itemView;
+        TextView f1 = v.findViewById(R.id.func1);
+        TextView arg = v.findViewById(R.id.argEditText);
+        TextView f2 = v.findViewById(R.id.func2);
+
         this.mc.updateLine();
-        target = this.mc.getLine(position);
+
+        target = f1.getText().toString()+arg.getText()+f2.getText();
         String indent = mc.getLanguageProfile().getIndent();
         if(direction==ItemTouchHelper.RIGHT){
             this.mc.setLine(position, mc.getLanguageProfile().getIndent()+target);
