@@ -17,20 +17,11 @@ import exlock.phonecode_pc.Tools.ManageCode;
 
 public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
     private ManageCode mc;
-    private int position;
-
-    public SimpleItemTouchHelperCallback(ManageCode mc) {
+    private ItemTouchHelperAdapter mAdapter;
+    public SimpleItemTouchHelperCallback(ManageCode mc, ItemTouchHelperAdapter mAdapter) {
         this.mc = mc;
+        this.mAdapter = mAdapter;
     }
-
-    public void setManageCode(ManageCode mc){
-        this.mc = mc;
-    }
-
-    public void init(int position){
-        this.position = position;
-    }
-
     @Override
     public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
         return makeMovementFlags(ItemTouchHelper.UP | ItemTouchHelper.DOWN,
@@ -39,7 +30,8 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
     @Override
     public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-        return false;
+        mAdapter.onItemMove(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+        return true;
     }
 
     @Override
@@ -58,7 +50,8 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
         String indent = mc.getLanguageProfile().getIndent();
         if(direction==ItemTouchHelper.RIGHT){
             this.mc.setLine(position, mc.getLanguageProfile().getIndent()+target);
-        }else if(direction==ItemTouchHelper.LEFT && target.substring(0, indent.length()).equals(mc.getLanguageProfile().getIndent())){
+        }else if(direction==ItemTouchHelper.LEFT &&
+                target.substring(0, indent.length()).equals(mc.getLanguageProfile().getIndent())){
             this.mc.setLine(position, target.substring(1, target.length()));
         }
         this.mc.updateBlock(position);

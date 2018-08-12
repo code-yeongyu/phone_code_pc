@@ -6,9 +6,8 @@ import android.content.DialogInterface;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
 import android.text.InputType;
-import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -24,9 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.StringTokenizer;
 
-import exlock.phonecode_pc.EditActivity;
 import exlock.phonecode_pc.EditFeatures.CustomDialog.CategoryDialogActivity;
 import exlock.phonecode_pc.EditFeatures.ItemTouchHelperAdapter;
 import exlock.phonecode_pc.R;
@@ -38,40 +35,35 @@ enum MenuList {
 
 public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> implements ItemTouchHelperAdapter {
     private ManageCode mc;
-    public BlockAdapter(ManageCode mc){
-        this.mc = mc;
-    }
-    public List<BlockLists> blocks = new ArrayList<>();
 
+    @Override
+    public boolean onItemMove(int fromPosition, int toPosition) {
+        this.mc.updateLine();
+        ArrayList<String> lines = this.mc.getLines();
+        Collections.swap(lines, fromPosition, toPosition);
+        this.mc.setListAsContent(lines);
+        notifyItemMoved(fromPosition, toPosition);
+        notifyItemChanged(fromPosition);
+        notifyItemChanged(toPosition);
+        return true;
+    }
+
+    public BlockAdapter(ManageCode mc, OnStartDragListener dragStartListener){
+        this.mc = mc;
+        this.mDragStartListener = dragStartListener;
+    }
+
+    public List<BlockLists> blocks = new ArrayList<>();
     static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView func1;
         private final TextView func2;
         private final EditText arg;
         private final LinearLayout block;
-        private final TextView lineNumber;
 
+        private final TextView lineNumber;
         ViewHolder(final View v, final ManageCode mc){
             super(v);
-            //todo: keep values inside the edit text when try to add an indent to a block
-            TextWatcher textWatcher = new TextWatcher() {
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    //int position = getAdapterPosition();
-                    //BlockLists bl = mc.getBlockAdapter().blocks.get(position);
-                    //Log.d("cs", bl.func1+s.toString()+bl.func2);
-                    //mc.setLine(position, bl.func1+s.toString()+bl.func2);
-                }
-
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                }
-            };
             this.arg = v.findViewById(R.id.argEditText);
-            this.arg.addTextChangedListener(textWatcher);
             this.lineNumber = v.findViewById(R.id.line_number);
             this.func1 = v.findViewById(R.id.func1);
             this.func2 = v.findViewById(R.id.func2);
@@ -92,26 +84,12 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
         LinearLayout getblock() {
             return this.block;
         }
-    }
 
-    @Override
-    public boolean onItemMove(int fromPosition, int toPosition) {
-        if (fromPosition < toPosition) {
-            for (int i = fromPosition; i < toPosition; i++) {
-                Collections.swap(blocks, i, i + 1);
-            }//if move the item to down
-        } else {
-            for (int i = fromPosition; i > toPosition; i--) {
-                Collections.swap(blocks, i, i - 1);
-            }//if move the item to up
-        }
-        notifyItemMoved(fromPosition, toPosition);
-        return true;
     }
 
     @Override
     public void onItemDismiss(int position) {
-        //todo: write here code indenting or add a tab
+
     }
 
 
@@ -121,6 +99,9 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
                 .inflate(R.layout.item_block, viewGroup, false);
         return new ViewHolder(v, this.mc);
     }
+
+    private final OnStartDragListener mDragStartListener;
+
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         
@@ -165,6 +146,15 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
         if(isFunc2Empty){
             return;
         }
+        holder.getLineNumber().setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getActionMasked() == MotionEvent.ACTION_DOWN){
+                    mDragStartListener.onStartDrag(holder);
+                }
+                return false;
+            }
+        });
     }
     private int block = -1;
     private void createDialog(@NotNull ViewHolder holder, final int position){

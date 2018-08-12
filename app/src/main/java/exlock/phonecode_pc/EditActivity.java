@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,7 +26,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
+import exlock.phonecode_pc.EditFeatures.Block.BlockAdapter;
+import exlock.phonecode_pc.EditFeatures.Block.OnStartDragListener;
 import exlock.phonecode_pc.EditFeatures.CustomDialog.CategoryDialogActivity;
+import exlock.phonecode_pc.EditFeatures.SimpleItemTouchHelperCallback;
 import exlock.phonecode_pc.Tools.LanguageProfileJsonReader;
 import exlock.phonecode_pc.Tools.LanguageProfileMember;
 import exlock.phonecode_pc.Tools.ManageCode;
@@ -63,16 +68,30 @@ public class EditActivity extends AppCompatActivity {
         }
         this.codeEditor = findViewById(R.id.textEditor);
 
+        ItemTouchHelper.Callback c = this.mc.getCallback();
+        this.mc.setTouchHelper(new ItemTouchHelper(c));
+        ItemTouchHelper mItemTouchHelper = this.mc.getTouchHelper();
 
+        OnStartDragListener dragListener = new OnStartDragListener() {
+            @Override
+            public void onStartDrag(RecyclerView.ViewHolder vh) {
+                mItemTouchHelper.startDrag(vh);
+            }
+        };
+        BlockAdapter ba = new BlockAdapter(this.mc, dragListener);
+
+
+        this.mc.addBracket("(", ")");
         this.mRecyclerView = findViewById(R.id.blocksView);
         this.mRecyclerView.setNestedScrollingEnabled(false);
         this.mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplication()));
+
+        this.mc.setBlockAdapter(ba);
         this.mRecyclerView.setAdapter(this.mc.getBlockAdapter());
 
-        this.mc.addBracket("(", ")");
+        this.mc.getTouchHelper().attachToRecyclerView(this.mRecyclerView);
 
         this.mc.updateUI();
-        this.mc.getTouchHelper().attachToRecyclerView(this.mRecyclerView);
 
         addBlockButton.setOnClickListener(new View.OnClickListener() {
                                               @Override
@@ -81,15 +100,13 @@ public class EditActivity extends AppCompatActivity {
                                                   cda.init(mc);
                                                   cda.show();
                                               }
-                                          }
-        );
+                                          });
         addCustomBlockButton.setOnClickListener(new View.OnClickListener() {
                                                     @Override
                                                     public void onClick(View v) {
                                                         customBlockDialog().show();
                                                     }
-                                                }
-        );
+                                                });
         addReservedKeywordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

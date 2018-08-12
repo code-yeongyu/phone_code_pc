@@ -3,6 +3,7 @@ package exlock.phonecode_pc.Tools;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 
 import org.jetbrains.annotations.NotNull;
@@ -22,6 +23,8 @@ import java.util.Set;
 
 import exlock.phonecode_pc.EditFeatures.Block.BlockAdapter;
 import exlock.phonecode_pc.EditFeatures.Block.BlockLists;
+import exlock.phonecode_pc.EditFeatures.Block.OnStartDragListener;
+import exlock.phonecode_pc.EditFeatures.ItemTouchHelperAdapter;
 import exlock.phonecode_pc.EditFeatures.SimpleItemTouchHelperCallback;
 
 public class ManageCode {
@@ -46,18 +49,39 @@ public class ManageCode {
                 this.saveContent();
             }
         }
-        this.setBlockAdapter(new BlockAdapter(this));
+        ItemTouchHelperAdapter mAdapter = new ItemTouchHelperAdapter() {
+            @Override
+            public boolean onItemMove(int fromPosition, int toPosition) {
+                updateLine();
+                ArrayList<String> lines = getLines();
+                Collections.swap(lines, fromPosition, toPosition);
+                setListAsContent(lines);
+                getBlockAdapter().notifyItemMoved(fromPosition, toPosition);
+                getBlockAdapter().notifyItemChanged(fromPosition);
+                getBlockAdapter().notifyItemChanged(toPosition);
+                return true;
+            }
+
+            @Override
+            public void onItemDismiss(int position) {
+
+            }
+        };
+
         this.callback =
-                new SimpleItemTouchHelperCallback(this);
+                new SimpleItemTouchHelperCallback(this, mAdapter);
         this.helper = new ItemTouchHelper(this.callback);
     }
 
-    public SimpleItemTouchHelperCallback getCallback() {
+    public ItemTouchHelper.Callback getCallback() {
         return this.callback;
     }
 
     public ItemTouchHelper getTouchHelper(){
         return this.helper;
+    }
+    public void setTouchHelper(ItemTouchHelper helper){
+            this.helper = helper;
     }
 
     //files
