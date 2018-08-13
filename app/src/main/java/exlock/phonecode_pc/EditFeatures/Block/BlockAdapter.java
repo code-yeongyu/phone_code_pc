@@ -40,11 +40,16 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
     public boolean onItemMove(int fromPosition, int toPosition) {
         this.mc.updateLine();
         ArrayList<String> lines = this.mc.getLines();
-        Collections.swap(lines, fromPosition, toPosition);
-        this.mc.setListAsContent(lines);
-        notifyItemMoved(fromPosition, toPosition);
-        notifyItemChanged(fromPosition);
-        notifyItemChanged(toPosition);
+        if (fromPosition < toPosition) {
+            for (int i = fromPosition; i < toPosition; i++) {
+                Collections.swap(lines, i, i + 1);
+            }
+        } else {
+            for (int i = fromPosition; i > toPosition; i--) {
+                Collections.swap(lines, i, i - 1);
+            }
+        }
+        this.mc.getBlockAdapter().notifyItemMoved(fromPosition, toPosition);
         return true;
     }
 

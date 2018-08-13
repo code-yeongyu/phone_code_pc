@@ -54,11 +54,16 @@ public class ManageCode {
             public boolean onItemMove(int fromPosition, int toPosition) {
                 updateLine();
                 ArrayList<String> lines = getLines();
-                Collections.swap(lines, fromPosition, toPosition);
-                setListAsContent(lines);
+                if (fromPosition < toPosition) {
+                    for (int i = fromPosition; i < toPosition; i++) {
+                        Collections.swap(lines, i, i + 1);
+                    }
+                } else {
+                    for (int i = fromPosition; i > toPosition; i--) {
+                        Collections.swap(lines, i, i - 1);
+                    }
+                }
                 getBlockAdapter().notifyItemMoved(fromPosition, toPosition);
-                getBlockAdapter().notifyItemChanged(fromPosition);
-                getBlockAdapter().notifyItemChanged(toPosition);
                 return true;
             }
 
