@@ -3,6 +3,7 @@ package exlock.phonecode_pc;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Environment;
@@ -36,7 +37,6 @@ import exlock.phonecode_pc.Tools.ManageCode;
 
 public class EditActivity extends AppCompatActivity {
 
-    final String testPath = Environment.getExternalStorageDirectory() + "/PhoneCode/hello_world.py";//Todo: remove this if file manager is developed
     ManageCode mc;
     EditText codeEditor;
     RecyclerView mRecyclerView;
@@ -59,10 +59,12 @@ public class EditActivity extends AppCompatActivity {
                 getSharedPreferences("json", MODE_PRIVATE)
                         .getString("profileJson", "")
         );
+        Intent i = getIntent();
+        String path = i.getStringExtra("path");
         final LanguageProfileJsonReader lp;
         if(lpm!=null){
             lp = new LanguageProfileJsonReader(lpm);
-            this.mc = new ManageCode(this.testPath, lp);//only for testing. Directory will be able to change in the future
+            this.mc = new ManageCode(path, lp);
         }else{
             finish();
         }
