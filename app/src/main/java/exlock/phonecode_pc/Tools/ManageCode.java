@@ -51,6 +51,7 @@ public class ManageCode {
         }
 
         this.callback =
+                new SimpleItemTouchHelperCallback(this);
         this.helper = new ItemTouchHelper(this.callback);
     }
 
@@ -256,8 +257,17 @@ public class ManageCode {
 
     //UI
     private void addBlock(String function) {
+        ArrayList<String> reservedObjects = this.getLanguageProfile().getReservedObject();
+        for(int i = 0;i<reservedObjects.size();i++)
+            if(function.contains(reservedObjects.get(i))) {
+                String objectName = function.substring(reservedObjects.get(i).length(), function.length());
+                this.getBlockAdapter().blocks.add(getBlockAdapter().getItemCount(),
+                        this.makeUIBlock(function, objectName, ""));
+                return;
+            }
         ArrayList<Integer> brackets = this.getOutermostPairs(function);
 
+        ArrayList<Integer> dam = StringTools.findStringPositions(function, ").");
         if(dam==null||dam.isEmpty()) {
             if (!brackets.isEmpty()) {
                 this.getBlockAdapter().blocks.add(getBlockAdapter().getItemCount(),
