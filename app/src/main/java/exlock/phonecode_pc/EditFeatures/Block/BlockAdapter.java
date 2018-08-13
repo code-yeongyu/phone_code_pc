@@ -66,7 +66,7 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
         private final LinearLayout block;
 
         private final TextView lineNumber;
-        ViewHolder(final View v, final ManageCode mc){
+        ViewHolder(final View v){
             super(v);
             this.arg = v.findViewById(R.id.argEditText);
             this.lineNumber = v.findViewById(R.id.line_number);
@@ -86,6 +86,7 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
         TextView getLineNumber(){
             return this.lineNumber;
         }
+
         LinearLayout getblock() {
             return this.block;
         }
@@ -97,7 +98,7 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType){
         View v = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.item_block, viewGroup, false);
-        return new ViewHolder(v, this.mc);
+        return new ViewHolder(v);
     }
 
     private final OnStartDragListener mDragStartListener;
