@@ -46,5 +46,12 @@
     <string name="open_settings">Open Settings</string>
 
     <string name="no_language_profile">Language Profiles are not loaded.</string>
+    <string name="drawer_add_new_tab">Add new file</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
 
 </resources>

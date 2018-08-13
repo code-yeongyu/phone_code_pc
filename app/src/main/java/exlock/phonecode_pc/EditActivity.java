@@ -1,13 +1,20 @@
 package exlock.phonecode_pc;
 
+import android.app.Activity;
 import android.app.Dialog;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.Environment;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Environment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,32 +26,36 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.AddFloatingActionButton;
+import com.google.gson.Gson;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 import exlock.phonecode_pc.EditFeatures.Block.BlockAdapter;
 import exlock.phonecode_pc.EditFeatures.Block.OnStartDragListener;
 import exlock.phonecode_pc.EditFeatures.CustomDialog.CategoryDialogActivity;
-import exlock.phonecode_pc.EditFeatures.SimpleItemTouchHelperCallback;
-import exlock.phonecode_pc.Tools.LanguageProfile;
+import exlock.phonecode_pc.Tools.FilePath;
 import exlock.phonecode_pc.Tools.LanguageProfileJsonReader;
 import exlock.phonecode_pc.Tools.LanguageProfileMember;
 import exlock.phonecode_pc.Tools.ManageCode;
 
-public class EditActivity extends AppCompatActivity {
+public class EditActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener{
 
     private ManageCode mc;
     private EditText codeEditor;
     private RecyclerView mRecyclerView;
     private Boolean isBlockMode = true;
     private boolean isPUT_VALUEAdded = false;
+    private String workingFilePath = "";
 
     //Todo: horizontal scroll or new line for long codes in a line
 
@@ -54,30 +65,35 @@ public class EditActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
+        Intent i = getIntent();
+        this.workingFilePath = i.getStringExtra("path");
+        String[] fileName = this.workingFilePath.split("/");
+        toolbar.setTitle(fileName[fileName.length-1]);
         setSupportActionBar(toolbar);
 
         SharedPreferences jsonSP = getSharedPreferences("json", MODE_PRIVATE);
+        String profileJson = jsonSP.getString("profileJson", "");
+        if(profileJson.equals("")){
+            Toast.makeText(this, getString(R.string.no_language_profile), Toast.LENGTH_SHORT).show();
+            i = new Intent(this, SettingActivity.class);
+            startActivity(i);
+            finish();
+        }
 
         AddFloatingActionButton addBlockButton = findViewById(R.id.addBlockButton);
         AddFloatingActionButton addCustomBlockButton = findViewById(R.id.addCustomBlockButton);
         AddFloatingActionButton addReservedKeywordButton = findViewById(R.id.addReserved);
         AddFloatingActionButton addObjectButton = findViewById(R.id.addObject);
-        String profileJson = jsonSP.getString("profileJson", "");
-        if(profileJson.equals("")){
-            Toast.makeText(this, getString(R.string.no_language_profile), Toast.LENGTH_SHORT).show();
-            Intent i = new Intent(this, SettingActivity.class);
-            startActivity(i);
-            finish();
-        }
         LanguageProfileMember lpm = LanguageProfileJsonReader.getProfileMembers(
                 jsonSP.getString("profileJson", "")
         );
-        Intent i = getIntent();
-        String path = i.getStringExtra("path");
+
+
+
         final LanguageProfileJsonReader lp;
         if(lpm!=null){
             lp = new LanguageProfileJsonReader(lpm);
-            this.mc = new ManageCode(path, lp);
+            this.mc = new ManageCode(this.workingFilePath, lp);
         }else{
             finish();
         }
@@ -93,19 +109,15 @@ public class EditActivity extends AppCompatActivity {
                 mItemTouchHelper.startDrag(vh);
             }
         };
-        BlockAdapter ba = new BlockAdapter(this.mc, dragListener);
-
 
         this.mc.addBracket("(", ")");
         this.mRecyclerView = findViewById(R.id.blocksView);
         this.mRecyclerView.setNestedScrollingEnabled(false);
         this.mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplication()));
-
+        BlockAdapter ba = new BlockAdapter(this.mc, dragListener);
         this.mc.setBlockAdapter(ba);
         this.mRecyclerView.setAdapter(this.mc.getBlockAdapter());
-
         this.mc.getTouchHelper().attachToRecyclerView(this.mRecyclerView);
-
         this.mc.updateUI();
 
         addBlockButton.setOnClickListener(new View.OnClickListener() {
@@ -134,6 +146,28 @@ public class EditActivity extends AppCompatActivity {
                 objectDialog().show();
             }
         });
+
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = findViewById(R.id.tabs_view);
+        navigationView.setNavigationItemSelectedListener(EditActivity.this);
+        Menu m = navigationView.getMenu();
+        m.add(0, 0, 0, getString(R.string.drawer_add_new_tab));
+        this.updateDrawer();
+    }
+    private void updateDrawer(){
+        NavigationView navigationView = findViewById(R.id.tabs_view);
+        ArrayList<String> paths = this.getFilePaths();
+        Menu m = navigationView.getMenu();
+        for(int i = m.size()-1;i<paths.size();i++) {
+            int num = m.size();
+            String[] fileName = paths.get(i).split("/");
+            m.add(0, num, num, fileName[fileName.length-1]);
+        }
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
@@ -141,7 +175,6 @@ public class EditActivity extends AppCompatActivity {
         inflater.inflate(R.menu.edit_activity_menu, menu);
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         switch(item.getItemId()){
@@ -172,6 +205,98 @@ public class EditActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        Log.d("id", id+"");
+
+        if (id == 0) {
+            Intent i = new Intent();
+            i.setAction(Intent.ACTION_OPEN_DOCUMENT);
+            i.setType("application/*");
+            i.addCategory(Intent.CATEGORY_OPENABLE);
+            startActivityForResult(Intent.createChooser(i,"Select the file that you want to edit"), 31);
+        }else{
+            String selectedFile = this.getFilePaths().get(id-1);
+            if(!workingFilePath.equals(selectedFile)){
+                Intent i = getIntent();
+                i.putExtra("path", this.getFilePaths().get(id-1));
+                startActivity(i);
+                finish();
+            }
+        }
+
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == 31) {
+                Uri uri;
+                if (resultData != null) {
+                    uri = resultData.getData();
+                    String[] path = uri.getPath().split(":");
+                    String absolutePath = Environment.getExternalStorageDirectory() + "/" + path[1];
+
+                    this.addFile(absolutePath, false);
+                    Intent i = getIntent();
+                    i.putExtra("path", absolutePath);
+                    startActivity(i);
+                    finish();
+                }
+
+            }
+        }
+    }
+    private void addFile(String absolutePath, Boolean isClear){
+        SharedPreferences fileSP = getSharedPreferences("file", MODE_PRIVATE);
+        SharedPreferences.Editor editor = fileSP.edit();
+
+        JSONObject pathJObject = new JSONObject();
+        JSONArray pathJarray = new JSONArray();
+
+        String prevPath = fileSP.getString("paths", "");
+
+        if(!isClear) {
+            ArrayList<String> paths =
+                    new Gson().fromJson(prevPath, FilePath.class).getPaths();
+            for(int i = 0;i<paths.size();i++) {
+                pathJarray.put(paths.get(i));
+            }
+        }
+
+        pathJarray.put(absolutePath);
+
+        try {
+            pathJObject.put("paths", pathJarray);
+        }catch(JSONException e){
+            e.printStackTrace();
+            return;
+        }
+        editor.putString("paths", pathJObject.toString());
+        editor.apply();
+    }
+    private ArrayList<String> getFilePaths(){
+        SharedPreferences absolutePaths = getSharedPreferences("file", MODE_PRIVATE);
+        String pathsJson = absolutePaths.getString("paths", "");
+        FilePath lpp = new Gson().fromJson(pathsJson, FilePath.class);
+        return lpp.getPaths();
+    }
+
     private Dialog customBlockDialog(){
         final EditText et = new EditText(EditActivity.this);
         et.setLines(1);
