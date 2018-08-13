@@ -92,11 +92,6 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
 
     }
 
-    @Override
-    public void onItemDismiss(int position) {
-
-    }
-
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType){

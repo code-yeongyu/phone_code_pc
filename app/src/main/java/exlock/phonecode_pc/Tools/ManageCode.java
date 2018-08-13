@@ -49,32 +49,8 @@ public class ManageCode {
                 this.saveContent();
             }
         }
-        ItemTouchHelperAdapter mAdapter = new ItemTouchHelperAdapter() {
-            @Override
-            public boolean onItemMove(int fromPosition, int toPosition) {
-                updateLine();
-                ArrayList<String> lines = getLines();
-                if (fromPosition < toPosition) {
-                    for (int i = fromPosition; i < toPosition; i++) {
-                        Collections.swap(lines, i, i + 1);
-                    }
-                } else {
-                    for (int i = fromPosition; i > toPosition; i--) {
-                        Collections.swap(lines, i, i - 1);
-                    }
-                }
-                getBlockAdapter().notifyItemMoved(fromPosition, toPosition);
-                return true;
-            }
-
-            @Override
-            public void onItemDismiss(int position) {
-
-            }
-        };
 
         this.callback =
-                new SimpleItemTouchHelperCallback(this, mAdapter);
         this.helper = new ItemTouchHelper(this.callback);
     }
 
@@ -280,9 +256,6 @@ public class ManageCode {
 
     //UI
     private void addBlock(String function) {
-        //todo: ables user to select what symbols will be replaced with EditTexts
-        ArrayList<Integer> dam = StringTools.findStringPositions(function, ").");
-
         ArrayList<Integer> brackets = this.getOutermostPairs(function);
 
         if(dam==null||dam.isEmpty()) {

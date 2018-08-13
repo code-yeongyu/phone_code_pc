@@ -17,10 +17,7 @@ import exlock.phonecode_pc.Tools.ManageCode;
 
 public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
     private ManageCode mc;
-    private ItemTouchHelperAdapter mAdapter;
-    public SimpleItemTouchHelperCallback(ManageCode mc, ItemTouchHelperAdapter mAdapter) {
         this.mc = mc;
-        this.mAdapter = mAdapter;
     }
     @Override
     public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
@@ -30,7 +27,6 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
     @Override
     public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-        mAdapter.onItemMove(viewHolder.getAdapterPosition(), target.getAdapterPosition());
         return true;
     }
 
