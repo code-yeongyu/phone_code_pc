@@ -45,4 +45,6 @@
     <string name="open_file">Open File</string>
     <string name="open_settings">Open Settings</string>
 
+    <string name="no_language_profile">Language Profiles are not loaded.</string>
+
 </resources>

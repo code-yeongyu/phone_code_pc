@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Environment;
@@ -18,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -31,16 +33,19 @@ import exlock.phonecode_pc.EditFeatures.Block.BlockAdapter;
 import exlock.phonecode_pc.EditFeatures.Block.OnStartDragListener;
 import exlock.phonecode_pc.EditFeatures.CustomDialog.CategoryDialogActivity;
 import exlock.phonecode_pc.EditFeatures.SimpleItemTouchHelperCallback;
+import exlock.phonecode_pc.Tools.LanguageProfile;
 import exlock.phonecode_pc.Tools.LanguageProfileJsonReader;
 import exlock.phonecode_pc.Tools.LanguageProfileMember;
 import exlock.phonecode_pc.Tools.ManageCode;
 
 public class EditActivity extends AppCompatActivity {
 
-    ManageCode mc;
-    EditText codeEditor;
-    RecyclerView mRecyclerView;
-    Boolean isBlockmode = true;
+    private ManageCode mc;
+    private EditText codeEditor;
+    private RecyclerView mRecyclerView;
+    private Boolean isBlockMode = true;
+    private boolean isPUT_VALUEAdded = false;
+
     //Todo: horizontal scroll or new line for long codes in a line
 
     @Override
@@ -51,13 +56,21 @@ public class EditActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        SharedPreferences jsonSP = getSharedPreferences("json", MODE_PRIVATE);
+
         AddFloatingActionButton addBlockButton = findViewById(R.id.addBlockButton);
         AddFloatingActionButton addCustomBlockButton = findViewById(R.id.addCustomBlockButton);
         AddFloatingActionButton addReservedKeywordButton = findViewById(R.id.addReserved);
         AddFloatingActionButton addObjectButton = findViewById(R.id.addObject);
+        String profileJson = jsonSP.getString("profileJson", "");
+        if(profileJson.equals("")){
+            Toast.makeText(this, getString(R.string.no_language_profile), Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(this, SettingActivity.class);
+            startActivity(i);
+            finish();
+        }
         LanguageProfileMember lpm = LanguageProfileJsonReader.getProfileMembers(
-                getSharedPreferences("json", MODE_PRIVATE)
-                        .getString("profileJson", "")
+                jsonSP.getString("profileJson", "")
         );
         Intent i = getIntent();
         String path = i.getStringExtra("path");
@@ -128,6 +141,7 @@ public class EditActivity extends AppCompatActivity {
         inflater.inflate(R.menu.edit_activity_menu, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         switch(item.getItemId()){
@@ -139,18 +153,18 @@ public class EditActivity extends AppCompatActivity {
                 //todo: search feature with regex
                 return true;
             case R.id.action_changemode:
-                if(this.isBlockmode){
+                if(this.isBlockMode){
                     this.codeEditor.setText(this.mc.getContent());
                     this.mRecyclerView.setVisibility(View.GONE);
                     this.codeEditor.setVisibility(View.VISIBLE);
-                    this.isBlockmode = false;
+                    this.isBlockMode = false;
                     item.setTitle(getString(R.string.action_blockmode));
                 }else{
                     this.codeEditor.setVisibility(View.GONE);
                     this.mRecyclerView.setVisibility(View.VISIBLE);
                     this.mc.setContent(this.codeEditor.getText().toString());
                     this.mc.updateUI();
-                    this.isBlockmode = true;
+                    this.isBlockMode = true;
                     item.setTitle(getString(R.string.action_textmode));
                 }
                 return true;
@@ -158,7 +172,6 @@ public class EditActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
     private Dialog customBlockDialog(){
         final EditText et = new EditText(EditActivity.this);
         et.setLines(1);
@@ -198,7 +211,6 @@ public class EditActivity extends AppCompatActivity {
                 .create();
         return dialog;
     }
-    private boolean isPUT_VALUEAdded = false;
     private Dialog objectDialog(){
         ArrayList<String> list = mc.getLanguageProfile().getReservedObject();
         final String PUT_VALUE = "[PUT VALUE IN A VARIABLE]";
