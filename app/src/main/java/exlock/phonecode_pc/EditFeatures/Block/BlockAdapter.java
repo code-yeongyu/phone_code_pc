@@ -35,21 +35,30 @@ enum MenuList {
 
 public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> implements ItemTouchHelperAdapter {
     private ManageCode mc;
+    private ArrayList<TextView> lineNumber = new ArrayList<>();
+
 
     @Override
     public boolean onItemMove(int fromPosition, int toPosition) {
         this.mc.updateLine();
         ArrayList<String> lines = this.mc.getLines();
-        if (fromPosition < toPosition) {
-            for (int i = fromPosition; i < toPosition; i++) {
+        if (fromPosition < toPosition)
+            for (int i = fromPosition; i < toPosition; i++)
                 Collections.swap(lines, i, i + 1);
-            }
-        } else {
-            for (int i = fromPosition; i > toPosition; i--) {
+        else
+            for (int i = fromPosition; i > toPosition; i--)
                 Collections.swap(lines, i, i - 1);
-            }
-        }
-        this.mc.getBlockAdapter().notifyItemMoved(fromPosition, toPosition);
+        TextView fromLineNumber = this.lineNumber.get(fromPosition);
+        TextView toLineNumber = this.lineNumber.get(toPosition);
+        CharSequence fromLN = fromLineNumber.getText();
+        CharSequence toLN = toLineNumber.getText();
+        fromLineNumber.setText(toLN);
+        toLineNumber.setText(fromLN);
+        this.lineNumber.set(toPosition, fromLineNumber);
+        this.lineNumber.set(fromPosition, toLineNumber);
+
+
+        this.notifyItemMoved(fromPosition, toPosition);
         return true;
     }
 
@@ -57,7 +66,6 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
         this.mc = mc;
         this.mDragStartListener = dragStartListener;
     }
-
     public List<BlockLists> blocks = new ArrayList<>();
     static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView func1;
@@ -100,19 +108,19 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
                 .inflate(R.layout.item_block, viewGroup, false);
         return new ViewHolder(v);
     }
-
     private final OnStartDragListener mDragStartListener;
+
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         
         position = holder.getAdapterPosition();
+
         final int pos = position;
 
         String funcString1 = this.blocks.get(position).func1;
         String arg = this.blocks.get(position).arg;
         String funcString2 = this.blocks.get(position).func2;
-
 
         holder.getblock().setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -122,6 +130,7 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
             }
         });
 
+        this.lineNumber.add(holder.getLineNumber());
         boolean isFunc1Empty = funcString1.equals("");
         holder.getFunc1().setVisibility(isFunc1Empty ? View.INVISIBLE : View.VISIBLE);
         holder.getArg().setVisibility(isFunc1Empty ? View.INVISIBLE : View.VISIBLE);
@@ -135,17 +144,6 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
                 if (MotionEventCompat.getActionMasked(event) ==
                         MotionEvent.ACTION_DOWN) {
                     mDragStartListener.onStartDrag(holder);
-                }
-                return false;
-            }
-        });
-
-
-        holder.getLineNumber().setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN){
-
                 }
                 return false;
             }
