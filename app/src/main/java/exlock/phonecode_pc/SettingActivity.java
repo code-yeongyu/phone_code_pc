@@ -9,7 +9,6 @@ import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,7 +28,7 @@ import exlock.phonecode_pc.Tools.JsonManager;
 import exlock.phonecode_pc.Tools.LanguageProfile;
 import exlock.phonecode_pc.Tools.LanguageProfileJsonReader;
 import exlock.phonecode_pc.Tools.LanguageProfileMember;
-import exlock.phonecode_pc.Tools.LanguageProfilesPath;
+import exlock.phonecode_pc.Tools.FilePath;
 
 enum MenuList {
     TWO_SPACE, FOUR_SPACE, ONE_TAB, TWO_TAB
@@ -80,7 +79,7 @@ public class SettingActivity extends AppCompatActivity {
         credit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<String> paths = getLanguageProfileDirectory();
+                List<String> paths = getLanguageProfileDirectories();
                 StringBuilder sb = new StringBuilder();
                 sb.append(getString(R.string.setting_paths_information)).append("\n");
                 if(paths.size() > 0){
@@ -94,8 +93,8 @@ public class SettingActivity extends AppCompatActivity {
             }
         });
     }
-    public void loadJson(String selectedFile, String absolutePath){
-        String jsonExtension = selectedFile.substring(selectedFile.length() - 4, selectedFile.length());
+    public void loadJson(String absolutePath){
+        String jsonExtension = absolutePath.substring(absolutePath.length() - 4, absolutePath.length());
         if (!jsonExtension.equals("json")) {
             Toast.makeText(SettingActivity.this, getString(R.string.toast_not_json), Toast.LENGTH_SHORT).show();
             return;
@@ -121,10 +120,9 @@ public class SettingActivity extends AppCompatActivity {
                 Uri uri;
                 if (resultData != null) {
                     uri = resultData.getData();
-                    String selectedFile = uri.toString();
                     String[] path = uri.getPath().split(":");
                     String absolutePath = Environment.getExternalStorageDirectory() + "/" + path[1];
-                    this.loadJson(selectedFile, absolutePath);
+                    this.loadJson(absolutePath);
                 }
 
             }else if(requestCode == 44){
@@ -149,7 +147,7 @@ public class SettingActivity extends AppCompatActivity {
                     SharedPreferences profileJson = getSharedPreferences("json", MODE_PRIVATE);
                     String jsonString = profileJson.getString("profileJson", "");
                     if(jsonString.equals("")){
-                        this.loadJson(selectedFile, absolutePath);
+                        this.loadJson(absolutePath);
                         return;
                     }
                     LanguageProfileMember oldLPM = LanguageProfileJsonReader.getProfileMembers(
@@ -240,7 +238,7 @@ public class SettingActivity extends AppCompatActivity {
         JSONArray jArray = new JSONArray();
         String prevJson = absolutePaths.getString("language_profile_paths", "");
         if(!isClear) {
-            ArrayList<String> paths = new Gson().fromJson(prevJson, LanguageProfilesPath.class).getPaths();
+            ArrayList<String> paths = new Gson().fromJson(prevJson, FilePath.class).getPaths();
             for(int i = 0;i<paths.size();i++)
                 jArray.put(paths.get(i));
         }
@@ -254,10 +252,10 @@ public class SettingActivity extends AppCompatActivity {
         editor.putString("language_profile_paths", jObject.toString());
         editor.apply();
     }
-    private ArrayList<String> getLanguageProfileDirectory(){
+    private ArrayList<String> getLanguageProfileDirectories(){
         SharedPreferences absolutePaths = getSharedPreferences("json", MODE_PRIVATE);
         String pathsJson = absolutePaths.getString("language_profile_paths", "");
-        LanguageProfilesPath lpp = new Gson().fromJson(pathsJson, LanguageProfilesPath.class);
+        FilePath lpp = new Gson().fromJson(pathsJson, FilePath.class);
         return lpp.getPaths();
     }
 }

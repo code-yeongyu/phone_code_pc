@@ -2,7 +2,7 @@ package exlock.phonecode_pc.Tools;
 
 import java.util.ArrayList;
 
-public class LanguageProfilesPath {
+public class FilePath {
     private ArrayList<String> paths;
 
     public ArrayList<String> getPaths() {
