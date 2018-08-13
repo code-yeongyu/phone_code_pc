@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Button openFileButton = findViewById(R.id.openFileButton);
+        Button openSettingsButton = findViewById(R.id.openSettingButton);
 
         openFileButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,6 +44,13 @@ public class MainActivity extends AppCompatActivity {
                     i.addCategory(Intent.CATEGORY_OPENABLE);
                     startActivityForResult(Intent.createChooser(i,"Select the file that you want to edit"), 30);
                 }
+            }
+        });
+        openSettingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    Intent i = new Intent(MainActivity.this, SettingActivity.class);
+                    startActivity(i);
             }
         });
 
