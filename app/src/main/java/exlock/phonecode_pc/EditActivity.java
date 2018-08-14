@@ -362,7 +362,7 @@ public class EditActivity extends AppCompatActivity
         et.setSingleLine();
         if(value.equals("[PUT VALUE IN A VARIABLE]")){
             AlertDialog dialog = new AlertDialog.Builder(EditActivity.this)
-                    .setTitle("Type the name of variable")
+                    .setTitle("Type the name of the variable")
                     .setView(et)
                     .setPositiveButton("done", new DialogInterface.OnClickListener() {
                         @Override
@@ -380,15 +380,36 @@ public class EditActivity extends AppCompatActivity
             return dialog;
         }
         AlertDialog dialog = new AlertDialog.Builder(EditActivity.this)
-                .setTitle("Create an object")
+                .setTitle("Type the name of the object")
                 .setView(et)
-                .setPositiveButton("create", new DialogInterface.OnClickListener() {
+                .setPositiveButton("done", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         InputMethodManager mInputMethodManager = (InputMethodManager) getApplication().getSystemService(Context.INPUT_METHOD_SERVICE);
                         if(mInputMethodManager != null)
                             mInputMethodManager.hideSoftInputFromWindow(et.getWindowToken(), 0);
                         String final_value = value+" "+et.getText().toString();
+                        objectArgumentSetDialog(final_value).show();
+                    }
+                })
+                .setNegativeButton("cancel", null)
+                .create();
+        return dialog;
+    }
+    private Dialog objectArgumentSetDialog(final String VALUE){
+        final EditText et = new EditText(EditActivity.this);
+        et.setLines(1);
+        et.setSingleLine();
+        AlertDialog dialog = new AlertDialog.Builder(EditActivity.this)
+                .setTitle("Type the arguments of the object")
+                .setView(et)
+                .setPositiveButton("done", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        InputMethodManager mInputMethodManager = (InputMethodManager) getApplication().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        if(mInputMethodManager != null)
+                            mInputMethodManager.hideSoftInputFromWindow(et.getWindowToken(), 0);
+                        String final_value = VALUE+"("+et.getText().toString()+")";
                         mc.setContent(mc.getContent()+"\n"+final_value);
                         mc.addUIBlock(final_value);
                         mc.notifyUpdatesInUI();
