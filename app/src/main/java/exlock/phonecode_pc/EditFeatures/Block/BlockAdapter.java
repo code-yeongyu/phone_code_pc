@@ -113,7 +113,6 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        
         position = holder.getAdapterPosition();
 
         final int pos = position;
@@ -148,24 +147,13 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
                 return false;
             }
         });
-        if(isFunc1Empty)
-            return;
-        boolean isFunc2Empty = funcString2.equals("");
-        holder.getArg().setVisibility(isFunc2Empty ? View.GONE : View.VISIBLE);
-        holder.getFunc2().setVisibility(isFunc2Empty ? View.GONE : View.VISIBLE);
-        holder.getFunc1().setText(funcString1);
-        if(isFunc2Empty){
+        if(isFunc1Empty) {
             return;
         }
-        holder.getLineNumber().setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(event.getActionMasked() == MotionEvent.ACTION_DOWN){
-                    mDragStartListener.onStartDrag(holder);
-                }
-                return false;
-            }
-        });
+        boolean isArgEmpty = arg.equals("");
+        holder.getFunc1().setText(funcString1);
+        holder.getArg().setVisibility(isArgEmpty? View.INVISIBLE : View.VISIBLE);
+        holder.getFunc2().setVisibility(View.VISIBLE);
     }
     private int block = -1;
     private void createDialog(@NotNull ViewHolder holder, final int position){

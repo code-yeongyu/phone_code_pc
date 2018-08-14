@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -183,7 +184,6 @@ public class ManageCode {
             }//add all positions per brackets
             bracketPositions.add(tempPositions);
         }//put all the positions of brackets positions
-        //todo: *done
 
         ArrayList<Integer> temp = new ArrayList<>();
         for(int i = 0;i<this.getBrackets().size()/2;i++){
@@ -258,13 +258,15 @@ public class ManageCode {
     //UI
     private void addBlock(String function) {
         ArrayList<String> reservedObjects = this.getLanguageProfile().getReservedObject();
-        for(int i = 0;i<reservedObjects.size();i++)
-            if(function.contains(reservedObjects.get(i))) {
-                String objectName = function.substring(reservedObjects.get(i).length(), function.length());
+        for(int i = 0;i<reservedObjects.size();i++) {
+            if (function.contains(reservedObjects.get(i))) {
+                String objectName = function.substring(reservedObjects.get(i).length()+1, function.length());
+                function = function.substring(0, reservedObjects.get(i).length());
                 this.getBlockAdapter().blocks.add(getBlockAdapter().getItemCount(),
                         this.makeUIBlock(function, objectName, ""));
                 return;
             }
+        }
         ArrayList<Integer> brackets = this.getOutermostPairs(function);
 
         ArrayList<Integer> dam = StringTools.findStringPositions(function, ").");
@@ -330,7 +332,7 @@ public class ManageCode {
         }
         this.getBlockAdapter().notifyDataSetChanged();
     }
-    public void addUIBlock(String code) {//todo: select line and add function there
+    public void addUIBlock(String code) {
         this.addBlock(
                 code
         );
@@ -342,5 +344,4 @@ public class ManageCode {
         BlockLists bl = this.makeUIBlock(target, brackets);
         this.getBlockAdapter().blocks.set(line, bl);
     }
-    //Todo: set indent
 }
