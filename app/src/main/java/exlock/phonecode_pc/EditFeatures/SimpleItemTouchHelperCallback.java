@@ -46,11 +46,12 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
         target = f1.getText().toString()+arg.getText()+f2.getText();
         String indent = mc.getLanguageProfile().getIndent();
+
         if(direction==ItemTouchHelper.RIGHT){
             this.mc.setLine(position, mc.getLanguageProfile().getIndent()+target);
         }else if(direction==ItemTouchHelper.LEFT &&
-                target.substring(0, indent.length()).equals(mc.getLanguageProfile().getIndent())){
-            this.mc.setLine(position, target.substring(1, target.length()));
+                target.substring(0, indent.length()).equals(indent)){
+            this.mc.setLine(position, target.substring(indent.length(), target.length()));
         }
         this.mc.updateBlock(position);
         this.mc.getBlockAdapter().notifyItemChanged(position);
