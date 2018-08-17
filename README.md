@@ -14,3 +14,4 @@ Most of you guys have seen tools like Scratch, Entry, and App Inventer which mak
 Use this method of coding will provide you better experiences with fewer symbols.<br/>
 'Phone Code-PC' is not just an application for practicing programming, unlike any other devices.<br/>
 'Phone Code-PC' is a real tool that makes you write codes for your projects.<br/>
+Use UI to write basic codes! You can practice your algorithm skills while you're in subway, in buses, and in cars.
