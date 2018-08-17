@@ -57,7 +57,6 @@ public class EditActivity extends AppCompatActivity
     private boolean isPUT_VALUEAdded = false;
     private String workingFilePath = "";
 
-    //Todo: horizontal scroll or new line for long codes in a line
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -183,7 +182,6 @@ public class EditActivity extends AppCompatActivity
                 return true;
             case R.id.action_search:
                 this.searchingDialog().show();
-                //todo: search feature with regex
                 return true;
             case R.id.action_changemode:
                 if(this.isBlockMode){
@@ -342,7 +340,7 @@ public class EditActivity extends AppCompatActivity
         if(!isPUT_VALUEAdded&&mc.getLanguageProfile().getWayToCreateVar().equals("=")){
             list.add(PUT_VALUE);
             isPUT_VALUEAdded = true;
-        }//todo: add more conditional states for other languages(this only works in python)
+        }
         final CharSequence[] cs = list.toArray(new CharSequence[list.size()]);
         AlertDialog dialog = new AlertDialog.Builder(EditActivity.this)
                 .setTitle("Create an object")
