@@ -3,6 +3,7 @@
 We have seen a lot of Programming Applications that based on Text Editor which doesn't provide instinctive experiences.<br/>
 You have to use lots of symbols when you write your code. It is an effective way on your Computer with your keyboard.<br/>
 In Android Devices, it makes programmer uncomfortable while writing codes.<br/>
+Planning to launch on Google Play Store.
 
 # Who thought to write a code with Android Devices? It seems a bad idea.
 We spend lots of times outside.<br/>
