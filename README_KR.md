@@ -14,4 +14,4 @@ Programming시에는 그 특성상 많은 수의 특수문자가 사용됩니다
 # 어떻게 직관적인 거죠?
 여러분은 Scratch나 Entry, App Inventor와 같은 Block을 쌓아올려 Logic을 만드는 법을 배우는 도구들을 본 적이 있으실 겁니다.
 Mobile 기기에서 이러한 방식을 도입해 특수문자의 사용을 줄이는 것은 정말 최적의 경험을 제공할 것입니다.
-Phone Code-PC는 단순한 Programming 연습 Application이 아닙니다. Phone Code-PC는 본격적인 Programming을 여러분의 Android기기에서 가능하게 함으로써 낭비되는 여러분의 시간을 Programming에 할애할 수 있게 도와줍니다.
+Phone Code-PC는 간단한 알고리즘 문제풀이와 같은 작업을 Android기기에서 가능하게 함으로써 낭비되는 여러분의 시간을 Programming에 할애할 수 있게 도와줍니다.
