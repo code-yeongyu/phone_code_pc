@@ -1,3 +1,4 @@
+// language profile을 위한 json파일을 관리하는 클래스
 package exlock.phonecode_pc.Tools;
 
 import android.os.Environment;
@@ -38,58 +39,45 @@ public class JsonManager {
         }
         return null;
     }
-
+    //json 파일을 반환
     static public String modifyJsonByKey(final String jsonString, final String position, final String key, final String value) {
         String jsonStringResult = "";
         try{
-            JSONArray jarray;
-            JSONObject jObject;
-            jarray = new JSONArray("["+jsonString+"]");
-            for(int i=0; i < jarray.length(); i++){
-                jObject = jarray.getJSONObject(i);
-                jObject.getJSONObject(position).put(key, value);
-                jsonStringResult = jObject.toString();
-            }
+            JSONObject jObject = new JSONObject(jsonString); // jsonString을 jsonobject로 변환
+            jObject.getJSONObject(position).put(key, value);
+            jsonStringResult = jObject.toString();
         }
         catch(JSONException e) {
             e.printStackTrace();
         }
         return jsonStringResult;
     }
-
-    static public String getJsonOBJByKey(String jsonString, String key){
+    //key 에 해당하는 부분을 수정하여 jsonString 전체를 반환
+    static public String getJsonOBJByKey(final String jsonString, final String key){
         String jsonStringResult = "";
         try{
-            JSONArray jarray;
-            JSONObject jObject;
-            jarray = new JSONArray("["+jsonString+"]");
-            for(int i=0; i < jarray.length(); i++){
-                jObject = jarray.getJSONObject(i);
-                jsonStringResult = jObject.getJSONObject(key).toString();
-            }
+            JSONObject jObject = new JSONObject(jsonString);
+            jsonStringResult = jObject.getJSONObject(key).toString();
         }
         catch(JSONException e) {
             e.printStackTrace();
         }
         return jsonStringResult;
     }
-    static public String getJsonStrByKey(String jsonString, String key){
+    //key 에 해당하는 부분을 jsonObject로 반환
+    static public String getJsonStrByKey(final String jsonString, final String key){
         String jsonStringResult = "";
         try{
-            JSONArray jarray;
-            JSONObject jObject;
-            jarray = new JSONArray("["+jsonString+"]");
-            for(int i=0; i < jarray.length(); i++){
-                jObject = jarray.getJSONObject(i);
-                jsonStringResult = jObject.get(key).toString();
-            }
+            JSONObject jObject = new JSONObject(jsonString);
+            jsonStringResult = jObject.get(key).toString();
         }
         catch(JSONException e) {
             e.printStackTrace();
         }
         return jsonStringResult;
     }
-    static public ArrayList<String> getJsonArrByKey(String jsonString, String key){
+    //key 에 해당하는 부분을 string 으로 반환
+    static public ArrayList<String> getJsonArrByKey(final String jsonString, final String key){
         ArrayList<String> result = new ArrayList<>();
         try{
             JSONArray jarray;
@@ -107,36 +95,33 @@ public class JsonManager {
     static public ArrayList<String> getJsonAllKeys(@NonNull @NotNull final String jsonString){
         ArrayList<String> keys_array = new ArrayList<>();
         try {
-            JSONArray jarray = new JSONArray("[" + jsonString + "]");
-            JSONObject json_array = jarray.optJSONObject(0);
-            if(json_array != null) {
-                Iterator<?> keys = json_array.keys();
-                while (keys.hasNext()) {
-                    String key = (String) keys.next();
-                    keys_array.add(key);
-                }
-            }//todo: if json_array == null, print wrong json file
+            JSONObject jObject = new JSONObject(jsonString);
+            Iterator<?> keys = jObject.keys();
+            while (keys.hasNext()) {
+                String key = (String) keys.next();
+                keys_array.add(key);
+            }
         }catch (JSONException e){
             e.printStackTrace();
             return keys_array;
         }
         return keys_array;
     }
+    //모든 Key를 반환
     @Nullable
     static public Object addJsonKeyToArray(@NonNull @NotNull final String jsonString, final String key, final ArrayList<String> value){
-        JSONObject jObj;
         try {
-            JSONArray jArray = new JSONArray("["+jsonString+"]");
             JSONArray temp = new JSONArray();
             for(int i = 0;i<value.size();i++) {
                 temp.put(value.get(i));
             }
-            jObj = jArray.optJSONObject(0);
-            jObj.put(key, temp);
-            return jObj;
+            JSONObject jObject = new JSONObject(jsonString);
+            jObject.put(key, temp);
+            return jObject;
         }catch (JSONException e){
             e.printStackTrace();
         }
         return null;
     }
+    //key를 array로 추가 한 뒤 object 형태로 반환
 }
