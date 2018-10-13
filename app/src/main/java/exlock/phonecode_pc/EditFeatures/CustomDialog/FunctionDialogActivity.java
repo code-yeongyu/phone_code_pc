@@ -40,7 +40,6 @@ public class FunctionDialogActivity extends Dialog {
         ArrayList<String> functions = lp.getFunctions(this.categoryName);
 
         ArrayList<Integer> positionsOfFunctions = new ArrayList<>();
-        ArrayList<String> funcsInCode = mc.getFunctionsInCode();
         searchButton.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
