@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import exlock.phonecode_pc.Tools.FilePath;
 
 public class MainActivity extends AppCompatActivity {
-    String absolute_path = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        // 파일 열기 버튼
         openSettingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,20 +53,23 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(i);
             }
         });
+        // 설정 열기 버튼
 
     }
-    @Override
 
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(grantResults[0]== PackageManager.PERMISSION_GRANTED){
+        if(grantResults[0] == PackageManager.PERMISSION_GRANTED){ //접근 권한이 있을 시
             Intent i = new Intent();
             i.setAction(Intent.ACTION_OPEN_DOCUMENT);
             i.setType("application/*");
             i.addCategory(Intent.CATEGORY_OPENABLE);
             startActivityForResult(Intent.createChooser(i,"Select the file that you want to edit"), 30);
+            //파일 매니저 오픈
         }
     }
+
     private boolean checkAndAskPermission(){
         if(checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
             return true;
@@ -74,10 +77,11 @@ public class MainActivity extends AppCompatActivity {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
         return false;
     }
+    //파일 권한과 관련된 함수
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
-        if (resultCode == Activity.RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK) { //
             if (requestCode == 30) {
                 Uri uri;
                 if (resultData != null) {
@@ -85,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
                     String[] path = uri.getPath().split(":");
                     String absolutePath = Environment.getExternalStorageDirectory() + "/" + path[1];
 
-                    this.addFile(absolutePath, true);
+                    this.addFile(absolutePath); //새 파일 열기
 
                     Intent i = new Intent(this, EditActivity.class);
                     i.putExtra("path", absolutePath);
@@ -95,22 +99,12 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-    private void addFile(String absolutePath, Boolean isClear){
+    private void addFile(String absolutePath){
         SharedPreferences fileSP = getSharedPreferences("file", MODE_PRIVATE);
         SharedPreferences.Editor editor = fileSP.edit();
 
         JSONObject pathJObject = new JSONObject();
         JSONArray pathJarray = new JSONArray();
-
-        String prevPath = fileSP.getString("paths", "");
-
-        if(!isClear) {
-            ArrayList<String> paths =
-                    new Gson().fromJson(prevPath, FilePath.class).getPaths();
-            for(int i = 0;i<paths.size();i++) {
-                pathJarray.put(paths.get(i));
-            }
-        }
 
         pathJarray.put(absolutePath);
 
@@ -122,11 +116,5 @@ public class MainActivity extends AppCompatActivity {
         }
         editor.putString("paths", pathJObject.toString());
         editor.apply();
-    }
-    private ArrayList<String> getFilePaths(){
-        SharedPreferences absolutePaths = getSharedPreferences("file", MODE_PRIVATE);
-        String pathsJson = absolutePaths.getString("paths", "");
-        FilePath lpp = new Gson().fromJson(pathsJson, FilePath.class);
-        return lpp.getPaths();
     }
 }

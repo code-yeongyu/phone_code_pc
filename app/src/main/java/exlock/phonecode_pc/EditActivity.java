@@ -55,56 +55,60 @@ public class EditActivity extends AppCompatActivity
     private RecyclerView mRecyclerView;
     private Boolean isBlockMode = true;
     private boolean isPUT_VALUEAdded = false;
-    private String workingFilePath = "";
-
+    private String workingFilePath = ""; //현재 작업중인 파일 path
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
         final Toolbar toolbar = findViewById(R.id.toolbar);
+        //ui 코드
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        Intent i = getIntent();
-        this.workingFilePath = i.getStringExtra("path");
-        String[] fileName = this.workingFilePath.split("/");
-        toolbar.setTitle(fileName[fileName.length-1]);
-        setSupportActionBar(toolbar);
+        this.codeEditor = findViewById(R.id.textEditor);
 
         final Intent i = getIntent();
-        String profileJson = jsonSP.getString("profileJson", "");
+
         final SharedPreferences jsonSP = getSharedPreferences("json", MODE_PRIVATE);
         final String profileJson = jsonSP.getString("profileJson", "");
+        //language profile 로드
         if(profileJson.equals("")){
             Toast.makeText(this, getString(R.string.no_language_profile), Toast.LENGTH_SHORT).show();
             final Intent SettingActivity = new Intent(this, SettingActivity.class);
-            startActivity(i);
+            startActivity(SettingActivity);
             finish();
+            //language profile 이 로드되지 않았음을 알리고, 액티비티 종료
         }
 
-        AddFloatingActionButton addBlockButton = findViewById(R.id.addBlockButton);
-        AddFloatingActionButton addCustomBlockButton = findViewById(R.id.addCustomBlockButton);
+        this.workingFilePath = i.getStringExtra("path");
+
         final String[] fileName = this.workingFilePath.split("/");
-        AddFloatingActionButton addObjectButton = findViewById(R.id.addObject);
+        toolbar.setTitle(fileName[fileName.length-1]);
+        //상단의 toolbar 이름을 작업중인 파일명으로 설정
+        setSupportActionBar(toolbar);
+        //액션바로 toolbar을 사용하도록 설정
+
         final AddFloatingActionButton addBlockButton = findViewById(R.id.addBlockButton);
         final AddFloatingActionButton addCustomBlockButton = findViewById(R.id.addCustomBlockButton);
         final AddFloatingActionButton addReservedKeywordButton = findViewById(R.id.addReserved);
         final AddFloatingActionButton addObjectButton = findViewById(R.id.addObject);
+        //플로팅 버튼들
+
         LanguageProfileMember lpm = LanguageProfileJsonReader.getProfileMembers(
                 jsonSP.getString("profileJson", "")
         );
+        //language profile 안의 parameter 들을 객체로 바꿈
 
-
-
-        final LanguageProfileJsonReader lp;
+        LanguageProfileJsonReader lp;
         if(lpm!=null){
             lp = new LanguageProfileJsonReader(lpm);
             this.mc = new ManageCode(this.workingFilePath, lp);
         }else{
+            Toast.makeText(this, getString(R.string.no_language_profile), Toast.LENGTH_SHORT).show();
             final Intent SettingActivity = new Intent(this, SettingActivity.class);
+            startActivity(SettingActivity);
             finish();
+            //language profile 이 로드되지 않았음을 알리고, 액티비티 종료
         }
-        this.codeEditor = findViewById(R.id.textEditor);
 
         final ItemTouchHelper.Callback c = this.mc.getCallback(); // recyclerview의 터치 관련 작업을 위한 콜백
         this.mc.setTouchHelper(new ItemTouchHelper(c));
@@ -115,13 +119,13 @@ public class EditActivity extends AppCompatActivity
             public void onStartDrag(RecyclerView.ViewHolder vh) {
                 mItemTouchHelper.startDrag(vh);
             }
-        };
+        }; // recyclerview에 드래그가 시작될때 작업 설정
 
-        this.mc.addBracket("(", ")");
+        this.mc.addBracket("(", ")"); // edittext를 사이에 넣도록 설정 할 문자 두가지 설정
         this.mRecyclerView = findViewById(R.id.blocksView);
-        this.mRecyclerView.setNestedScrollingEnabled(false);
-        this.mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplication()));
-        BlockAdapter ba = new BlockAdapter(this.mc, dragListener);
+        this.mRecyclerView.setNestedScrollingEnabled(false); //horizontal scroll 금지
+        this.mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplication())); // 리니어 레이아웃으로 recyclerview 설정
+        final BlockAdapter ba = new BlockAdapter(this.mc, dragListener);
         this.mc.setBlockAdapter(ba);
         this.mRecyclerView.setAdapter(this.mc.getBlockAdapter());
         this.mc.getTouchHelper().attachToRecyclerView(this.mRecyclerView);
@@ -153,18 +157,20 @@ public class EditActivity extends AppCompatActivity
                 objectDialog().show();
             }
         });
+        //버튼 작업시 리스너
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
         NavigationView navigationView = findViewById(R.id.tabs_view);
         navigationView.setNavigationItemSelectedListener(EditActivity.this);
         Menu m = navigationView.getMenu();
         m.add(0, 0, 0, getString(R.string.drawer_add_new_tab));
         this.updateDrawer();
+        //햄버거 버튼 클릭시 나오는 좌측 메뉴 설정
+
     }
     private void updateDrawer(){
         final NavigationView navigationView = findViewById(R.id.tabs_view);
@@ -176,6 +182,7 @@ public class EditActivity extends AppCompatActivity
             m.add(0, num, num, fileName[fileName.length-1]);
         }
     }
+    // drawer 에 최근에 작업했던 파일 목록을 업데이트 하는 함수
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         final MenuInflater inflater = getMenuInflater();
@@ -225,21 +232,19 @@ public class EditActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         final int id = item.getItemId();
 
-        Log.d("id", id+"");
+        if (id == 0) { // 0번째 항목은 새 파일을 여는 항목
             final Intent i = new Intent();
-        if (id == 0) {
-            Intent i = new Intent();
             i.setAction(Intent.ACTION_OPEN_DOCUMENT);
             i.setType("application/*");
             i.addCategory(Intent.CATEGORY_OPENABLE);
             startActivityForResult(Intent.createChooser(i,"Select the file that you want to edit"), 31);
-        }else{
+        }else{ // 기존에 열었었던 파일을 열려고 시도하는 경우
             String selectedFile = this.getFilePaths().get(id-1);
             if(!workingFilePath.equals(selectedFile)){
                 final Intent i = getIntent();
-                i.putExtra("path", this.getFilePaths().get(id-1));
-                startActivity(i);
-                finish();
+                i.putExtra("path", this.getFilePaths().get(id-1)); // n번째 파일을 path에 넣어서
+                startActivity(i); // 새 activity 를 시작하고
+                finish(); // 끝낸다.
             }
         }
 
@@ -258,7 +263,7 @@ public class EditActivity extends AppCompatActivity
                     final String[] path = uri.getPath().split(":");
                     final String absolutePath = Environment.getExternalStorageDirectory() + "/" + path[1];
 
-                    this.addFile(absolutePath, false);
+                    this.addFile(absolutePath);
                     final Intent i = getIntent();
                     i.putExtra("path", absolutePath);
                     startActivity(i);
@@ -268,33 +273,25 @@ public class EditActivity extends AppCompatActivity
             }
         }
     }
-    private void addFile(String absolutePath, Boolean isClear){
+    private void addFile(String absolutePath){
         SharedPreferences fileSP = getSharedPreferences("file", MODE_PRIVATE);
         SharedPreferences.Editor editor = fileSP.edit();
-
         JSONObject pathJObject = new JSONObject();
-        JSONArray pathJarray = new JSONArray();
-
         String prevPath = fileSP.getString("paths", "");
+        ArrayList<String> paths =
+                new Gson().fromJson(prevPath, FilePath.class).getPaths();
+        JSONArray pathJarray = new JSONArray(paths);
 
-        if(!isClear) {
-            ArrayList<String> paths =
-                    new Gson().fromJson(prevPath, FilePath.class).getPaths();
-            for(int i = 0;i<paths.size();i++) {
-                pathJarray.put(paths.get(i));
-            }
-        }
-
-        pathJarray.put(absolutePath);
+        pathJarray.put(absolutePath); //jsonArray에 새 파일의 path 추가
 
         try {
-            pathJObject.put("paths", pathJarray);
+            pathJObject.put("paths", pathJarray); //pathJObject에 array pathJarray 추가
         }catch(JSONException e){
             e.printStackTrace();
             return;
         }
         editor.putString("paths", pathJObject.toString());
-        editor.apply();
+        editor.apply();//paths라는 이름으로 sharedpreference에 추가
     }
     private ArrayList<String> getFilePaths(){
         SharedPreferences absolutePaths = getSharedPreferences("file", MODE_PRIVATE);
@@ -302,6 +299,7 @@ public class EditActivity extends AppCompatActivity
         FilePath lpp = new Gson().fromJson(pathsJson, FilePath.class);
         return lpp.getPaths();
     }
+    // 열려있는 파일들의 arraylist를 반환하는 함
 
     private Dialog customBlockDialog(){
         final EditText et = new EditText(EditActivity.this);
@@ -485,4 +483,5 @@ public class EditActivity extends AppCompatActivity
                 .create();
         return dialog;
     }
+    // 버튼 누를시 나오는 dialog를 return 하는 함수
 }
