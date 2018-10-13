@@ -23,7 +23,7 @@ public class LanguageProfileJsonReader {
             indent = JsonManager.getJsonStrByKey(informsJson, "indent");
             version = JsonManager.getJsonStrByKey(informsJson, "version");
             wayToCreateVar = JsonManager.getJsonStrByKey(informsJson, "way_to_create_var");
-            categories = JsonManager.getJsonAllkeys
+            categories = JsonManager.getJsonAllKeys
                     (JsonManager.getJsonOBJByKey(json, "functions"));
             symbols = JsonManager.getJsonArrByKey(symbolsJson, "normal");
             reserved = JsonManager.getJsonArrByKey(reservedJson, "normal");
