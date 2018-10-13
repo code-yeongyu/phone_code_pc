@@ -39,7 +39,7 @@ public class ManageCode {
     private ItemTouchHelper helper;
     private ArrayList<String> lines;
 
-    public ManageCode(String path, LanguageProfileJsonReader lp) {
+    public ManageCode(final String path, final LanguageProfileJsonReader lp) {
         this.setPath(path);
         this.setLanguageProfile(lp);
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
@@ -173,40 +173,6 @@ public class ManageCode {
         }
         return pairs;//return the ArrayList which has the positions of outermost bracket pairs
     }
-    private ArrayList<Integer> getOutermostdPairs(String code){
-        ArrayList<Integer> pairs = new ArrayList<>();
-        ArrayList<ArrayList<Integer>> bracketPositions = new ArrayList<>();
-
-        for(int i = 0;i<this.getBrackets().size()/2;i++){
-            ArrayList<Integer> tempPositions = new ArrayList<>();
-            for(int j = 0;j<this.getBrackets().size();j++){
-                tempPositions.addAll(StringTools.findStringPositions(code, this.getBrackets().get(j)));
-            }//add all positions per brackets
-            bracketPositions.add(tempPositions);
-        }//put all the positions of brackets positions
-
-        ArrayList<Integer> temp = new ArrayList<>();
-        for(int i = 0;i<this.getBrackets().size()/2;i++){
-            if(bracketPositions.get(i).size()%2==0) {//if it's able to get pairs
-                Collections.sort(bracketPositions.get(i), new Descending());//sort bracketPositions from lower value to higher value
-                temp.add(bracketPositions.get(i).get(bracketPositions.size()));//get the front value of pairs
-            }
-        }
-        int i;
-        Collections.sort(temp, new Descending());
-        int position = 0;
-        for(i = 0;i<temp.size();i++){
-            if(bracketPositions.get(i).contains(temp.get(i))) {
-                position = bracketPositions.get(i).indexOf(temp.get(i));
-                break;
-            }
-        }
-
-
-        pairs.add(bracketPositions.get(i).get(0));
-        pairs.add(bracketPositions.get(i).get(position));
-        return pairs;//return the ArrayList which has the positions of outermost bracket pairs
-    }//deprecated
     public void setListAsContent(@NotNull List<String> lines){
         StringBuilder builder = new StringBuilder();
         for(int i = 0;i<lines.size();i++){
@@ -345,3 +311,4 @@ public class ManageCode {
         this.getBlockAdapter().blocks.set(line, bl);
     }
 }
+//코드 파일을 관리하는 클래스

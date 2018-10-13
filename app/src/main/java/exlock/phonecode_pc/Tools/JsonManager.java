@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class JsonManager {
-    static public String getJsonFromPath(String path) {
+    static public String getJsonFromPath(final String path) {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {//if accessing to storage is available
             StringBuilder builder = new StringBuilder();
             String data;
@@ -39,7 +39,7 @@ public class JsonManager {
         return null;
     }
 
-    static public String modifyJsonByKey(String jsonString, String position, String key, String value) {
+    static public String modifyJsonByKey(final String jsonString, final String position, final String key, final String value) {
         String jsonStringResult = "";
         try{
             JSONArray jarray;
@@ -103,7 +103,8 @@ public class JsonManager {
         }
         return result;
     }
-    static public ArrayList<String> getJsonAllkeys(@NonNull @NotNull String jsonString){
+    //key 에 해당하는 부분을 arraylist 로 반환
+    static public ArrayList<String> getJsonAllKeys(@NonNull @NotNull final String jsonString){
         ArrayList<String> keys_array = new ArrayList<>();
         try {
             JSONArray jarray = new JSONArray("[" + jsonString + "]");
@@ -122,7 +123,7 @@ public class JsonManager {
         return keys_array;
     }
     @Nullable
-    static public Object addJsonKeyToArray(@NonNull @NotNull String jsonString, String key, ArrayList<String> value){
+    static public Object addJsonKeyToArray(@NonNull @NotNull final String jsonString, final String key, final ArrayList<String> value){
         JSONObject jObj;
         try {
             JSONArray jArray = new JSONArray("["+jsonString+"]");

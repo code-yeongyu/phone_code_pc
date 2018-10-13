@@ -62,6 +62,7 @@ public class EditActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
+        final Toolbar toolbar = findViewById(R.id.toolbar);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         Intent i = getIntent();
@@ -70,19 +71,25 @@ public class EditActivity extends AppCompatActivity
         toolbar.setTitle(fileName[fileName.length-1]);
         setSupportActionBar(toolbar);
 
-        SharedPreferences jsonSP = getSharedPreferences("json", MODE_PRIVATE);
+        final Intent i = getIntent();
         String profileJson = jsonSP.getString("profileJson", "");
+        final SharedPreferences jsonSP = getSharedPreferences("json", MODE_PRIVATE);
+        final String profileJson = jsonSP.getString("profileJson", "");
         if(profileJson.equals("")){
             Toast.makeText(this, getString(R.string.no_language_profile), Toast.LENGTH_SHORT).show();
-            i = new Intent(this, SettingActivity.class);
+            final Intent SettingActivity = new Intent(this, SettingActivity.class);
             startActivity(i);
             finish();
         }
 
         AddFloatingActionButton addBlockButton = findViewById(R.id.addBlockButton);
         AddFloatingActionButton addCustomBlockButton = findViewById(R.id.addCustomBlockButton);
-        AddFloatingActionButton addReservedKeywordButton = findViewById(R.id.addReserved);
+        final String[] fileName = this.workingFilePath.split("/");
         AddFloatingActionButton addObjectButton = findViewById(R.id.addObject);
+        final AddFloatingActionButton addBlockButton = findViewById(R.id.addBlockButton);
+        final AddFloatingActionButton addCustomBlockButton = findViewById(R.id.addCustomBlockButton);
+        final AddFloatingActionButton addReservedKeywordButton = findViewById(R.id.addReserved);
+        final AddFloatingActionButton addObjectButton = findViewById(R.id.addObject);
         LanguageProfileMember lpm = LanguageProfileJsonReader.getProfileMembers(
                 jsonSP.getString("profileJson", "")
         );
@@ -94,15 +101,16 @@ public class EditActivity extends AppCompatActivity
             lp = new LanguageProfileJsonReader(lpm);
             this.mc = new ManageCode(this.workingFilePath, lp);
         }else{
+            final Intent SettingActivity = new Intent(this, SettingActivity.class);
             finish();
         }
         this.codeEditor = findViewById(R.id.textEditor);
 
-        ItemTouchHelper.Callback c = this.mc.getCallback();
+        final ItemTouchHelper.Callback c = this.mc.getCallback(); // recyclerview의 터치 관련 작업을 위한 콜백
         this.mc.setTouchHelper(new ItemTouchHelper(c));
-        ItemTouchHelper mItemTouchHelper = this.mc.getTouchHelper();
+        final ItemTouchHelper mItemTouchHelper = this.mc.getTouchHelper();
 
-        OnStartDragListener dragListener = new OnStartDragListener() {
+        final OnStartDragListener dragListener = new OnStartDragListener() {
             @Override
             public void onStartDrag(RecyclerView.ViewHolder vh) {
                 mItemTouchHelper.startDrag(vh);
@@ -159,18 +167,18 @@ public class EditActivity extends AppCompatActivity
         this.updateDrawer();
     }
     private void updateDrawer(){
-        NavigationView navigationView = findViewById(R.id.tabs_view);
-        ArrayList<String> paths = this.getFilePaths();
-        Menu m = navigationView.getMenu();
+        final NavigationView navigationView = findViewById(R.id.tabs_view);
+        final ArrayList<String> paths = this.getFilePaths();
+        final Menu m = navigationView.getMenu();
         for(int i = m.size()-1;i<paths.size();i++) {
-            int num = m.size();
+            final int num = m.size();
             String[] fileName = paths.get(i).split("/");
             m.add(0, num, num, fileName[fileName.length-1]);
         }
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
-        MenuInflater inflater = getMenuInflater();
+        final MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.edit_activity_menu, menu);
         return true;
     }
@@ -205,7 +213,7 @@ public class EditActivity extends AppCompatActivity
     }
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        final DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -215,10 +223,10 @@ public class EditActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
+        final int id = item.getItemId();
 
         Log.d("id", id+"");
-
+            final Intent i = new Intent();
         if (id == 0) {
             Intent i = new Intent();
             i.setAction(Intent.ACTION_OPEN_DOCUMENT);
@@ -228,14 +236,14 @@ public class EditActivity extends AppCompatActivity
         }else{
             String selectedFile = this.getFilePaths().get(id-1);
             if(!workingFilePath.equals(selectedFile)){
-                Intent i = getIntent();
+                final Intent i = getIntent();
                 i.putExtra("path", this.getFilePaths().get(id-1));
                 startActivity(i);
                 finish();
             }
         }
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        final DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -247,11 +255,11 @@ public class EditActivity extends AppCompatActivity
                 Uri uri;
                 if (resultData != null) {
                     uri = resultData.getData();
-                    String[] path = uri.getPath().split(":");
-                    String absolutePath = Environment.getExternalStorageDirectory() + "/" + path[1];
+                    final String[] path = uri.getPath().split(":");
+                    final String absolutePath = Environment.getExternalStorageDirectory() + "/" + path[1];
 
                     this.addFile(absolutePath, false);
-                    Intent i = getIntent();
+                    final Intent i = getIntent();
                     i.putExtra("path", absolutePath);
                     startActivity(i);
                     finish();
@@ -319,7 +327,7 @@ public class EditActivity extends AppCompatActivity
         return dialog;
     }
     private Dialog reservedKeywordDialog(){
-        ArrayList<String> list = mc.getLanguageProfile().getReserved();
+        final ArrayList<String> list = mc.getLanguageProfile().getReserved();
         final CharSequence[] cs = list.toArray(new CharSequence[list.size()]);
         AlertDialog dialog = new AlertDialog.Builder(EditActivity.this)
                 .setTitle("Add a reserved keyword")

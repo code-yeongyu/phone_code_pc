@@ -6,7 +6,7 @@ import java.util.Comparator;
 public class StringTools {
     public static ArrayList<Integer> findStringPositions(String source, String target){
         int position;
-        int length = source.length();
+        final int length = source.length();
         final ArrayList<Integer> positions = new ArrayList<>();
 
         for(;;){

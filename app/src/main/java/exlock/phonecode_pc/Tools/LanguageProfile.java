@@ -17,23 +17,7 @@ public class LanguageProfile {
         return functions;
     }
 
-    public void setFunctions(Object functions) {
+    public void setFunctions(final Object functions) {
         this.functions = functions;
-    }
-
-    public ArrayList<String> getFunctionsByCategory(String category){
-        return (new Gson()).fromJson(getFunctions().toString(), new TypeToken<ArrayList<String>>(){}.getType());
-    }
-
-    public Object getLangInforms() {
-        return lang_informs;
-    }
-
-    public Object getReserved() {
-        return reserved;
-    }
-
-    public Object getSymbols() {
-        return symbols;
     }
 }
