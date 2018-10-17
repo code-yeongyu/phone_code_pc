@@ -199,7 +199,7 @@ public class SettingActivity extends AppCompatActivity {
     private Dialog indentSetDialog(final String jsonString) {
         final CharSequence[] cs = getResources().getStringArray(R.array.setting_indent_array);
         AlertDialog dialog = new AlertDialog.Builder(SettingActivity.this)
-                .setTitle("Add a reserved keyword")
+                .setTitle("Set indent type")
                 .setItems(cs, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
