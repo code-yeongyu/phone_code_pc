@@ -16,3 +16,6 @@ Use this method of coding will provide you better experiences with fewer symbols
 'Phone Code-PC' is not just an application for practicing programming, unlike any other devices.<br/>
 'Phone Code-PC' is a real tool that makes you write codes for your projects.<br/>
 Use UI to write basic codes! You can practice your algorithm skills while you're in subway, in buses, and in cars.
+
+
+한국어 설명은 [이곳](https://github.com/kim-yeon-gyu-exlock/phone_code_pc/blob/master/README_KR.md)에서 찾아보실 수 있습니다.
