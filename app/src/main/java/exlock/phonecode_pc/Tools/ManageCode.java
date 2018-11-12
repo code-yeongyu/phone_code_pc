@@ -83,7 +83,7 @@ public class ManageCode {
             reader.close();
             this.content = builder.toString();
         } catch(FileNotFoundException e){
-            //todo: check permission and alert dialog or print no file
+            
         } catch (IOException e) {
             e.printStackTrace();
         }//get file
