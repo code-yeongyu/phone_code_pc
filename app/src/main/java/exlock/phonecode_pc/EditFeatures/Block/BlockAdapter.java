@@ -48,17 +48,22 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
         else
             for (int i = fromPosition; i > toPosition; i--)
                 Collections.swap(lines, i, i - 1);
+
         TextView fromLineNumber = this.lineNumber.get(fromPosition);
         TextView toLineNumber = this.lineNumber.get(toPosition);
         CharSequence fromLN = fromLineNumber.getText();
         CharSequence toLN = toLineNumber.getText();
         fromLineNumber.setText(toLN);
         toLineNumber.setText(fromLN);
+
         this.lineNumber.set(toPosition, fromLineNumber);
         this.lineNumber.set(fromPosition, toLineNumber);
 
+        this.mc.setListAsContent(lines);
+        this.mc.updateLine();
 
         this.notifyItemMoved(fromPosition, toPosition);
+
         return true;
     }
 
