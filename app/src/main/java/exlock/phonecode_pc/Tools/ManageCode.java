@@ -101,24 +101,7 @@ public class ManageCode {
         }
     }
     public void save() {
-        List<BlockLists> blocks = this.getBlockAdapter().blocks;
-        String[] lines = this.getContent().split("\n");
-        StringBuilder temp = new StringBuilder();
-        for(int i = 0;i<lines.length;i++){
-            ArrayList<Integer> a = this.getOutermostPairs(lines[i]);
-            if(!a.isEmpty()) {
-                int aValue = a.get(0) + 1;
-                int functionLength = lines[i].length();
-                temp.append(
-                        lines[i].substring(0, aValue))//texts before arguments
-                        .append(blocks.get(i).arg)//arguments in edit text
-                        .append(lines[i].substring(a.get(1), functionLength));//texts after arguments
-            }else{//if brackets not exists
-                temp.append(lines[i]);
-            }
-            temp.append("\n");
-        }
-        this.setContent(temp.toString());
+        this.updateLine();
         this.saveContent();
     }
     public boolean removeFile() {
