@@ -6,7 +6,9 @@ import android.content.DialogInterface;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -140,6 +142,24 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
         holder.getArg().setVisibility(funcString2.equals("") ? View.INVISIBLE : View.VISIBLE);
         holder.getFunc2().setVisibility(isFunc1Empty ? View.INVISIBLE : View.VISIBLE);
         holder.getArg().setText(arg);
+        holder.getArg().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                mc.updateLine();
+                mc.setLine(pos, funcString1+s+funcString2);
+                mc.updateLine();
+            }
+        });
         holder.getFunc2().setText(funcString2);
         holder.getLineNumber().setText(" "+(position+1)+" ");
         holder.getLineNumber().setOnTouchListener(new View.OnTouchListener() {
