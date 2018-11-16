@@ -178,7 +178,7 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
         holder.getFunc1().setText(funcString1);
         holder.getFunc2().setVisibility(View.VISIBLE);
     }
-    private int block = -1;
+
     private void createDialog(@NotNull ViewHolder holder, final int position){
 
         final Context context = holder.getblock().getContext();
@@ -189,10 +189,6 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
         for(int i = 0;i<defaultMenu.length;i++){
             items.add(defaultMenu[i]);
         }
-        if(block == -1)
-            items.add(context.getString(R.string.menu_block_set_first_target));
-        else
-            items.add(String.format(context.getString(R.string.menu_block_set_last_target), block+1));
 
         builder.setTitle("")
                 .setItems(items.toArray(new CharSequence[items.size()]), new DialogInterface.OnClickListener() {
@@ -214,13 +210,6 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
                                 CategoryDialogActivity cda = new CategoryDialogActivity(context);
                                 cda.init(mc, position);
                                 cda.show();
-                                break;
-                            case GROUP_EDIT:
-                                if(block==-1)//if it's the first time to select a target
-                                    block=position;
-                                else {
-                                    groupEditBlockDialog(context, position).show();
-                                }
                                 break;
                         }
                     }
@@ -250,51 +239,6 @@ public class BlockAdapter extends RecyclerView.Adapter<BlockAdapter.ViewHolder> 
                         mc.setLine(position, et.getText().toString());
                         mc.getBlockAdapter().notifyItemChanged(position);
                         mc.updateUI();
-                    }
-                })
-                .setNegativeButton("cancel", null)
-                .create();
-        return dialog;
-    }
-
-    private Dialog groupEditBlockDialog(final Context context, final int position){
-        final EditText et = new EditText(context);
-        et.setElegantTextHeight(true);
-        et.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-        et.setSingleLine(false);
-        StringBuilder sb = new StringBuilder();
-        ArrayList<Integer> positions = new ArrayList<>();
-        positions.add(position);
-        positions.add(block);
-        Collections.sort(positions, new Ascending());
-        this.mc.updateLine();
-        ArrayList<String> lines = this.mc.getLines();
-        for(int i = positions.get(0);i<positions.get(1)+1;i++){
-            sb.append(lines.get(i)).append("\n");
-        }
-        et.setText(sb.toString());
-        AlertDialog dialog = new AlertDialog.Builder(context)
-                .setTitle("Group edit")
-                .setView(et)
-                .setPositiveButton("change", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        InputMethodManager mInputMethodManager =
-                                (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                        if(mInputMethodManager != null)
-                            mInputMethodManager.hideSoftInputFromWindow(et.getWindowToken(), 0);
-                        mc.updateLine();
-                        String[] etLines = et.getText().toString().split("\n");
-                        int totalLine = etLines.length;
-                        for(i = positions.get(0);i<positions.get(1);i++){
-                            lines.set(i+1, etLines[i]);
-                        }
-                        for(i = positions.get(1);i<totalLine;i++){
-                            lines.add(etLines[i]);
-                        }
-                        mc.setListAsContent(lines);
-                        mc.updateUI();
-                        block=-1;
                     }
                 })
                 .setNegativeButton("cancel", null)
