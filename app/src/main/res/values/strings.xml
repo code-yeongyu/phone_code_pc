@@ -39,8 +39,6 @@
         <item>Edit Block</item>
         <item>Add Block Below</item>
     </string-array>
-    <string name="menu_block_set_first_target">Set for the group edit target</string>
-    <string name="menu_block_set_last_target">Edit from line %1$o</string>
 
     <string name="open_file">Open File</string>
     <string name="open_settings">Open Settings</string>
